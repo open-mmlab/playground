@@ -1,3 +1,5 @@
+# Copyright (c) OpenMMLab. All rights reserved.
+# Refer from https://github.com/IDEA-Research/Grounded-Segment-Anything
 import argparse
 import json
 import os

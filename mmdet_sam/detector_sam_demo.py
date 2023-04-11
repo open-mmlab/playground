@@ -1,3 +1,5 @@
+# Copyright (c) OpenMMLab. All rights reserved.
+# Refer from https://github.com/IDEA-Research/Grounded-Segment-Anything
 import argparse
 import os
 
@@ -25,6 +27,7 @@ def parse_args():
     parser.add_argument('det_config', type=str, help='path to det config file')
     parser.add_argument('det_weight', type=str, help='path to det weight file')
     parser.add_argument('--only-det', action='store_true')
+    parser.add_argument('--not-show-label', action='store_true')
     parser.add_argument(
         '--sam-weight',
         type=str,
@@ -166,9 +169,8 @@ def draw_and_save(image,
                           facecolor=(0, 0, 0, 0),
                           lw=2))
 
-        if show_label and not with_mask:
-            pass
-            # todo
+        if show_label:
+            plt.gca().text(x0, y0, f'{label}|{score}', color='white')
 
     if with_mask:
         masks = pred_dict['masks'].cpu().numpy()
@@ -218,14 +220,18 @@ def main():
         save_path = os.path.join(out_dir, os.path.basename(image_path))
         det_model, pred_dict = run_detecter(det_model, image_path, args)
 
+        if pred_dict['boxes'].shape[0] == 0:
+            print('No objects detected !')
+            continue
+
         image = cv2.imread(image_path)
+        image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
 
         if not only_det:
 
             if cpu_off_load:
                 sam_model.mode = sam_model.model.to(args.sam_device)
 
-            image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
             sam_model.set_image(image)
 
             transformed_boxes = sam_model.transform.apply_boxes_torch(
@@ -242,7 +248,8 @@ def main():
             if cpu_off_load:
                 sam_model.model = sam_model.model.to('cpu')
 
-        draw_and_save(image, pred_dict, save_path)
+        draw_and_save(
+            image, pred_dict, save_path, show_label=not args.not_show_label)
         progress_bar.update()
 
 
