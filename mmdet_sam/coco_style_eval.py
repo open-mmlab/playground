@@ -15,6 +15,7 @@ import pycocotools.mask as mask_util
 import torch
 from groundingdino.models import build_model
 from groundingdino.util.utils import clean_state_dict, get_phrases_from_posmap
+from mmdet.apis import inference_detector, init_detector
 from mmengine.config import Config
 from mmengine.dataset import DefaultSampler, worker_init_fn
 from mmengine.dist import (collect_results, get_dist_info, get_rank, init_dist,
@@ -109,7 +110,11 @@ def build_detecter(args):
     if 'GroundingDINO' in args.det_config:
         detecter = __build_grounding_dino_model(args)
     else:
-        raise NotImplementedError
+        config = Config.fromfile(args.det_config)
+        if 'init_cfg' in config.model.backbone:
+            config.model.backbone.init_cfg = None
+        detecter = init_detector(
+            config, args.det_weight, device='cpu', cfg_options={})
     return detecter
 
 
@@ -174,72 +179,21 @@ def run_detecter(model, image_path, args):
             boxes_filt[i][:2] -= boxes_filt[i][2:] / 2
             boxes_filt[i][2:] += boxes_filt[i][:2]
         pred_dict['boxes'] = boxes_filt
+    else:
+        result = inference_detector(model, image_path)
+        pred_instances = result.pred_instances[
+            result.pred_instances.scores > args.box_thr]
 
-        if args.cpu_off_load:
-            model = model.to('cpu')
-        return model, pred_dict
+        pred_dict['boxes'] = pred_instances.bboxes
+        pred_dict['scores'] = pred_instances.scores.cpu().numpy().tolist()
+        pred_dict['labels'] = [
+            model.dataset_meta['classes'][label]
+            for label in pred_instances.labels
+        ]
 
-
-def draw_and_save(image,
-                  pred_dict,
-                  save_path,
-                  random_color=True,
-                  show_label=True):
-    plt.figure(figsize=(10, 10))
-    plt.imshow(image)
-
-    with_mask = 'masks' in pred_dict
-    labels = pred_dict['labels']
-    scores = pred_dict['scores']
-
-    bboxes = pred_dict['boxes'].cpu().numpy()
-    for box, label, score in zip(bboxes, labels, scores):
-        x0, y0 = box[0], box[1]
-        w, h = box[2] - box[0], box[3] - box[1]
-        plt.gca().add_patch(
-            plt.Rectangle((x0, y0),
-                          w,
-                          h,
-                          edgecolor='green',
-                          facecolor=(0, 0, 0, 0),
-                          lw=2))
-
-        if show_label and not with_mask:
-            pass
-            # todo
-
-    if with_mask:
-        masks = pred_dict['masks'].cpu().numpy()
-        for mask in masks:
-            if random_color:
-                color = np.concatenate(
-                    [np.random.random(3), np.array([0.6])], axis=0)
-            else:
-                color = np.array([30 / 255, 144 / 255, 255 / 255, 0.6])
-            h, w = mask.shape[-2:]
-            mask_image = mask.reshape(h, w, 1) * color.reshape(1, 1, -1)
-            plt.gca().imshow(mask_image)
-
-    plt.axis('off')
-    plt.savefig(save_path)
-
-
-def encode_mask_results(mask_results):
-    """Encode bitmap mask to RLE code.
-
-    Args:
-        mask_results (list): bitmap mask results.
-
-    Returns:
-        list | tuple: RLE encoded mask.
-    """
-    encoded_mask_results = []
-    for mask in mask_results:
-        encoded_mask_results.append(
-            mask_util.encode(
-                np.array(mask[:, :, np.newaxis], order='F',
-                         dtype='uint8'))[0])  # encoded with RLE
-    return encoded_mask_results
+    if args.cpu_off_load:
+        model = model.to('cpu')
+    return model, pred_dict
 
 
 def fake_collate(x):
