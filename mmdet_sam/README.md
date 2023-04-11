@@ -28,11 +28,16 @@
 3. 支持 Grounding Object Detection 模型，典型的如 Grounding DINO 和 GLIP 串联 SAM 模型进行自动检测和实例分割标注
 4. 所有模型均支持分布式检测和分割评估和自动 COCO JSON 导出，方便用户对自定义数据进行评估
 
+## 参数说明
 下面对每个脚本功能进行说明：
 
 1. `detector_sam_demo.py` 用于单张图片或者文件夹的检测和实例分割模型推理
 2. `mmdet_sam/coco_style_eval.py` 用于对输入的 COCO JSON 进行检测和实例分割模型推理、评估和导出
 3. `browse_coco_json.py` 用于可视化导出的 JSON 文件
+
+(1) detector_sam_demo.py
+
+
 
 本工程参考了 [Grounded-Segment-Anything](https://github.com/IDEA-Research/Grounded-Segment-Anything)，非常感谢！
 
@@ -56,19 +61,24 @@ pip install mmengine
 ```shell
 pip install -U openmim
 mim install "mmcv>=2.0.0"
-mim install mmdet
+
+# 源码安装
+git clone https://github.com/open-mmlab/mmdetection.git
+cd mmdetection; pip install -e .; cd ..
 ```
 
 #### 功能演示
 
-以 `Faster R-CNN` 模型为例，请
+以 `Faster R-CNN` 模型为例
 
 ```shell
 cd mmsam/mmdet_sam
 
 # 单张图片评估
-python detector_sam_demo.py ../images mmdetection/configs/dino/dino-5scale_swin-l_8xb2-12e_coco.py https://download.openmmlab.com/mmdetection/v3.0/dino/dino-5scale_swin-l_8xb2-12e_coco/dino-5scale_swin-l_8xb2-12e_coco_20230228_072924-a654145f.pth
+python detector_sam_demo.py ../images/cat_remote.jpg mmdetection/configs/dino/dino-5scale_swin-l_8xb2-12e_coco.py https://download.openmmlab.com/mmdetection/v3.0/dino/dino-5scale_swin-l_8xb2-12e_coco/dino-5scale_swin-l_8xb2-12e_coco_20230228_072924-a654145f.pth 
 
+# 如果 GPU 显存不够，可以采用 CPU 推理
+python detector_sam_demo.py ../images/cat_remote.jpg mmdetection/configs/dino/dino-5scale_swin-l_8xb2-12e_coco.py https://download.openmmlab.com/mmdetection/v3.0/dino/dino-5scale_swin-l_8xb2-12e_coco/dino-5scale_swin-l_8xb2-12e_coco_20230228_072924-a654145f.pth 
 ```
 
 ### 2 Open-Vocabulary + SAM
