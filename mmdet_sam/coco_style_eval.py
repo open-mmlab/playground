@@ -110,19 +110,19 @@ grounding_dino_transform = T.Compose([
 ])
 
 
-def build_detecter(args):
+def build_detector(args):
     if 'GroundingDINO' in args.det_config:
-        detecter = __build_grounding_dino_model(args)
+        detector = __build_grounding_dino_model(args)
     else:
         config = Config.fromfile(args.det_config)
         if 'init_cfg' in config.model.backbone:
             config.model.backbone.init_cfg = None
-        detecter = init_detector(
+        detector = init_detector(
             config, args.det_weight, device='cpu', cfg_options={})
-    return detecter
+    return detector
 
 
-def run_detecter(model, image_path, args):
+def run_detector(model, image_path, args):
     pred_dict = {}
 
     if args.cpu_off_load:
@@ -226,7 +226,7 @@ def main():
     if _distributed and not is_distributed():
         init_dist(args.launcher)
 
-    det_model = build_detecter(args)
+    det_model = build_detector(args)
     if not cpu_off_load:
         det_model = det_model.to(args.det_device)
 
@@ -279,7 +279,7 @@ def main():
         file_name = raw_img_info['file_name']
         image_path = os.path.join(args.data_root, args.data_prefix, file_name)
 
-        det_model, pred_dict = run_detecter(det_model, image_path, args)
+        det_model, pred_dict = run_detector(det_model, image_path, args)
 
         if pred_dict['boxes'].shape[0] == 0:
             part_json_data.append(new_json_data)
