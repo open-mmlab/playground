@@ -17,12 +17,26 @@ from core.utils import get_file_list
 from mmengine.config import Config
 from mmengine.utils import ProgressBar
 
+from pycocotools.coco import COCO
+import json
+import pycocotools.mask as mask_util
+from pycocotools.cocoeval import COCOeval
+from torch.utils.data import DataLoader, Dataset
+from mmengine.dataset import DefaultSampler, default_collate, worker_init_fn
+from functools import partial
+from mmengine.dist import (broadcast, get_dist_info, get_rank, init_dist,
+                           is_distributed, master_only, collect_results, barrier)
+from mmengine.device import get_device
+from torch.nn.parallel import DistributedDataParallel
+
 
 def parse_args():
     parser = argparse.ArgumentParser("Detect-Segment-Anything Demo", add_help=True)
-    parser.add_argument("image", type=str, help="path to image file")
+    parser.add_argument("data_root", type=str)
     parser.add_argument("det_config", type=str, help="path to det config file")
     parser.add_argument("det_weight", type=str, help="path to det weight file")
+    parser.add_argument("--ann-file", type=str, default='annotations/instances_val2017.json')
+    parser.add_argument("--data-prefix", type=str, default='val2017/')
     parser.add_argument('--only-det', action="store_true")
     parser.add_argument(
         "--sam-weight", type=str, default='../models/sam_vit_h_4b8939.pth', help="path to checkpoint file"
@@ -36,10 +50,32 @@ def parse_args():
     parser.add_argument("--cpu-off-load", '-c', action="store_true")
 
     # GroundingDINO param
-    parser.add_argument("--text-prompt", '-t', type=str, help="text prompt")
+    parser.add_argument("--text-prompt", '-t', type=str, help="text prompt or cls path")
     parser.add_argument("--text-thr", type=float, default=0.25, help="text threshold")
 
-    return parser.parse_args()
+    # dist param
+    parser.add_argument(
+        '--launcher',
+        choices=['none', 'pytorch', 'slurm', 'mpi'],
+        default='none',
+        help='job launcher')
+    parser.add_argument('--local_rank', '--local-rank', type=int, default=0)
+    args = parser.parse_args()
+    if 'LOCAL_RANK' not in os.environ:
+        os.environ['LOCAL_RANK'] = str(args.local_rank)
+
+    return args
+
+
+class SimpleDataset(Dataset):
+    def __init__(self, img_ids):
+        self.img_ids = img_ids
+
+    def __getitem__(self, item):
+        return self.img_ids[item]
+
+    def __len__(self):
+        return len(self.img_ids)
 
 
 def __build_grounding_dino_model(args):
@@ -174,6 +210,16 @@ def main():
     if 'GroundingDINO' in args.det_config:
         assert args.text_prompt
 
+    if args.launcher == 'none':
+        _distributed = False
+    else:
+        _distributed = True
+        assert not args.cpu_off_load
+        assert 'cpu' in args.det_device and 'cpu' in args.sam_device
+
+    if _distributed and not is_distributed():
+        init_dist(args.launcher)
+
     det_model = build_detecter(args)
     if not cpu_off_load:
         det_model = det_model.to(args.det_device)
@@ -183,7 +229,25 @@ def main():
         if not cpu_off_load:
             sam_model.mode = sam_model.model.to(args.sam_device)
 
-    os.makedirs(out_dir, exist_ok=True)
+    if _distributed:
+        det_model = det_model.to(get_device())
+        det_model = DistributedDataParallel(
+            module=det_model,
+            device_ids=[int(os.environ['LOCAL_RANK'])],
+            broadcast_buffers=False,
+            find_unused_parameters=False)
+        sam_model.model = sam_model.model.to(get_device())
+        sam_model.model = DistributedDataParallel(
+            module=sam_model.model,
+            device_ids=[int(os.environ['LOCAL_RANK'])],
+            broadcast_buffers=False,
+            find_unused_parameters=False)
+
+    coco = COCO(os.path.join(args.data_root, args.ann_file))
+    coco_dataset = SimpleDataset(coco.getImgIds())
+
+    if get_rank() == 0:
+        print('data len: ', len(coco_dataset), 'num_word_size: ', get_dist_info()[1])
 
     files, source_type = get_file_list(args.image)
     progress_bar = ProgressBar(len(files))
