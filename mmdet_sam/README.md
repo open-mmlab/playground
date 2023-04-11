@@ -30,6 +30,13 @@ pip install mmengine
 
 #### 功能演示
 
+```shell
+cd mmsam/mmdet_sam
+
+python detector_sam_demo.py ../images mmdetection/configs/dino/dino-5scale_swin-l_8xb2-12e_coco.py https://download.openmmlab.com/mmdetection/v3.0/dino/dino-5scale_swin-l_8xb2-12e_coco/dino-5scale_swin-l_8xb2-12e_coco_20230228_072924-a654145f.pth
+
+```
+
 ### 2 Open-Vocabulary + SAM
 
 #### 依赖安装
