@@ -1,5 +1,7 @@
 import argparse
 import os
+import warnings
+
 import torch
 from PIL import Image
 
@@ -13,7 +15,6 @@ from segment_anything import build_sam, SamPredictor
 import cv2
 import numpy as np
 import matplotlib.pyplot as plt
-from core.utils import get_file_list
 from mmengine.config import Config
 from mmengine.utils import ProgressBar
 
@@ -22,12 +23,10 @@ import json
 import pycocotools.mask as mask_util
 from pycocotools.cocoeval import COCOeval
 from torch.utils.data import DataLoader, Dataset
-from mmengine.dataset import DefaultSampler, default_collate, worker_init_fn
+from mmengine.dataset import DefaultSampler, worker_init_fn
 from functools import partial
-from mmengine.dist import (broadcast, get_dist_info, get_rank, init_dist,
-                           is_distributed, master_only, collect_results, barrier)
-from mmengine.device import get_device
-from torch.nn.parallel import DistributedDataParallel
+from mmengine.dist import (get_dist_info, get_rank, init_dist,
+                           is_distributed, collect_results)
 
 
 def parse_args():
@@ -45,12 +44,13 @@ def parse_args():
         "--out-dir", "-o", type=str, default="outputs", help="output directory"
     )
     parser.add_argument("--box-thr", '-b', type=float, default=0.3, help="box threshold")
-    parser.add_argument('--det-device', '-d', default='cuda:0', help='Device used for inference')
-    parser.add_argument('--sam-device', '-s', default='cuda:0', help='Device used for inference')
+    parser.add_argument('--det-device', '-d', default='cuda', help='Device used for inference')
+    parser.add_argument('--sam-device', '-s', default='cuda', help='Device used for inference')
     parser.add_argument("--cpu-off-load", '-c', action="store_true")
+    parser.add_argument("--num-worker", '-n', type=int, default=2)
 
     # GroundingDINO param
-    parser.add_argument("--text-prompt", '-t', type=str, help="text prompt or cls path")
+    parser.add_argument("--text-prompt", '-t', type=str, help="cls path")
     parser.add_argument("--text-thr", type=float, default=0.25, help="text threshold")
 
     # dist param
@@ -115,6 +115,13 @@ def run_detecter(model, image_path, args):
         image, _ = grounding_dino_transform(image_pil, None)  # 3, h, w
 
         text_prompt = args.text_prompt
+        with open(text_prompt, 'r') as f:
+            coco_cls_str = f.read()
+        text_prompt = coco_cls_str.replace('\n', ' . ')
+
+        if get_rank() == 0:
+            warnings.warn(f'text prompt is {text_prompt}')
+
         text_prompt = text_prompt.lower()
         text_prompt = text_prompt.strip()
         if not text_prompt.endswith("."):
@@ -196,6 +203,24 @@ def draw_and_save(image, pred_dict, save_path, random_color=True, show_label=Tru
     plt.savefig(save_path)
 
 
+def encode_mask_results(mask_results):
+    """Encode bitmap mask to RLE code.
+
+    Args:
+        mask_results (list): bitmap mask results.
+
+    Returns:
+        list | tuple: RLE encoded mask.
+    """
+    encoded_mask_results = []
+    for mask in mask_results:
+        encoded_mask_results.append(
+            mask_util.encode(
+                np.array(mask[:, :, np.newaxis], order='F',
+                         dtype='uint8'))[0])  # encoded with RLE
+    return encoded_mask_results
+
+
 def main():
     args = parse_args()
     if args.cpu_off_load is True:
@@ -205,7 +230,6 @@ def main():
 
     only_det = args.only_det
     cpu_off_load = args.cpu_off_load
-    out_dir = args.out_dir
 
     if 'GroundingDINO' in args.det_config:
         assert args.text_prompt
@@ -214,8 +238,6 @@ def main():
         _distributed = False
     else:
         _distributed = True
-        assert not args.cpu_off_load
-        assert 'cpu' in args.det_device and 'cpu' in args.sam_device
 
     if _distributed and not is_distributed():
         init_dist(args.launcher)
@@ -229,31 +251,53 @@ def main():
         if not cpu_off_load:
             sam_model.mode = sam_model.model.to(args.sam_device)
 
-    if _distributed:
-        det_model = det_model.to(get_device())
-        det_model = DistributedDataParallel(
-            module=det_model,
-            device_ids=[int(os.environ['LOCAL_RANK'])],
-            broadcast_buffers=False,
-            find_unused_parameters=False)
-        sam_model.model = sam_model.model.to(get_device())
-        sam_model.model = DistributedDataParallel(
-            module=sam_model.model,
-            device_ids=[int(os.environ['LOCAL_RANK'])],
-            broadcast_buffers=False,
-            find_unused_parameters=False)
-
     coco = COCO(os.path.join(args.data_root, args.ann_file))
     coco_dataset = SimpleDataset(coco.getImgIds())
+
+    name2id = {}
+    for categories in coco.dataset['categories']:
+        name2id[categories['name']] = categories['id']
 
     if get_rank() == 0:
         print('data len: ', len(coco_dataset), 'num_word_size: ', get_dist_info()[1])
 
-    files, source_type = get_file_list(args.image)
-    progress_bar = ProgressBar(len(files))
-    for image_path in files:
-        save_path = os.path.join(out_dir, os.path.basename(image_path))
+    sampler = DefaultSampler(coco_dataset, False)
+    init_fn = partial(
+        worker_init_fn,
+        num_workers=args.num_worker,
+        rank=get_rank(),
+        seed=0,
+        disable_subprocess_warning=True)
+    data_loader = DataLoader(
+        dataset=coco_dataset,
+        sampler=sampler,
+        collate_fn=lambda x: x,
+        worker_init_fn=init_fn,
+        batch_size=1,
+        num_workers=args.num_worker,
+        persistent_workers=False if args.num_worker == 0 else True,
+        drop_last=False)
+
+    if get_rank() == 0:
+        progress_bar = ProgressBar(len(data_loader))
+
+    part_json_data = []
+
+    for i, data in enumerate(data_loader):
+        new_json_data = dict(annotation=[])
+        image_id = data[0]
+        raw_img_info = coco.loadImgs([image_id])[0]
+        raw_img_info['img_id'] = image_id
+        new_json_data['image'] = raw_img_info
+
+        file_name = raw_img_info['file_name']
+        image_path = os.path.join(args.data_root, args.data_prefix, file_name)
+
         det_model, pred_dict = run_detecter(det_model, image_path, args)
+
+        if pred_dict['boxes'].shape[0] == 0:
+            part_json_data.append(new_json_data)
+            continue
 
         image = cv2.imread(image_path)
 
@@ -274,13 +318,94 @@ def main():
                 boxes=transformed_boxes,
                 multimask_output=False
             )
-            pred_dict['masks'] = masks
+            pred_dict['masks'] = masks.cpu().numpy()
 
             if cpu_off_load:
                 sam_model.model = sam_model.model.to('cpu')
 
-        draw_and_save(image, pred_dict, save_path)
-        progress_bar.update()
+        pred_dict['boxes'] = pred_dict['boxes'].int().numpy().tolist()
+
+        for i in range(len(pred_dict['boxes'])):
+            label = pred_dict['labels'][i]
+            score = pred_dict['scores'][i]
+            bbox = pred_dict['boxes'][i]
+
+            coco_bbox = [
+                bbox[0],
+                bbox[1],
+                bbox[2] - bbox[0],
+                bbox[3] - bbox[1],
+            ]
+
+            if label not in name2id:
+                warnings.warn(f'not match predicted label of {label}')
+                continue
+
+            annotation = dict(
+                image_id=image_id,
+                bbox=coco_bbox,
+                score=float(score),
+                iscrowd=0,
+                category_id=name2id[label],
+                area=coco_bbox[2] * coco_bbox[3])
+
+            if 'masks' in pred_dict:
+                mask = pred_dict['masks'][i]
+                encode_masks = encode_mask_results(mask)
+                for encode_mask in encode_masks:
+                    if isinstance(encode_mask, dict) and isinstance(
+                            encode_mask['counts'], bytes):
+                        encode_mask['counts'] = encode_mask['counts'].decode()
+                annotation['segmentation'] = encode_mask
+            else:
+                annotation['segmentation'] = []
+            new_json_data['annotation'].append(annotation)
+
+        part_json_data.append(new_json_data)
+
+        if get_rank() == 0:
+            progress_bar.update()
+
+    all_json_results = collect_results(part_json_data, len(coco_dataset), 'cpu')
+
+    if get_rank() == 0:
+        new_json_data = {'info': coco.dataset['info'], 'licenses': coco.dataset['licenses'],
+                         'categories': coco.dataset['categories'],
+                         'images': [json_results['image'] for json_results in all_json_results]}
+
+        annotations = []
+        annotation_id = 1
+        for annotation in all_json_results:
+            annotation = annotation['annotation']
+            for ann in annotation:
+                ann['id'] = annotation_id
+                annotation_id += 1
+                annotations.append(ann)
+
+        if len(annotations) > 0:
+            new_json_data['annotations'] = annotations
+
+        output_json_name = args.ann_file[:-5] + '_pred.json'
+        output_name = os.path.join(args.out_dir, output_json_name)
+        os.makedirs(os.path.dirname(output_name), exist_ok=True)
+
+        with open(output_name, "w") as f:
+            json.dump(new_json_data, f)
+
+        if len(coco.dataset['annotations']) > 0:
+            cocoDt = COCO(output_name)
+            if only_det:
+                metrics = ['bbox']
+            else:
+                metrics = ['bbox', 'segm']
+
+            for metric in metrics:
+                coco_eval = COCOeval(coco, cocoDt, iouType=metric)
+                coco_eval.evaluate()
+                coco_eval.accumulate()
+                coco_eval.summarize()
+        else:
+            warnings.warn("No gt label, can't evaluate")
 
 
 if __name__ == '__main__':
