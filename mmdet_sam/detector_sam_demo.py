@@ -11,6 +11,7 @@ import numpy as np
 import torch
 from groundingdino.models import build_model
 from groundingdino.util.utils import clean_state_dict, get_phrases_from_posmap
+from mmdet.apis import inference_detector, init_detector
 from mmengine.config import Config
 from mmengine.utils import ProgressBar
 from PIL import Image
@@ -81,7 +82,11 @@ def build_detecter(args):
     if 'GroundingDINO' in args.det_config:
         detecter = __build_grounding_dino_model(args)
     else:
-        raise NotImplementedError
+        config = Config.fromfile(args.det_config)
+        if 'init_cfg' in config.model.backbone:
+            config.model.backbone.init_cfg = None
+        detecter = init_detector(
+            config, args.det_weight, device='cpu', cfg_options={})
     return detecter
 
 
@@ -139,10 +144,21 @@ def run_detecter(model, image_path, args):
             boxes_filt[i][:2] -= boxes_filt[i][2:] / 2
             boxes_filt[i][2:] += boxes_filt[i][:2]
         pred_dict['boxes'] = boxes_filt
+    else:
+        result = inference_detector(model, image_path)
+        pred_instances = result.pred_instances[
+            result.pred_instances.scores > args.box_thr]
 
-        if args.cpu_off_load:
-            model = model.to('cpu')
-        return model, pred_dict
+        pred_dict['boxes'] = pred_instances.bboxes
+        pred_dict['scores'] = pred_instances.scores.cpu().numpy().tolist()
+        pred_dict['labels'] = [
+            model.dataset_meta['classes'][label]
+            for label in pred_instances.labels
+        ]
+
+    if args.cpu_off_load:
+        model = model.to('cpu')
+    return model, pred_dict
 
 
 def draw_and_save(image,
@@ -170,7 +186,7 @@ def draw_and_save(image,
                           lw=2))
 
         if show_label:
-            plt.gca().text(x0, y0, f'{label}|{score}', color='white')
+            plt.gca().text(x0, y0, f'{label}|{round(score,2)}', color='white')
 
     if with_mask:
         masks = pred_dict['masks'].cpu().numpy()
