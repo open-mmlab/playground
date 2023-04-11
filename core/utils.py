@@ -1,5 +1,6 @@
 import os
 import urllib
+
 import torch
 from mmengine.utils import scandir
 
