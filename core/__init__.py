@@ -1,1 +1,1 @@
-from .utils import get_file_list
+# Copyright (c) OpenMMLab. All rights reserved.

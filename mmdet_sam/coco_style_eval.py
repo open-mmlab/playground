@@ -240,6 +240,10 @@ def encode_mask_results(mask_results):
     return encoded_mask_results
 
 
+def fake_collate(x):
+    return x
+
+
 def main():
     args = parse_args()
     if args.cpu_off_load is True:
@@ -292,7 +296,7 @@ def main():
     data_loader = DataLoader(
         dataset=coco_dataset,
         sampler=sampler,
-        collate_fn=lambda x: x,
+        collate_fn=fake_collate,
         worker_init_fn=init_fn,
         batch_size=1,
         num_workers=args.num_worker,
@@ -371,12 +375,11 @@ def main():
                 area=coco_bbox[2] * coco_bbox[3])
 
             if 'masks' in pred_dict:
-                mask = pred_dict['masks'][i]
-                encode_masks = encode_mask_results(mask)
-                for encode_mask in encode_masks:
-                    if isinstance(encode_mask, dict) and isinstance(
-                            encode_mask['counts'], bytes):
-                        encode_mask['counts'] = encode_mask['counts'].decode()
+                mask = pred_dict['masks'][i][0]
+                encode_mask = mask_util.encode(
+                    np.array(mask[:, :, np.newaxis], order='F',
+                             dtype='uint8'))[0]
+                encode_mask['counts'] = encode_mask['counts'].decode()
                 annotation['segmentation'] = encode_mask
             else:
                 annotation['segmentation'] = []
