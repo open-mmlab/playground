@@ -7,6 +7,8 @@ import cv2
 import torch
 import numpy as np
 import matplotlib.pyplot as plt
+import torch.nn.functional as F
+
 # Grounding DINO
 try:
     import groundingdino
@@ -112,6 +114,26 @@ def __build_glip_model(args):
         confidence_threshold=0.7,
         show_mask_heatmaps=False)
     return model
+
+def __reset_cls_layer_weight(model, weight, device='cpu'):
+    if type(weight) == str:
+        print(f'Resetting cls_layer_weight from file: {weight}')
+        zs_weight = torch.tensor(
+            np.load(weight),
+            dtype=torch.float32).permute(1, 0).contiguous()  # D x C
+    else:
+        zs_weight = weight
+    zs_weight = torch.cat(
+        [zs_weight, zs_weight.new_zeros(
+            (zs_weight.shape[0], 1))], dim=1)  # D x (C + 1)
+    zs_weight = F.normalize(zs_weight, p=2, dim=0)
+    zs_weight = zs_weight.to(next(model.parameters()).device)
+    num_classes = zs_weight.shape[-1]
+
+    for bbox_head in model.roi_head.bbox_head:
+        bbox_head.num_classes = num_classes
+        del bbox_head.fc_cls.zs_weight
+        bbox_head.fc_cls.zs_weight = zs_weight
 
 
 def build_detecter(args):
@@ -258,7 +280,10 @@ def draw_and_save(image,
                           lw=2))
 
         if show_label:
-            plt.gca().text(x0, y0, f'{label}|{round(score,2)}', color='white')
+            if isinstance(score, str):
+                plt.gca().text(x0, y0, f'{label}|{score}', color='white')
+            else:
+                plt.gca().text(x0, y0, f'{label}|{round(score,2)}', color='white')
 
     if with_mask:
         masks = pred_dict['masks'].cpu().numpy()
@@ -313,8 +338,7 @@ def main():
             sam_model.mode = sam_model.model.to(args.sam_device)
 
     if 'Detic' in args.det_config:
-        from projects.Detic.detic.utils import (get_text_embeddings,
-                                reset_cls_layer_weight)
+        from projects.Detic.detic.utils import get_text_embeddings
         text_prompt = args.text_prompt
         text_prompt = text_prompt.lower()
         text_prompt = text_prompt.strip()
@@ -323,7 +347,7 @@ def main():
         custom_vocabulary = text_prompt.split('.')
         det_model.dataset_meta['classes'] = [c.strip() for c in custom_vocabulary]
         embedding = get_text_embeddings(custom_vocabulary=custom_vocabulary)
-        reset_cls_layer_weight(det_model, embedding)
+        __reset_cls_layer_weight(det_model, embedding)
 
     os.makedirs(out_dir, exist_ok=True)
 

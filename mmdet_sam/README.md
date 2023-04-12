@@ -36,12 +36,6 @@
 2. `coco_style_eval.py` 用于对输入的 COCO JSON 进行检测和实例分割模型推理、评估和导出
 3. `browse_coco_json.py` 用于可视化导出的 JSON 文件
 
-(1) detector_sam_demo.py
-
-(2) coco_style_eval.py
-
-(3) browse_coco_json.py
-
 本工程参考了 [Grounded-Segment-Anything](https://github.com/IDEA-Research/Grounded-Segment-Anything)，非常感谢！
 
 ## 基础环境安装
@@ -55,11 +49,101 @@ pip install mmengine
 
 ## 功能说明
 
-本工程中包括了引入了诸多优秀的开源算法，为了减少用户安装环境负担，如果不不想使用某部分功能，则可以不安装对应的依赖。下面分成 3 个部分说明。
+本工程中包括了引入了诸多优秀的开源算法，为了减少用户安装环境负担，如果你不想使用某部分功能，则可以不安装对应的依赖。下面分成 3 个部分说明。
 
-### 1 MMDet 模型 + SAM
+### 1 Open-Vocabulary + SAM
 
-其表示 MMDet 中的检测模型串联 SAM 从而实现实例分割任务，目前支持所有 MMDet 中已经支持的算法。
+其表示采用 Open-Vocabulary 目标检测器串联 SAM 模型，目前支持 Detic 算法
+
+#### 依赖安装
+
+```shell
+pip install -U openmim
+mim install "mmcv>=2.0.0"
+
+# 源码安装
+git clone https://github.com/open-mmlab/mmdetection.git
+cd mmdetection; pip install -e .; cd ..
+
+pip install git+https://github.com/facebookresearch/segment-anything.git
+pip install git+https://github.com/openai/CLIP.git
+```
+
+#### 功能演示
+
+```shell
+cd mmdet_sam
+
+# 下载权重
+mkdir ../models
+wget -P ../models/ https://download.openmmlab.com/mmdetection/v3.0/detic/detic_centernet2_swin-b_fpn_4x_lvis-coco-in21k/detic_centernet2_swin-b_fpn_4x_lvis-coco-in21k_20230120-0d301978.pth 
+wget -P ../models/ https://dl.fbaipublicfiles.com/segment_anything/sam_vit_h_4b8939.pth
+
+# 单张图片输入
+python detector_sam_demo.py ../images/cat_remote.jpg configs/Detic_LI21k_CLIP_SwinB_896b32_4x_ft4x_max-size.py ../models/detic_centernet2_swin-b_fpn_4x_lvis-coco-in21k_20230120-0d301978.pth -t cat --sam-device cpu
+```
+
+会在当前路径生成 `outputs/cat_remote.jpg`，效果如下所示：
+
+<div align=center>
+<img src="https://user-images.githubusercontent.com/17425982/231418323-97b489b1-43df-4065-853e-1e2539679ee3.png"/>
+</div>
+
+我们可以修改 `--text-prompt` 来检测出遥控器，注意不同类别间要用空格和 . 区分开。
+
+```shell
+# 单张图片输入
+python detector_sam_demo.py ../images/cat_remote.jpg configs/Detic_LI21k_CLIP_SwinB_896b32_4x_ft4x_max-size.py ../models/detic_centernet2_swin-b_fpn_4x_lvis-coco-in21k_20230120-0d301978.pth -t "cat . remote" --sam-device cpu
+```
+
+会在当前路径生成 `outputs/cat_remote.jpg`，效果如下所示：
+
+<div align=center>
+<img src="https://user-images.githubusercontent.com/17425982/231419108-bc5ef1ed-cb0b-496a-a19e-9b3b55479426.png"/>
+</div>
+
+你也可以输入文件夹进行推理，如下所示：
+
+```shell
+# 文件夹输入
+python detector_sam_demo.py ../images configs/Detic_LI21k_CLIP_SwinB_896b32_4x_ft4x_max-size.py ../models/detic_centernet2_swin-b_fpn_4x_lvis-coco-in21k_20230120-0d301978.pth -t "cat . remote" --sam-device cpu
+```
+
+会在当前路径生成 `outputs` 文件夹里面存放了两种图片。
+
+如果你的 GPU 显存只能支持一个模型运行，可以指定 `--cpu-off-load` 来设置每次只将一个模型放置到 GPU 上
+
+```shell
+# 文件夹输入
+python detector_sam_demo.py ../images configs/Detic_LI21k_CLIP_SwinB_896b32_4x_ft4x_max-size.py ../models/detic_centernet2_swin-b_fpn_4x_lvis-coco-in21k_20230120-0d301978.pth -t "cat . remote" --cpu-off-load
+```
+
+目前也支持 CPU 推理，你可以设置 `--det-device cpu --sam-device cpu`。
+
+由于 Detic 算法实际上包括了 mask 结果，因此我们增加了额外参数 `--use-detic-mask`，当指定该参数时候表示仅仅运行 Detic 而不运行 sam。
+
+```shell
+# 文件夹输入
+python detector_sam_demo.py ../images configs/Detic_LI21k_CLIP_SwinB_896b32_4x_ft4x_max-size.py ../models/detic_centernet2_swin-b_fpn_4x_lvis-coco-in21k_20230120-0d301978.pth -t "cat . remote" --det-device cpu --use-detic-mask
+```
+
+如果你只想可视化检测结果，则可以指定 `--only-det` 则也不会运行 sam 模型。
+
+```shell
+# 单张图片输入
+python detector_sam_demo.py ../images/cat_remote.jpg configs/Detic_LI21k_CLIP_SwinB_896b32_4x_ft4x_max-size.py ../models/detic_centernet2_swin-b_fpn_4x_lvis-coco-in21k_20230120-0d301978.pth -t "cat" --only-det
+```
+
+会在当前路径生成 `outputs/cat_remote.jpg`，效果如下所示：
+
+<div align=center>
+<img src="https://user-images.githubusercontent.com/17425982/231426607-3b5ed4db-5077-463a-9462-f86b955a1f23.png"/>
+</div>
+
+
+### 2 MMDet 模型 + SAM
+
+其表示 MMDet 中的检测模型串联 SAM 从而实现实例分割任务，目前支持所有 MMDet 中已经支持的检测算法。
 
 #### 依赖安装
 
@@ -74,22 +158,18 @@ cd mmdetection; pip install -e .; cd ..
 
 #### 模型推理演示
 
+其用法和前面的 Detic 一样，只是不需要设置 `--text-prompt`, 下面仅仅列出典型用法
+
 1 `Faster R-CNN` 模型
 
 ```shell
 cd mmsam/mmdet_sam
 
+mkdir ../models
+wget -P ../models/ https://download.openmmlab.com/mmdetection/v2.0/faster_rcnn/faster_rcnn_r50_fpn_2x_coco/faster_rcnn_r50_fpn_2x_coco_bbox_mAP-0.384_20200504_210434-a5d8aa15.pth 
+
 # 单张图片评估
-python detector_sam_demo.py ../images/cat_remote.jpg mmdetection/configs/faster_rcnn/faster-rcnn_r50_fpn_2x_coco.py https://download.openmmlab.com/mmdetection/v2.0/faster_rcnn/faster_rcnn_r50_fpn_2x_coco/faster_rcnn_r50_fpn_2x_coco_bbox_mAP-0.384_20200504_210434-a5d8aa15.pth
-
-# 如果 GPU 显存不够，可以采用 CPU 推理
-python detector_sam_demo.py ../images/cat_remote.jpg mmdetection/configs/faster_rcnn/faster-rcnn_r50_fpn_2x_coco.py https://download.openmmlab.com/mmdetection/v2.0/faster_rcnn/faster_rcnn_r50_fpn_2x_coco/faster_rcnn_r50_fpn_2x_coco_bbox_mAP-0.384_20200504_210434-a5d8aa15.pth  --sam-device cpu
-
-# 文件夹推理
-python detector_sam_demo.py ../images mmdetection/configs/faster_rcnn/faster-rcnn_r50_fpn_2x_coco.py https://download.openmmlab.com/mmdetection/v2.0/faster_rcnn/faster_rcnn_r50_fpn_2x_coco/faster_rcnn_r50_fpn_2x_coco_bbox_mAP-0.384_20200504_210434-a5d8aa15.pth  --sam-device cpu
-
-# 如果你的 GPU 每次只能支持一个模型的推理，则可以开启 --cpu-off-load
-python detector_sam_demo.py ../images mmdetection/configs/faster_rcnn/faster-rcnn_r50_fpn_2x_coco.py https://download.openmmlab.com/mmdetection/v2.0/faster_rcnn/faster_rcnn_r50_fpn_2x_coco/faster_rcnn_r50_fpn_2x_coco_bbox_mAP-0.384_20200504_210434-a5d8aa15.pth  --cpu-off-load
+python detector_sam_demo.py ../images/cat_remote.jpg ../mmdetection/configs/faster_rcnn/faster-rcnn_r50_fpn_2x_coco.py ../models/faster_rcnn_r50_fpn_2x_coco_bbox_mAP-0.384_20200504_210434-a5d8aa15.pth --sam-device cpu
 ```
 
 2 `DINO` 模型
@@ -97,38 +177,28 @@ python detector_sam_demo.py ../images mmdetection/configs/faster_rcnn/faster-rcn
 ```shell
 cd mmsam/mmdet_sam
 
-python detector_sam_demo.py ../images/cat_remote.jpg mmdetection/configs/dino/dino-5scale_swin-l_8xb2-12e_coco.py https://download.openmmlab.com/mmdetection/v3.0/dino/dino-5scale_swin-l_8xb2-12e_coco/dino-5scale_swin-l_8xb2-12e_coco_20230228_072924-a654145f.pth  --sam-device cpu
+mkdir ../models
+wget -P ../models/ https://download.openmmlab.com/mmdetection/v3.0/dino/dino-5scale_swin-l_8xb2-12e_coco/dino-5scale_swin-l_8xb2-12e_coco_20230228_072924-a654145f.pth
+
+python detector_sam_demo.py ../images/cat_remote.jpg ../mmdetection/configs/dino/dino-5scale_swin-l_8xb2-12e_coco.py dino-5scale_swin-l_8xb2-12e_coco_20230228_072924-a654145f.pth  --sam-device cpu
 ```
 
-#### 分布式评估演示
+### 3 Grounding 模型 + SAM
 
-对于 `coco_style_eval.py` 脚本，你可以采用分布式或者非分布式方式进行推理和评估。以 `Faster R-CNN` 为例
-
-```shell
-cd mmsam/mmdet_sam
-
-python coco_style_eval.py ${DATA_ROOT} mmdetection/configs/faster_rcnn/faster-rcnn_r50_fpn_2x_coco.py https://download.openmmlab.com/mmdetection/v2.0/faster_rcnn/faster_rcnn_r50_fpn_2x_coco/faster_rcnn_r50_fpn_2x_coco_bbox_mAP-0.384_20200504_210434-a5d8aa15.pth
-```
-
-### 2 Open-Vocabulary + SAM
+其表示引入 Grounding 目标检测模型串联 SAM 从而实现实例分割任务，目前支持 Grounding DINO 和 GLIP。
 
 #### 依赖安装
 
-#### 功能演示
-
-### 2 Zero-shot + SAM
-
-#### 依赖安装
-
-1. Grounding DINO
+如果是 Grounding DINO 则安装如下依赖即可
 
 ```shell
 cd mmsam
 pip install git+https://github.com/facebookresearch/segment-anything.git
-pip install git+https://github.com/IDEA-Research/GroundingDINO.git
+pip install git+https://github.com/IDEA-Research/GroundingDINO.git # 需要编译 CUDA OP，请确保你的 PyTorch 版本、GCC 版本和 NVCC 编译版本兼容
 ```
 
-2. GLIP
+如果是 GLIP 则安装如下依赖即可
+
 ```shell
 cd mmsam
 pip install git+https://github.com/facebookresearch/segment-anything.git
@@ -136,33 +206,43 @@ pip install git+https://github.com/microsoft/GLIP.git
 pip install einops shapely timm yacs tensorboardX ftfy prettytable pymongo transformers nltk
 ```
 
-#### 模型推理演示
+#### 功能演示
 
-使用方式和前面完全相同。只不过其需要额外输入 `--text-prompt`
+使用方式和 Detic 完全相同，下面仅演示部分功能。
 
 ```shell
-cd mmsam/mmdet_sam
+cd mmdet_sam
 
-# Grounding DINO
-python detector_sam_demo.py ../images ../GroundingDINO/groundingdino/config/GroundingDINO_SwinT_OGC.py ../models/groundingdino_swint_ogc.pth -t cat --sam-device cpu
+mkdir ../models
+wget -P ../models/ https://github.com/IDEA-Research/GroundingDINO/releases/download/v0.1.0-alpha/groundingdino_swint_ogc.pth
 
-python detector_sam_demo.py ../images/cat_remote.jpg ../GroundingDINO/groundingdino/config/GroundingDINO_SwinT_OGC.py ../models/groundingdino_swint_ogc.pth -t "cat . remote" --sam-device cpu
-
-python coco_style_eval.py {DATA_ROOT} ../GroundingDINO/groundingdino/config/GroundingDINO_SwinT_OGC.py ../models/groundingdino_swint_ogc.pth -t coco_cls_name.txt --sam-device cpu
-
-bash ./dist_coco_style_eval.sh 8 {DATA_ROOT} ../GroundingDINO/groundingdino/config/GroundingDINO_SwinT_OGC.py ../models/groundingdino_swint_ogc.pth -t coco_cls_name.txt
-
-# GLIP
-python detector_sam_demo.py ../images ../GLIP/configs/pretrain/glip_A_Swin_T_O365.yaml ../models/glip_a_tiny_o365.pth -t cat --sam-device cpu
-
-python detector_sam_demo.py ../images/cat_remote.jpg ../GLIP/configs/pretrain/glip_A_Swin_T_O365.yaml ../models/glip_a_tiny_o365.pth -t "cat . remote" --sam-device cpu
-
-python coco_style_eval.py {DATA_ROOT} ../GLIP/configs/pretrain/glip_A_Swin_T_O365.yaml ../models/glip_a_tiny_o365.pth -t coco_cls_name.txt --sam-device cpu
-
-bash ./dist_coco_style_eval.sh 8 {DATA_ROOT} ../GLIP/configs/pretrain/glip_A_Swin_T_O365.yaml ../models/glip_a_tiny_o365.pth -t coco_cls_name.txt
+# 单张图片输入
+# python detector_sam_demo.py ../images/cat_remote.jpg configs/GroundingDINO_SwinT_OGC.py ../models/groundingdino_swint_ogc.pth -t cat --sam-device cpu
+python detector_sam_demo.py ../images/cat_remote.jpg configs/GroundingDINO_SwinT_OGC.py ../models/groundingdino_swint_ogc.pth -t "cat . remote" --sam-device cpu
 ```
 
+会在当前路径生成 `outputs/cat_remote.jpg`，效果如下所示：
+
+<div align=center>
+<img src="https://user-images.githubusercontent.com/17425982/231431590-1c583de0-0f3a-410e-aded-6c5257540632.png"/>
+</div>
+
+
+```shell
+cd mmdet_sam
+
+mkdir ../models
+wget -P ../models/ https://github.com/IDEA-Research/GroundingDINO/releases/download/v0.1.0-alpha/groundingdino_swint_ogc.pth
+
+# 单张图片输入
+# python detector_sam_demo.py ../images/cat_remote.jpg configs/GroundingDINO_SwinT_OGC.py ../models/groundingdino_swint_ogc.pth -t cat --sam-device cpu
+python detector_sam_demo.py ../images/cat_remote.jpg configs/GroundingDINO_SwinT_OGC.py ../models/groundingdino_swint_ogc.pth -t "cat . remote" --sam-device cpu
+```
+
+
 #### 分布式评估演示
+
+对于 `coco_style_eval.py` 脚本，你可以采用分布式或者非分布式方式进行推理和评估。
 
 ```shell
 cd mmsam/mmdet_sam
