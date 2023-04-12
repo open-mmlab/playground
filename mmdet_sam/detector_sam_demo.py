@@ -211,7 +211,6 @@ def run_detector(model, image_path, args):
         pred_dict['scores'] = scores
         pred_dict['boxes'] = top_predictions.bbox
     else:
-
         result = inference_detector(model, image_path)
         pred_instances = result.pred_instances[
             result.pred_instances.scores > args.box_thr]
