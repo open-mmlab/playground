@@ -38,9 +38,11 @@ pip install mmengine
 
 ## 功能说明
 
-本工程中包括了引入了诸多优秀的开源算法，为了减少用户安装环境负担，如果不不想使用某部分功能，则可以不安装对应的依赖。下面分成 3 个部分说明。
+本工程中包括了引入了诸多优秀的开源算法，为了减少用户安装环境负担，如果你不想使用某部分功能，则可以不安装对应的依赖。
 
 ### 1 Grounding DINO + MMPose
+
+使用 Grounding DINO 检测目标，然后通过 MMPose 对所检测的目标进行姿态识别。可以利用 Grounding DINO 的 text prompt 来选择需要检测的物体。
 
 #### 依赖安装
 
@@ -60,11 +62,24 @@ cd mmdetection
 pip install -e .
 ```
 
-#### 模型推理演示
+#### 功能演示
 
 ```shell
 cd mmsam/mmpose_open_detection
 
-python grounding_demo.py ../images ../GroundingDINO/groundingdino/config/GroundingDINO_SwinT_OGC.py ../models/groundingdino_swint_ogc.pth -t human mmpose/projects/rtmpose/rtmpose/body_2d_keypoint/rtmpose-m_8xb256-420e_coco-256x192.py ../models/rtmpose-m_simcc-aic-coco_pt-aic-coco_420e-256x192-63eb25f7_20230126.pth
+# 下载权重
+mkdir ../models
+wget -P ../models/ https://huggingface.co/ShilongLiu/GroundingDINO/resolve/main/groundingdino_swint_ogc.pth
+wget -P ../models/ https://download.openmmlab.com/mmpose/v1/projects/rtmpose/rtmpose-m_simcc-aic-coco_pt-aic-coco_420e-256x192-63eb25f7_20230126.pth
 
+# 单张图片输入
+# 可以从https://www.pexels.com/photo/group-of-people-near-wall-2422290/下载示例图片
+# 假设mmpose目录与mmsam目录同级
+
+python grounding_demo.py ../images/pexels-jopwell-2422290.jpg configs/GroundingDINO_SwinT_OGC.py ../models/groundingdino_swint_ogc.pth ../../mmpose/projects/rtmpose/rtmpose/body_2d_keypoint/rtmpose-m_8xb256-420e_coco-256x192.py ../models/rtmpose-m_simcc-aic-coco_pt-aic-coco_420e-256x192-63eb25f7_20230126.pth -t human
 ```
+
+会在当前路径生成 `outputs/pexels-jopwell-2422290.jpg`，效果如下所示：
+
+
+可以通过text-prompt修改需要检测的物体，例如改成检测猫。但需要提供可以进行猫姿态识别的模型才能获得正确的姿态识别结果。MMPose目前支持多种动物以及人体，人脸，手的姿态识别任务，只需替换相应模型的配置文件及权重文件即可。
