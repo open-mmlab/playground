@@ -222,7 +222,7 @@ def run_detector(model, image_path, args):
     if args.cpu_off_load:
         if 'GLIP' in args.det_config:
             model.model = model.model.to('cpu')
-            model.device = args.det_device
+            model.device = 'cpu'
         else:
             model = model.to('cpu')
     return model, pred_dict
@@ -287,7 +287,7 @@ def main():
     cpu_off_load = args.cpu_off_load
     out_dir = args.out_dir
 
-    if 'GroundingDINO' in args.det_config:
+    if 'GroundingDINO' in args.det_config or 'GLIP' in args.det_config:
         assert args.text_prompt
 
     det_model = build_detecter(args)
