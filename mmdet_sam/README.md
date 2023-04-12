@@ -205,8 +205,9 @@ pip install git+https://github.com/IDEA-Research/GroundingDINO.git # 需要编�
 ```shell
 cd mmsam
 pip install git+https://github.com/facebookresearch/segment-anything.git
-pip install git+https://github.com/microsoft/GLIP.git # 需要编译 CUDA OP，请确保你的 PyTorch 版本、GCC 版本和 NVCC 编译版本兼容，暂时不支持 PyTorch 1.11+ 版本
-pip install einops shapely timm yacs tensorboardX ftfy prettytable pymongo transformers nltk inflect
+pip install einops shapely timm yacs tensorboardX ftfy prettytable pymongo transformers nltk inflect scipy pycocotools opencv-python matplotlib
+git clone https://github.com/microsoft/GLIP.git
+cd GLIP; python setup.py build develop --user; cd .. # 需要编译 CUDA OP，请确保你的 PyTorch 版本、GCC 版本和 NVCC 编译版本兼容，暂时不支持 PyTorch 1.11+ 版本
 ```
 
 #### 功能演示
