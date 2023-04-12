@@ -44,7 +44,6 @@ import sys
 sys.path.append('../')
 from core.utils import get_file_list
 
-
 def parse_args():
     parser = argparse.ArgumentParser(
         'Detect-Segment-Anything Demo', add_help=True)
@@ -75,7 +74,7 @@ def parse_args():
     parser.add_argument(
         '--det-device',
         '-d',
-        default='cuda:0',
+        default='cpu',
         help='Device used for inference')
     parser.add_argument(
         '--sam-device',
@@ -208,6 +207,18 @@ def run_detector(model, image_path, args):
         pred_dict['scores'] = scores
         pred_dict['boxes'] = top_predictions.bbox
     else:
+        if args.text_prompt is not None:
+            from projects.Detic.detic.utils import (get_text_embeddings,
+                                reset_cls_layer_weight)
+            text_prompt = args.text_prompt
+            text_prompt = text_prompt.lower()
+            text_prompt = text_prompt.strip()
+            if text_prompt.endswith('.'):
+                text_prompt = text_prompt[:-1]
+            custom_vocabulary = text_prompt.split('.')
+            model.dataset_meta['classes'] = custom_vocabulary
+            embedding = get_text_embeddings(custom_vocabulary=custom_vocabulary)
+            reset_cls_layer_weight(model, embedding)
         result = inference_detector(model, image_path)
         pred_instances = result.pred_instances[
             result.pred_instances.scores > args.box_thr]
