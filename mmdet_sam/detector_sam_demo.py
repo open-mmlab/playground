@@ -4,9 +4,9 @@ import argparse
 import os
 
 import cv2
-import torch
-import numpy as np
 import matplotlib.pyplot as plt
+import numpy as np
+import torch
 import torch.nn.functional as F
 
 # Grounding DINO
@@ -14,21 +14,23 @@ try:
     import groundingdino
     import groundingdino.datasets.transforms as T
     from groundingdino.models import build_model
-    from groundingdino.util.utils import clean_state_dict, get_phrases_from_posmap
+    from groundingdino.util.utils import (clean_state_dict,
+                                          get_phrases_from_posmap)
     grounding_dino_transform = T.Compose([
-            T.RandomResize([800], max_size=1333),
-            T.ToTensor(),
-            T.Normalize([0.485, 0.456, 0.406], [0.229, 0.224, 0.225]),
+        T.RandomResize([800], max_size=1333),
+        T.ToTensor(),
+        T.Normalize([0.485, 0.456, 0.406], [0.229, 0.224, 0.225]),
     ])
 except ImportError:
     groundingdino = None
+
 # GLIP
 try:
     import maskrcnn_benchmark
     from maskrcnn_benchmark.engine.predictor_glip import GLIPDemo
-    from maskrcnn_benchmark.config import cfg
 except ImportError:
     maskrcnn_benchmark = None
+
 # mmdet
 try:
     import mmdet
@@ -36,15 +38,16 @@ try:
 except ImportError:
     mmdet = None
 
+import sys
+
 from mmengine.config import Config
 from mmengine.utils import ProgressBar
 from PIL import Image
 # segment anything
 from segment_anything import SamPredictor, sam_model_registry
 
-import sys
 sys.path.append('../')
-from core.utils import get_file_list
+from core.utils import get_file_list  # noqa
 
 
 def parse_args():
@@ -91,7 +94,6 @@ def parse_args():
     parser.add_argument('--text-prompt', '-t', type=str, help='text prompt')
     parser.add_argument(
         '--text-thr', type=float, default=0.25, help='text threshold')
-
     return parser.parse_args()
 
 
@@ -105,17 +107,20 @@ def __build_grounding_dino_model(args):
 
 
 def __build_glip_model(args):
+    assert maskrcnn_benchmark is not None
+    from maskrcnn_benchmark.config import cfg
     cfg.merge_from_file(args.det_config)
     cfg.merge_from_list(['MODEL.WEIGHT', args.det_weight])
     cfg.merge_from_list(['MODEL.DEVICE', 'cpu'])
     model = GLIPDemo(
         cfg,
         min_image_size=800,
-        confidence_threshold=0.7,
+        confidence_threshold=args.box_thr,
         show_mask_heatmaps=False)
     return model
 
-def __reset_cls_layer_weight(model, weight, device='cpu'):
+
+def __reset_cls_layer_weight(model, weight):
     if type(weight) == str:
         print(f'Resetting cls_layer_weight from file: {weight}')
         zs_weight = torch.tensor(
@@ -139,7 +144,7 @@ def __reset_cls_layer_weight(model, weight, device='cpu'):
 def build_detecter(args):
     if 'GroundingDINO' in args.det_config:
         detecter = __build_grounding_dino_model(args)
-    elif 'GLIP' in args.det_config:
+    elif 'glip' in args.det_config:
         detecter = __build_glip_model(args)
     else:
         config = Config.fromfile(args.det_config)
@@ -156,7 +161,7 @@ def run_detector(model, image_path, args):
     pred_dict = {}
 
     if args.cpu_off_load:
-        if 'GLIP' in args.det_config:
+        if 'glip' in args.det_config:
             model.model = model.model.to(args.det_device)
             model.device = args.det_device
         else:
@@ -210,7 +215,7 @@ def run_detector(model, image_path, args):
             boxes_filt[i][:2] -= boxes_filt[i][2:] / 2
             boxes_filt[i][2:] += boxes_filt[i][:2]
         pred_dict['boxes'] = boxes_filt
-    elif 'GLIP' in args.det_config:
+    elif 'glip' in args.det_config:
         image = cv2.imread(image_path)
         text_prompt = args.text_prompt
         text_prompt = text_prompt.lower()
@@ -218,8 +223,8 @@ def run_detector(model, image_path, args):
         if not text_prompt.endswith('.'):
             text_prompt = text_prompt + '.'
         top_predictions = model.inference(image, text_prompt)
-        scores = top_predictions.get_field("scores").tolist()
-        labels = top_predictions.get_field("labels").tolist()
+        scores = top_predictions.get_field('scores').tolist()
+        labels = top_predictions.get_field('labels').tolist()
         new_labels = []
         if model.entities and model.plus:
             for i in labels:
@@ -247,7 +252,7 @@ def run_detector(model, image_path, args):
             pred_dict['masks'] = pred_instances.masks
 
     if args.cpu_off_load:
-        if 'GLIP' in args.det_config:
+        if 'glip' in args.det_config:
             model.model = model.model.to('cpu')
             model.device = 'cpu'
         else:
@@ -283,7 +288,8 @@ def draw_and_save(image,
             if isinstance(score, str):
                 plt.gca().text(x0, y0, f'{label}|{score}', color='white')
             else:
-                plt.gca().text(x0, y0, f'{label}|{round(score,2)}', color='white')
+                plt.gca().text(
+                    x0, y0, f'{label}|{round(score,2)}', color='white')
 
     if with_mask:
         masks = pred_dict['masks'].cpu().numpy()
@@ -302,7 +308,7 @@ def draw_and_save(image,
 
 
 def main():
-    if groundingdino == None and maskrcnn_benchmark == None and mmdet == None:
+    if groundingdino is None and maskrcnn_benchmark is None and mmdet is None:
         raise RuntimeError('detection model is not installed,\
                  please install it follow README')
 
@@ -317,12 +323,13 @@ def main():
     cpu_off_load = args.cpu_off_load
     out_dir = args.out_dir
 
-    if 'GroundingDINO' in args.det_config or 'GLIP' in args.det_config or 'Detic' in args.det_config:
+    if 'GroundingDINO' in args.det_config or 'glip' in args.det_config \
+            or 'Detic' in args.det_config:
         assert args.text_prompt
 
     det_model = build_detecter(args)
     if not cpu_off_load:
-        if 'GLIP' in args.det_config:
+        if 'glip' in args.det_config:
             det_model.model = det_model.model.to(args.det_device)
             det_model.device = args.det_device
         else:
@@ -345,7 +352,9 @@ def main():
         if text_prompt.endswith('.'):
             text_prompt = text_prompt[:-1]
         custom_vocabulary = text_prompt.split('.')
-        det_model.dataset_meta['classes'] = [c.strip() for c in custom_vocabulary]
+        det_model.dataset_meta['classes'] = [
+            c.strip() for c in custom_vocabulary
+        ]
         embedding = get_text_embeddings(custom_vocabulary=custom_vocabulary)
         __reset_cls_layer_weight(det_model, embedding)
 

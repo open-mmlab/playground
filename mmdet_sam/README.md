@@ -35,6 +35,7 @@
 1. `detector_sam_demo.py` 用于单张图片或者文件夹的检测和实例分割模型推理
 2. `coco_style_eval.py` 用于对输入的 COCO JSON 进行检测和实例分割模型推理、评估和导出
 3. `browse_coco_json.py` 用于可视化导出的 JSON 文件
+4. `images2coco.py` 用于用户自定义且不包括标注的文件夹列表生成 COCO 格式的 JSON，该 JSON 可以作为 `coco_style_eval.py` 输入
 
 本工程参考了 [Grounded-Segment-Anything](https://github.com/IDEA-Research/Grounded-Segment-Anything)，非常感谢！
 
@@ -76,7 +77,7 @@ cd mmdet_sam
 
 # 下载权重
 mkdir ../models
-wget -P ../models/ https://download.openmmlab.com/mmdetection/v3.0/detic/detic_centernet2_swin-b_fpn_4x_lvis-coco-in21k/detic_centernet2_swin-b_fpn_4x_lvis-coco-in21k_20230120-0d301978.pth 
+wget -P ../models/ https://download.openmmlab.com/mmdetection/v3.0/detic/detic_centernet2_swin-b_fpn_4x_lvis-coco-in21k/detic_centernet2_swin-b_fpn_4x_lvis-coco-in21k_20230120-0d301978.pth
 wget -P ../models/ https://dl.fbaipublicfiles.com/segment_anything/sam_vit_h_4b8939.pth
 
 # 单张图片输入
@@ -140,7 +141,6 @@ python detector_sam_demo.py ../images/cat_remote.jpg configs/Detic_LI21k_CLIP_Sw
 <img src="https://user-images.githubusercontent.com/17425982/231426607-3b5ed4db-5077-463a-9462-f86b955a1f23.png"/>
 </div>
 
-
 ### 2 MMDet 模型 + SAM
 
 其表示 MMDet 中的检测模型串联 SAM 从而实现实例分割任务，目前支持所有 MMDet 中已经支持的检测算法。
@@ -166,7 +166,7 @@ cd mmdetection; pip install -e .; cd ..
 cd mmsam/mmdet_sam
 
 mkdir ../models
-wget -P ../models/ https://download.openmmlab.com/mmdetection/v2.0/faster_rcnn/faster_rcnn_r50_fpn_2x_coco/faster_rcnn_r50_fpn_2x_coco_bbox_mAP-0.384_20200504_210434-a5d8aa15.pth 
+wget -P ../models/ https://download.openmmlab.com/mmdetection/v2.0/faster_rcnn/faster_rcnn_r50_fpn_2x_coco/faster_rcnn_r50_fpn_2x_coco_bbox_mAP-0.384_20200504_210434-a5d8aa15.pth
 
 # 单张图片评估
 python detector_sam_demo.py ../images/cat_remote.jpg ../mmdetection/configs/faster_rcnn/faster-rcnn_r50_fpn_2x_coco.py ../models/faster_rcnn_r50_fpn_2x_coco_bbox_mAP-0.384_20200504_210434-a5d8aa15.pth --sam-device cpu
@@ -202,8 +202,8 @@ pip install git+https://github.com/IDEA-Research/GroundingDINO.git # 需要编�
 ```shell
 cd mmsam
 pip install git+https://github.com/facebookresearch/segment-anything.git
-pip install git+https://github.com/microsoft/GLIP.git
-pip install einops shapely timm yacs tensorboardX ftfy prettytable pymongo transformers nltk
+pip install git+https://github.com/microsoft/GLIP.git # 需要编译 CUDA OP，请确保你的 PyTorch 版本、GCC 版本和 NVCC 编译版本兼容，暂时不支持 PyTorch 1.11+ 版本
+pip install einops shapely timm yacs tensorboardX ftfy prettytable pymongo transformers nltk inflect
 ```
 
 #### 功能演示
@@ -227,29 +227,41 @@ python detector_sam_demo.py ../images/cat_remote.jpg configs/GroundingDINO_SwinT
 <img src="https://user-images.githubusercontent.com/17425982/231431590-1c583de0-0f3a-410e-aded-6c5257540632.png"/>
 </div>
 
-
 ```shell
 cd mmdet_sam
 
 mkdir ../models
-wget -P ../models/ https://github.com/IDEA-Research/GroundingDINO/releases/download/v0.1.0-alpha/groundingdino_swint_ogc.pth
+wget -P ../models/ https://penzhanwu2bbs.blob.core.windows.net/data/GLIPv1_Open/models/glip_a_tiny_o365.pth
 
 # 单张图片输入
-# python detector_sam_demo.py ../images/cat_remote.jpg configs/GroundingDINO_SwinT_OGC.py ../models/groundingdino_swint_ogc.pth -t cat --sam-device cpu
-python detector_sam_demo.py ../images/cat_remote.jpg configs/GroundingDINO_SwinT_OGC.py ../models/groundingdino_swint_ogc.pth -t "cat . remote" --sam-device cpu
+# python detector_sam_demo.py ../images/cat_remote configs/glip_A_Swin_T_O365.yaml ../models/glip_a_tiny_o365.pth -t cat --sam-device cpu
+python detector_sam_demo.py ../images/cat_remote.jpg configs/glip_A_Swin_T_O365.yaml ../models/glip_a_tiny_o365.pth -t "cat . remote" --sam-device cpu
 ```
 
+### 4 COCO JSON 评估
 
-#### 分布式评估演示
+对于 `coco_style_eval.py` 脚本，你可以采用分布式或者非分布式方式进行推理和评估，默认参数是对 COCO Val2017 数据集进行评估，COCO 文件组织格式如下所示：
 
-对于 `coco_style_eval.py` 脚本，你可以采用分布式或者非分布式方式进行推理和评估。
+```text
+├── ${DATA_ROOT}
+│   ├── coco
+│   │   ├── annotations
+│   │      ├──── instances_val2017.json
+│   │   ├── val2017
+```
+
+以 Detic 算法为例，其余算法用法相同。
 
 ```shell
-cd mmsam/mmdet_sam
+cd mmdet_sam
 
 # 非分布式评估
-python coco_style_eval.py ${DATA_ROOT} ../GroundingDINO/groundingdino/config/GroundingDINO_SwinT_OGC.py ../models/groundingdino_swint_ogc.pth -t coco_cls_name.txt --sam-device cpu
+python coco_style_eval.py ${DATA_ROOT} configs/Detic_LI21k_CLIP_SwinB_896b32_4x_ft4x_max-size.py ../models/detic_centernet2_swin-b_fpn_4x_lvis-coco-in21k_20230120-0d301978.pth -t coco_cls_name.txt
 
-# 分布式单机8卡评估
-bash ./dist_coco_style_eval.sh 8 ${DATA_ROOT} ../GroundingDINO/groundingdino/config/GroundingDINO_SwinT_OGC.py ../models/groundingdino_swint_ogc.pth -t coco_cls_name.txt
+# 分布式单机 8 卡评估
+bash ./dist_coco_style_eval.sh 8 ${DATA_ROOT} configs/Detic_LI21k_CLIP_SwinB_896b32_4x_ft4x_max-size.py ../models/detic_centernet2_swin-b_fpn_4x_lvis-coco-in21k_20230120-0d301978.pth -t coco_cls_name.txt
 ```
+
+输出如下所示：
+
+你可以降低 `--box-thr` 从而提升检测性能
