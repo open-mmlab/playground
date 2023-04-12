@@ -301,7 +301,7 @@ def main():
         build_sam = sam_model_registry[args.sam_type]
         sam_model = SamPredictor(build_sam(checkpoint=args.sam_weight))
         if not cpu_off_load:
-            sam_model.mode = sam_model.model.to(args.sam_device)
+            sam_model.model = sam_model.model.to(args.sam_device)
 
     coco = COCO(os.path.join(args.data_root, args.ann_file))
     coco_dataset = SimpleDataset(coco.getImgIds())
