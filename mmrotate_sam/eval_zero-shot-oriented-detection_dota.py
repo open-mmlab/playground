@@ -152,7 +152,6 @@ def mask2rbox(mask):
 def get_instancedata_resultlist(r_bboxes, labels, masks, scores, result_with_mask=False):
     results = InstanceData()
     results.bboxes = RotatedBoxes(r_bboxes)
-    # results.scores = qualities
     results.scores = scores
     results.labels = labels
     if result_with_mask:
