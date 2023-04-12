@@ -1,9 +1,10 @@
 import copy
 import logging
 from functools import partial
-from typing import Dict, Optional, Union, List
+from typing import Dict, Optional
 
-from mmengine.runner import Runner
+from torch.utils.data import DataLoader
+
 from mmengine.evaluator import Evaluator
 from mmengine.dataset import worker_init_fn
 from mmengine.dist import get_rank
@@ -11,12 +12,6 @@ from mmengine.logging import print_log
 from mmengine.registry import DATA_SAMPLERS, FUNCTIONS, EVALUATOR, VISUALIZERS
 from mmengine.utils import digit_version
 from mmengine.utils.dl_utils import TORCH_VERSION
-
-import transforms
-import visualizer
-
-
-from torch.utils.data import DataLoader
 
 from mmrotate.registry import DATASETS
 
@@ -27,21 +22,13 @@ def build_data_loader(data_name=None):
     elif data_name == 'test_without_hbox':
         return MMEngine_build_dataloader(dataloader=naive_test_dataloader)
     else:
-        raise NotImplementedError()
+        raise NotImplementedError('WIP')
 
 
 def build_evaluator(merge_patches=True, format_only=False):
     naive_evaluator.update(dict(
         merge_patches=merge_patches, format_only=format_only))
     return MMEngine_build_evaluator(evaluator=naive_evaluator)
-
-
-def build_visualizer():
-    vis_backends = [dict(type='LocalVisBackend')]
-    visualizer = dict(
-        type='RotLocalVisualizerMaskThenBox', vis_backends=vis_backends,
-        name='sammrotate', save_dir='./rbbox_vis')
-    return VISUALIZERS.build(visualizer)
 
 
 # dataset settings
@@ -119,43 +106,9 @@ naive_evaluator = dict(
     type='DOTAMetric', metric='mAP', outfile_prefix='./work_dirs/dota/Task1')
 
 
-def MMEngine_build_dataloader(dataloader: Union[DataLoader, Dict],
+def MMEngine_build_dataloader(dataloader: Dict,
                               seed: Optional[int] = None,
                               diff_rank_seed: bool = False) -> DataLoader:
-    """Build dataloader.
-
-    The method builds three components:
-
-    - Dataset
-    - Sampler
-    - Dataloader
-
-    An example of ``dataloader``::
-
-        dataloader = dict(
-            dataset=dict(type='ToyDataset'),
-            sampler=dict(type='DefaultSampler', shuffle=True),
-            batch_size=1,
-            num_workers=9
-        )
-
-    Args:
-        dataloader (DataLoader or dict): A Dataloader object or a dict to
-            build Dataloader object. If ``dataloader`` is a Dataloader
-            object, just returns itself.
-        seed (int, optional): Random seed. Defaults to None.
-        diff_rank_seed (bool): Whether or not set different seeds to
-            different ranks. If True, the seed passed to sampler is set
-            to None, in order to synchronize the seeds used in samplers
-            across different ranks.
-
-
-    Returns:
-        Dataloader: DataLoader build from ``dataloader_cfg``.
-    """
-    if isinstance(dataloader, DataLoader):
-        return dataloader
-
     dataloader_cfg = copy.deepcopy(dataloader)
 
     # build dataset
@@ -245,51 +198,11 @@ def MMEngine_build_dataloader(dataloader: Union[DataLoader, Dict],
     return data_loader
 
 
-def MMEngine_build_evaluator(evaluator: Union[Dict, List, Evaluator]) -> Evaluator:
-    """Build evaluator.
-
-    Examples of ``evaluator``::
-
-        # evaluator could be a built Evaluator instance
-        evaluator = Evaluator(metrics=[ToyMetric()])
-
-        # evaluator can also be a list of dict
-        evaluator = [
-            dict(type='ToyMetric1'),
-            dict(type='ToyEvaluator2')
-        ]
-
-        # evaluator can also be a list of built metric
-        evaluator = [ToyMetric1(), ToyMetric2()]
-
-        # evaluator can also be a dict with key metrics
-        evaluator = dict(metrics=ToyMetric())
-        # metric is a list
-        evaluator = dict(metrics=[ToyMetric()])
-
-    Args:
-        evaluator (Evaluator or dict or list): An Evaluator object or a
-            config dict or list of config dict used to build an Evaluator.
-
-    Returns:
-        Evaluator: Evaluator build from ``evaluator``.
-    """
-    if isinstance(evaluator, Evaluator):
-        return evaluator
-    elif isinstance(evaluator, dict):
-        # if `metrics` in dict keys, it means to build customized evalutor
-        if 'metrics' in evaluator:
-            evaluator.setdefault('type', 'Evaluator')
-            return EVALUATOR.build(evaluator)
-        # otherwise, default evalutor will be built
-        else:
-            return Evaluator(evaluator)  # type: ignore
-    elif isinstance(evaluator, list):
-        # use the default `Evaluator`
-        return Evaluator(evaluator)  # type: ignore
+def MMEngine_build_evaluator(evaluator: Dict) -> Evaluator:
+    # if `metrics` in dict keys, it means to build customized evalutor
+    if 'metrics' in evaluator:
+        evaluator.setdefault('type', 'Evaluator')
+        return EVALUATOR.build(evaluator)
+    # otherwise, default evalutor will be built
     else:
-        raise TypeError(
-            'evaluator should be one of dict, list of dict, and Evaluator'
-            f', but got {evaluator}')
-
-
+        return Evaluator(evaluator)  # type: ignore
