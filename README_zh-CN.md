@@ -4,11 +4,14 @@
 
 [English](README.md) | 简体中文
 
-本工程用于收集 OpenMMLab 相关的有趣应用并且将不断更新。我们非常欢迎社区用户能参与进这些项目中来。目前包括如下相关应用
+本工程用于收集 OpenMMLab 相关的有趣应用并且将不断更新。我们非常欢迎社区用户能参与进这些项目中来，任何和 OpenMMLab 相关的有趣应用或者 Demo 都欢迎来贡献。目前包括如下相关应用
 
 - `mmdet_sam` 检测相关模型串联 sam
 - `mmrotate_sam` 旋转目标检测模型串联 sam
-- `mmtracking_grounding` 基于 grounding 检测的目标跟踪
+- `mmtracking_open_detection` 基于开发集检测的目标跟踪
+- `mmpose_open_detection` 基于开发集检测的姿态估计
+
+-- 这里放一个总表
 
 下面详细说明。
 
@@ -16,16 +19,26 @@
 
 提供了和 mmdet 相关的结合 sam 的应用。具体特性包括：
 
-1. 支持 MMDet 模型经典检测模型 (Closed-Set)，典型的如 Faster R-CNN 和 DINO 等串联 SAM 模型进行自动检测和实例分割标注
+1. 支持 MMDet 中包括的所有检测模型 (Closed-Set)，典型的如 Faster R-CNN 和 DINO 等串联 SAM 模型进行自动检测和实例分割标注
 2. 支持 Open-Vocabulary 检测模型，典型的如 Detic 串联 SAM 模型进行自动检测和实例分割标注
 3. 支持 Grounding Object Detection 模型，典型的如 Grounding DINO 和 GLIP 串联 SAM 模型进行自动检测和实例分割标注
 4. 所有模型均支持分布式检测和分割评估和自动 COCO JSON 导出，方便用户对自定义数据进行评估
 
-详情见 [README](mmdet_sam/README.md)
+-- 贴一张图片
+
+详情见 [README](mmdet_sam/README_zh-CN.md)
 
 ## mmrotate_sam
 
-## mmtracking_grounding
+详情见 [README](mmrotate_sam/README_zh-CN.md)
+
+## mmtracking_open_detection
+
+详情见 [README](mmtracking_open_detection/README_zh-CN.md)
+
+## mmpose_open_detection
+
+详情见 [README](mmpose_open_detection/README_zh-CN.md)
 
 ## ❤️ 欢迎加入 OpenMMLab 社区
 
