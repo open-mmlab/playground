@@ -7,15 +7,10 @@ import warnings
 from functools import partial
 
 import cv2
-# Grounding DINO
-import groundingdino.datasets.transforms as T
-import matplotlib.pyplot as plt
 import numpy as np
 import pycocotools.mask as mask_util
 import torch
-from groundingdino.models import build_model
-from groundingdino.util.utils import clean_state_dict, get_phrases_from_posmap
-from mmdet.apis import inference_detector, init_detector
+import torch.nn.functional as F
 from mmengine.config import Config
 from mmengine.dataset import DefaultSampler, worker_init_fn
 from mmengine.dist import (collect_results, get_dist_info, get_rank, init_dist,
@@ -24,9 +19,44 @@ from mmengine.utils import ProgressBar
 from PIL import Image
 from pycocotools.coco import COCO
 from pycocotools.cocoeval import COCOeval
+
+# Grounding DINO
+try:
+    import groundingdino
+    import groundingdino.datasets.transforms as T
+    from groundingdino.models import build_model
+    from groundingdino.util.utils import (clean_state_dict,
+                                          get_phrases_from_posmap)
+    grounding_dino_transform = T.Compose([
+        T.RandomResize([800], max_size=1333),
+        T.ToTensor(),
+        T.Normalize([0.485, 0.456, 0.406], [0.229, 0.224, 0.225]),
+    ])
+except ImportError:
+    groundingdino = None
+
+# GLIP
+try:
+    import maskrcnn_benchmark
+    from maskrcnn_benchmark.engine.predictor_glip import GLIPDemo
+except ImportError:
+    maskrcnn_benchmark = None
+
+# mmdet
+try:
+    import mmdet
+    from mmdet.apis import inference_detector, init_detector
+except ImportError:
+    mmdet = None
+
+import sys
+
 # segment anything
-from segment_anything import SamPredictor, build_sam
+from segment_anything import SamPredictor, sam_model_registry
 from torch.utils.data import DataLoader, Dataset
+
+sys.path.append('../')
+from core.utils import get_file_list  # noqa
 
 
 def parse_args():
@@ -39,6 +69,12 @@ def parse_args():
         '--ann-file', type=str, default='annotations/instances_val2017.json')
     parser.add_argument('--data-prefix', type=str, default='val2017/')
     parser.add_argument('--only-det', action='store_true')
+    parser.add_argument(
+        '--sam-type',
+        type=str,
+        default='vit_h',
+        choices=['vit_h', 'vit_l', 'vit_b'],
+        help='sam type')
     parser.add_argument(
         '--sam-weight',
         type=str,
@@ -58,6 +94,7 @@ def parse_args():
         '--sam-device', '-s', default='cuda', help='Device used for inference')
     parser.add_argument('--cpu-off-load', '-c', action='store_true')
     parser.add_argument('--num-worker', '-n', type=int, default=2)
+    parser.add_argument('--use-detic-mask', '-u', action='store_true')
 
     # GroundingDINO param
     parser.add_argument('--text-prompt', '-t', type=str, help='cls path')
@@ -99,44 +136,76 @@ def __build_grounding_dino_model(args):
     return model
 
 
-grounding_dino_transform = T.Compose([
-    T.RandomResize([800], max_size=1333),
-    T.ToTensor(),
-    T.Normalize([0.485, 0.456, 0.406], [0.229, 0.224, 0.225]),
-])
+def __build_glip_model(args):
+    assert maskrcnn_benchmark is not None
+    from maskrcnn_benchmark.config import cfg
+    cfg.merge_from_file(args.det_config)
+    cfg.merge_from_list(['MODEL.WEIGHT', args.det_weight])
+    cfg.merge_from_list(['MODEL.DEVICE', 'cpu'])
+    model = GLIPDemo(
+        cfg,
+        min_image_size=800,
+        confidence_threshold=args.box_thr,
+        show_mask_heatmaps=False)
+    return model
 
 
-def build_detecter(args):
+def __reset_cls_layer_weight(model, weight):
+    if type(weight) == str:
+        if get_rank() == 0:
+            print(f'Resetting cls_layer_weight from file: {weight}')
+        zs_weight = torch.tensor(
+            np.load(weight),
+            dtype=torch.float32).permute(1, 0).contiguous()  # D x C
+    else:
+        zs_weight = weight
+    zs_weight = torch.cat(
+        [zs_weight, zs_weight.new_zeros(
+            (zs_weight.shape[0], 1))], dim=1)  # D x (C + 1)
+    zs_weight = F.normalize(zs_weight, p=2, dim=0)
+    zs_weight = zs_weight.to(next(model.parameters()).device)
+    num_classes = zs_weight.shape[-1]
+
+    for bbox_head in model.roi_head.bbox_head:
+        bbox_head.num_classes = num_classes
+        del bbox_head.fc_cls.zs_weight
+        bbox_head.fc_cls.zs_weight = zs_weight
+
+
+def build_detector(args):
     if 'GroundingDINO' in args.det_config:
         detecter = __build_grounding_dino_model(args)
+    elif 'glip' in args.det_config:
+        detecter = __build_glip_model(args)
     else:
         config = Config.fromfile(args.det_config)
         if 'init_cfg' in config.model.backbone:
             config.model.backbone.init_cfg = None
+        if not args.use_detic_mask:
+            config.model.roi_head.mask_head = None
         detecter = init_detector(
             config, args.det_weight, device='cpu', cfg_options={})
     return detecter
 
 
-def run_detecter(model, image_path, args):
+def run_detector(model, image_path, args):
     pred_dict = {}
 
     if args.cpu_off_load:
-        model = model.to(args.det_device)
+        if 'glip' in args.det_config:
+            model.model = model.model.to(args.det_device)
+            model.device = args.det_device
+        else:
+            model = model.to(args.det_device)
 
     if 'GroundingDINO' in args.det_config:
         image_pil = Image.open(image_path).convert('RGB')  # load image
         image, _ = grounding_dino_transform(image_pil, None)  # 3, h, w
 
-        text_prompt = args.text_prompt
-        with open(text_prompt) as f:
-            coco_cls_str = f.read()
-        text_prompt = coco_cls_str.replace('\n', ' . ')
-
         if get_rank() == 0:
-            warnings.warn(f'text prompt is {text_prompt}')
+            warnings.warn(f'text prompt is {args.text_prompt}')
 
-        text_prompt = text_prompt.lower()
+        text_prompt = args.text_prompt.lower()
         text_prompt = text_prompt.strip()
         if not text_prompt.endswith('.'):
             text_prompt = text_prompt + '.'
@@ -179,6 +248,28 @@ def run_detecter(model, image_path, args):
             boxes_filt[i][:2] -= boxes_filt[i][2:] / 2
             boxes_filt[i][2:] += boxes_filt[i][:2]
         pred_dict['boxes'] = boxes_filt
+    elif 'glip' in args.det_config:
+        image = cv2.imread(image_path)
+        text_prompt = args.text_prompt
+        text_prompt = text_prompt.lower()
+        text_prompt = text_prompt.strip()
+        if not text_prompt.endswith('.'):
+            text_prompt = text_prompt + '.'
+        top_predictions = model.inference(image, text_prompt)
+        scores = top_predictions.get_field('scores').tolist()
+        labels = top_predictions.get_field('labels').tolist()
+        new_labels = []
+        if model.entities and model.plus:
+            for i in labels:
+                if i <= len(model.entities):
+                    new_labels.append(model.entities[i - model.plus])
+                else:
+                    new_labels.append('object')
+        else:
+            new_labels = ['object' for i in labels]
+        pred_dict['labels'] = new_labels
+        pred_dict['scores'] = scores
+        pred_dict['boxes'] = top_predictions.bbox
     else:
         result = inference_detector(model, image_path)
         pred_instances = result.pred_instances[
@@ -190,9 +281,15 @@ def run_detecter(model, image_path, args):
             model.dataset_meta['classes'][label]
             for label in pred_instances.labels
         ]
+        if args.use_detic_mask:
+            pred_dict['masks'] = pred_instances.masks.cpu().numpy()
 
     if args.cpu_off_load:
-        model = model.to('cpu')
+        if 'glip' in args.det_config:
+            model.model = model.model.to('cpu')
+            model.device = 'cpu'
+        else:
+            model = model.to('cpu')
     return model, pred_dict
 
 
@@ -201,6 +298,10 @@ def fake_collate(x):
 
 
 def main():
+    if groundingdino is None and maskrcnn_benchmark is None and mmdet is None:
+        raise RuntimeError('detection model is not installed,\
+                 please install it follow README')
+
     args = parse_args()
     if args.cpu_off_load is True:
         if 'cpu' in args.det_device and 'cpu ' in args.sam_device:
@@ -211,7 +312,8 @@ def main():
     only_det = args.only_det
     cpu_off_load = args.cpu_off_load
 
-    if 'GroundingDINO' in args.det_config:
+    if 'GroundingDINO' in args.det_config or 'glip' in args.det_config \
+            or 'Detic' in args.det_config:
         assert args.text_prompt
 
     if args.launcher == 'none':
@@ -222,14 +324,45 @@ def main():
     if _distributed and not is_distributed():
         init_dist(args.launcher)
 
-    det_model = build_detecter(args)
+    det_model = build_detector(args)
     if not cpu_off_load:
-        det_model = det_model.to(args.det_device)
+        if 'glip' in args.det_config:
+            det_model.model = det_model.model.to(args.det_device)
+            det_model.device = args.det_device
+        else:
+            det_model = det_model.to(args.det_device)
+
+    if args.use_detic_mask:
+        only_det = True
 
     if not only_det:
+        build_sam = sam_model_registry[args.sam_type]
         sam_model = SamPredictor(build_sam(checkpoint=args.sam_weight))
         if not cpu_off_load:
-            sam_model.mode = sam_model.model.to(args.sam_device)
+            sam_model.model = sam_model.model.to(args.sam_device)
+
+    if args.text_prompt is not None:
+        text_prompt = args.text_prompt
+        with open(text_prompt) as f:
+            coco_cls_str = f.read()
+        text_prompt = coco_cls_str.replace('\n', ' . ')
+
+        text_prompt = text_prompt.lower()
+        text_prompt = text_prompt.strip()
+        if not text_prompt.endswith('.'):
+            text_prompt = text_prompt + '.'
+        args.text_prompt = text_prompt
+
+    if 'Detic' in args.det_config:
+        from projects.Detic.detic.utils import get_text_embeddings
+        if text_prompt.endswith('.'):
+            text_prompt = text_prompt[:-1]
+        custom_vocabulary = text_prompt.split('.')
+        det_model.dataset_meta['classes'] = [
+            c.strip() for c in custom_vocabulary
+        ]
+        embedding = get_text_embeddings(custom_vocabulary=custom_vocabulary)
+        __reset_cls_layer_weight(det_model, embedding)
 
     coco = COCO(os.path.join(args.data_root, args.ann_file))
     coco_dataset = SimpleDataset(coco.getImgIds())
@@ -274,7 +407,7 @@ def main():
         file_name = raw_img_info['file_name']
         image_path = os.path.join(args.data_root, args.data_prefix, file_name)
 
-        det_model, pred_dict = run_detecter(det_model, image_path, args)
+        det_model, pred_dict = run_detector(det_model, image_path, args)
 
         if pred_dict['boxes'].shape[0] == 0:
             part_json_data.append(new_json_data)
@@ -304,7 +437,7 @@ def main():
             if cpu_off_load:
                 sam_model.model = sam_model.model.to('cpu')
 
-        pred_dict['boxes'] = pred_dict['boxes'].int().numpy().tolist()
+        pred_dict['boxes'] = pred_dict['boxes'].int().cpu().numpy().tolist()
 
         for i in range(len(pred_dict['boxes'])):
             label = pred_dict['labels'][i]
