@@ -33,7 +33,8 @@ def build_evaluator(merge_patches=True, format_only=False):
 
 # dataset settings
 dataset_type = 'DOTADataset'
-data_root = 'data/split_ss_dota/'
+# data_root = 'data/split_ss_dota/'
+data_root = '../../dota_data/split_ss_dota/'
 backend_args = None
 
 naive_trainval_pipeline = [
@@ -66,11 +67,11 @@ naive_trainval_dataset = dict(
     data_root=data_root,
     # ann_file='trainval/annfiles/',
     # ann_file='trainval/annfiles-1sample/',
-    # ann_file='trainval/annfiles-3sample/',
+    ann_file='trainval/annfiles-3sample/',
     # ann_file='trainval/annfiles-10sample/',
     # ann_file='trainval/annfiles-30sample/',
     # ann_file='trainval/annfiles-100sample/',
-    ann_file='trainval/annfiles-1000sample/',
+    # ann_file='trainval/annfiles-1000sample/',
     data_prefix=dict(img_path='trainval/images/'),
     test_mode=True,  # we only inference the sam
     pipeline=naive_trainval_pipeline)
@@ -84,9 +85,7 @@ naive_test_dataset = dict(
 
 naive_trainval_dataloader = dict(
     batch_size=1,
-    # num_workers=0,  # For debug
     num_workers=2,
-    # persistent_workers=False,  # For debug
     persistent_workers=True,
     drop_last=False,
     sampler=dict(type='DefaultSampler', shuffle=False),
@@ -94,9 +93,7 @@ naive_trainval_dataloader = dict(
 
 naive_test_dataloader = dict(
     batch_size=1,
-    # num_workers=0,  # For debug
     num_workers=2,
-    # persistent_workers=False,  # For debug
     persistent_workers=True,
     drop_last=False,
     sampler=dict(type='DefaultSampler', shuffle=False),
