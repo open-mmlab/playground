@@ -28,7 +28,7 @@
 3. 支持 Grounding Object Detection 模型，典型的如 Grounding DINO 和 GLIP 串联 SAM 模型进行自动检测和实例分割标注
 4. 所有模型均支持分布式检测和分割评估和自动 COCO JSON 导出，方便用户对自定义数据进行评估
 
-## 参数说明
+## 项目文件说明
 
 下面对每个脚本功能进行说明：
 
