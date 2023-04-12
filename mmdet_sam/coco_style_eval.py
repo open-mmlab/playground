@@ -152,7 +152,8 @@ def __build_glip_model(args):
 
 def __reset_cls_layer_weight(model, weight):
     if type(weight) == str:
-        print(f'Resetting cls_layer_weight from file: {weight}')
+        if get_rank() == 0:
+            print(f'Resetting cls_layer_weight from file: {weight}')
         zs_weight = torch.tensor(
             np.load(weight),
             dtype=torch.float32).permute(1, 0).contiguous()  # D x C

@@ -46,6 +46,9 @@ conda create -n mmdet-sam python=3.8 -y
 conda activate mmdet-sam
 pip install torch==1.9.1+cu111 torchvision==0.10.1+cu111 -f https://download.pytorch.org/whl/torch_stable.html
 pip install mmengine
+
+git clone https://github.com/open-mmlab/playground.git
+cd playground
 ```
 
 ## 功能说明
@@ -243,11 +246,10 @@ python detector_sam_demo.py ../images/cat_remote.jpg configs/glip_A_Swin_T_O365.
 对于 `coco_style_eval.py` 脚本，你可以采用分布式或者非分布式方式进行推理和评估，默认参数是对 COCO Val2017 数据集进行评估，COCO 文件组织格式如下所示：
 
 ```text
-├── ${DATA_ROOT}
-│   ├── coco
-│   │   ├── annotations
-│   │      ├──── instances_val2017.json
-│   │   ├── val2017
+├── ${COCO_DATA_ROOT}
+│   ├── annotations
+│      ├──── instances_val2017.json
+│   ├── val2017
 ```
 
 以 Detic 算法为例，其余算法用法相同。
@@ -256,12 +258,45 @@ python detector_sam_demo.py ../images/cat_remote.jpg configs/glip_A_Swin_T_O365.
 cd mmdet_sam
 
 # 非分布式评估
-python coco_style_eval.py ${DATA_ROOT} configs/Detic_LI21k_CLIP_SwinB_896b32_4x_ft4x_max-size.py ../models/detic_centernet2_swin-b_fpn_4x_lvis-coco-in21k_20230120-0d301978.pth -t coco_cls_name.txt
+python coco_style_eval.py ${COCO_DATA_ROOT} configs/Detic_LI21k_CLIP_SwinB_896b32_4x_ft4x_max-size.py ../models/detic_centernet2_swin-b_fpn_4x_lvis-coco-in21k_20230120-0d301978.pth -t coco_cls_name.txt
 
 # 分布式单机 8 卡评估
-bash ./dist_coco_style_eval.sh 8 ${DATA_ROOT} configs/Detic_LI21k_CLIP_SwinB_896b32_4x_ft4x_max-size.py ../models/detic_centernet2_swin-b_fpn_4x_lvis-coco-in21k_20230120-0d301978.pth -t coco_cls_name.txt
+bash ./dist_coco_style_eval.sh 8 ${COCO_DATA_ROOT} configs/Detic_LI21k_CLIP_SwinB_896b32_4x_ft4x_max-size.py ../models/detic_centernet2_swin-b_fpn_4x_lvis-coco-in21k_20230120-0d301978.pth -t coco_cls_name.txt
 ```
 
-输出如下所示：
+输出结果如下所示：
 
-你可以降低 `--box-thr` 从而提升检测性能
+```text
+Evaluate annotation type *bbox*
+
+DONE (t=6.85s).
+ Average Precision  (AP) @[ IoU=0.50:0.95 | area=   all | maxDets=100 ] = 0.465
+ Average Precision  (AP) @[ IoU=0.50      | area=   all | maxDets=100 ] = 0.640
+ Average Precision  (AP) @[ IoU=0.75      | area=   all | maxDets=100 ] = 0.511
+ Average Precision  (AP) @[ IoU=0.50:0.95 | area= small | maxDets=100 ] = 0.303
+ Average Precision  (AP) @[ IoU=0.50:0.95 | area=medium | maxDets=100 ] = 0.515
+ Average Precision  (AP) @[ IoU=0.50:0.95 | area= large | maxDets=100 ] = 0.614
+ Average Recall     (AR) @[ IoU=0.50:0.95 | area=   all | maxDets=  1 ] = 0.362
+ Average Recall     (AR) @[ IoU=0.50:0.95 | area=   all | maxDets= 10 ] = 0.560
+ Average Recall     (AR) @[ IoU=0.50:0.95 | area=   all | maxDets=100 ] = 0.583
+ Average Recall     (AR) @[ IoU=0.50:0.95 | area= small | maxDets=100 ] = 0.404
+ Average Recall     (AR) @[ IoU=0.50:0.95 | area=medium | maxDets=100 ] = 0.630
+ Average Recall     (AR) @[ IoU=0.50:0.95 | area= large | maxDets=100 ] = 0.746
+
+Evaluate annotation type *segm*
+
+ Average Precision  (AP) @[ IoU=0.50:0.95 | area=   all | maxDets=100 ] = 0.388
+ Average Precision  (AP) @[ IoU=0.50      | area=   all | maxDets=100 ] = 0.601
+ Average Precision  (AP) @[ IoU=0.75      | area=   all | maxDets=100 ] = 0.420
+ Average Precision  (AP) @[ IoU=0.50:0.95 | area= small | maxDets=100 ] = 0.269
+ Average Precision  (AP) @[ IoU=0.50:0.95 | area=medium | maxDets=100 ] = 0.441
+ Average Precision  (AP) @[ IoU=0.50:0.95 | area= large | maxDets=100 ] = 0.503
+ Average Recall     (AR) @[ IoU=0.50:0.95 | area=   all | maxDets=  1 ] = 0.315
+ Average Recall     (AR) @[ IoU=0.50:0.95 | area=   all | maxDets= 10 ] = 0.490
+ Average Recall     (AR) @[ IoU=0.50:0.95 | area=   all | maxDets=100 ] = 0.511
+ Average Recall     (AR) @[ IoU=0.50:0.95 | area= small | maxDets=100 ] = 0.371
+ Average Recall     (AR) @[ IoU=0.50:0.95 | area=medium | maxDets=100 ] = 0.558
+ Average Recall     (AR) @[ IoU=0.50:0.95 | area= large | maxDets=100 ] = 0.639
+```
+
+你可以降低 `--box-thr` (默认是 0.2)，例如设置为 0.001 从而提升检测性能。
