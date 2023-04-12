@@ -1,5 +1,7 @@
 # MMRotate-SAM
 
+[中文文档](README_CN.md)
+
 The project folder holds codes related to MMRotate and SAM.
 
 Script Descriptions:
