@@ -124,11 +124,23 @@ python coco_style_eval.py ${DATA_ROOT} mmdetection/configs/faster_rcnn/faster-rc
 
 ```shell
 cd mmsam
-git clone https://github.com/facebookresearch/segment-anything.git
-cd segment-anything; pip install -e .; cd ..
+pip install git+https://github.com/facebookresearch/segment-anything.git
 
 git clone https://github.com/IDEA-Research/GroundingDINO.git
 cd GroundingDINO; pip install -e .; cd ..
+```
+
+2. GLIP
+```shell
+cd mmsam
+pip install git+https://github.com/facebookresearch/segment-anything.git
+
+git clone https://github.com/microsoft/GLIP
+cd GLIP
+pip install einops shapely timm yacs tensorboardX ftfy prettytable pymongo
+pip install transformers 
+pip install -e .
+cd ..
 ```
 
 #### 模型推理演示
@@ -138,12 +150,23 @@ cd GroundingDINO; pip install -e .; cd ..
 ```shell
 cd mmsam/mmdet_sam
 
+# Grounding DINO
 python detector_sam_demo.py ../images ../GroundingDINO/groundingdino/config/GroundingDINO_SwinT_OGC.py ../models/groundingdino_swint_ogc.pth -t cat --sam-device cpu
+
 python detector_sam_demo.py ../images/cat_remote.jpg ../GroundingDINO/groundingdino/config/GroundingDINO_SwinT_OGC.py ../models/groundingdino_swint_ogc.pth -t "cat . remote" --sam-device cpu
 
 python coco_style_eval.py {DATA_ROOT} ../GroundingDINO/groundingdino/config/GroundingDINO_SwinT_OGC.py ../models/groundingdino_swint_ogc.pth -t coco_cls_name.txt --sam-device cpu
 
 bash ./dist_coco_style_eval.sh 8 {DATA_ROOT} ../GroundingDINO/groundingdino/config/GroundingDINO_SwinT_OGC.py ../models/groundingdino_swint_ogc.pth -t coco_cls_name.txt
+
+# GLIP
+python detector_sam_demo.py ../images ../GLIP/configs/pretrain/glip_A_Swin_T_O365.yaml ../models/glip_a_tiny_o365.pth -t cat --sam-device cpu
+
+python detector_sam_demo.py ../images/cat_remote.jpg ../GLIP/configs/pretrain/glip_A_Swin_T_O365.yaml ../models/glip_a_tiny_o365.pth -t "cat . remote" --sam-device cpu
+
+python coco_style_eval.py {DATA_ROOT} ../GLIP/configs/pretrain/glip_A_Swin_T_O365.yaml ../models/glip_a_tiny_o365.pth -t coco_cls_name.txt --sam-device cpu
+
+bash ./dist_coco_style_eval.sh 8 {DATA_ROOT} ../GLIP/configs/pretrain/glip_A_Swin_T_O365.yaml ../models/glip_a_tiny_o365.pth -t coco_cls_name.txt
 ```
 
 #### 分布式评估演示
