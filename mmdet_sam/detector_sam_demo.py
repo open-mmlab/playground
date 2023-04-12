@@ -4,20 +4,44 @@ import argparse
 import os
 
 import cv2
-# Grounding DINO
-import groundingdino.datasets.transforms as T
-import matplotlib.pyplot as plt
-import numpy as np
 import torch
-from groundingdino.models import build_model
-from groundingdino.util.utils import clean_state_dict, get_phrases_from_posmap
-from mmdet.apis import inference_detector, init_detector
+import numpy as np
+import matplotlib.pyplot as plt
+# Grounding DINO
+try:
+    import groundingdino
+    import groundingdino.datasets.transforms as T
+    from groundingdino.models import build_model
+    from groundingdino.util.utils import clean_state_dict, get_phrases_from_posmap
+    grounding_dino_transform = T.Compose([
+            T.RandomResize([800], max_size=1333),
+            T.ToTensor(),
+            T.Normalize([0.485, 0.456, 0.406], [0.229, 0.224, 0.225]),
+    ])
+except ImportError:
+    groundingdino = None
+# GLIP
+try:
+    import maskrcnn_benchmark
+    from maskrcnn_benchmark.engine.predictor_glip import GLIPDemo
+    from maskrcnn_benchmark.config import cfg
+except ImportError:
+    maskrcnn_benchmark = None
+# mmdet
+try:
+    import mmdet
+    from mmdet.apis import inference_detector, init_detector
+except ImportError:
+    mmdet = None
+
 from mmengine.config import Config
 from mmengine.utils import ProgressBar
 from PIL import Image
 # segment anything
 from segment_anything import SamPredictor, sam_model_registry
 
+import sys
+sys.path.append('../')
 from core.utils import get_file_list
 
 
@@ -59,6 +83,7 @@ def parse_args():
         default='cuda:0',
         help='Device used for inference')
     parser.add_argument('--cpu-off-load', '-c', action='store_true')
+    parser.add_argument('--use-detic-mask', '-u', action='store_true')
 
     # GroundingDINO param
     parser.add_argument('--text-prompt', '-t', type=str, help='text prompt')
@@ -77,20 +102,29 @@ def __build_grounding_dino_model(args):
     return model
 
 
-grounding_dino_transform = T.Compose([
-    T.RandomResize([800], max_size=1333),
-    T.ToTensor(),
-    T.Normalize([0.485, 0.456, 0.406], [0.229, 0.224, 0.225]),
-])
+def __build_glip_model(args):
+    cfg.merge_from_file(args.det_config)
+    cfg.merge_from_list(['MODEL.WEIGHT', args.det_weight])
+    cfg.merge_from_list(['MODEL.DEVICE', 'cpu'])
+    model = GLIPDemo(
+        cfg,
+        min_image_size=800,
+        confidence_threshold=0.7,
+        show_mask_heatmaps=False)
+    return model
 
 
 def build_detecter(args):
     if 'GroundingDINO' in args.det_config:
         detecter = __build_grounding_dino_model(args)
+    elif 'GLIP' in args.det_config:
+        detecter = __build_glip_model(args)
     else:
         config = Config.fromfile(args.det_config)
         if 'init_cfg' in config.model.backbone:
             config.model.backbone.init_cfg = None
+        if not args.use_detic_mask:
+            config.model.roi_head.mask_head = None
         detecter = init_detector(
             config, args.det_weight, device='cpu', cfg_options={})
     return detecter
@@ -100,7 +134,11 @@ def run_detector(model, image_path, args):
     pred_dict = {}
 
     if args.cpu_off_load:
-        model = model.to(args.det_device)
+        if 'GLIP' in args.det_config:
+            model.model = model.model.to(args.det_device)
+            model.device = args.det_device
+        else:
+            model = model.to(args.det_device)
 
     if 'GroundingDINO' in args.det_config:
         image_pil = Image.open(image_path).convert('RGB')  # load image
@@ -150,6 +188,28 @@ def run_detector(model, image_path, args):
             boxes_filt[i][:2] -= boxes_filt[i][2:] / 2
             boxes_filt[i][2:] += boxes_filt[i][:2]
         pred_dict['boxes'] = boxes_filt
+    elif 'GLIP' in args.det_config:
+        image = cv2.imread(image_path)
+        text_prompt = args.text_prompt
+        text_prompt = text_prompt.lower()
+        text_prompt = text_prompt.strip()
+        if not text_prompt.endswith('.'):
+            text_prompt = text_prompt + '.'
+        top_predictions = model.inference(image, text_prompt)
+        scores = top_predictions.get_field("scores").tolist()
+        labels = top_predictions.get_field("labels").tolist()
+        new_labels = []
+        if model.entities and model.plus:
+            for i in labels:
+                if i <= len(model.entities):
+                    new_labels.append(model.entities[i - model.plus])
+                else:
+                    new_labels.append('object')
+        else:
+            new_labels = ['object' for i in labels]
+        pred_dict['labels'] = new_labels
+        pred_dict['scores'] = scores
+        pred_dict['boxes'] = top_predictions.bbox
     else:
         result = inference_detector(model, image_path)
         pred_instances = result.pred_instances[
@@ -161,9 +221,15 @@ def run_detector(model, image_path, args):
             model.dataset_meta['classes'][label]
             for label in pred_instances.labels
         ]
+        if args.use_detic_mask:
+            pred_dict['masks'] = pred_instances.masks
 
     if args.cpu_off_load:
-        model = model.to('cpu')
+        if 'GLIP' in args.det_config:
+            model.model = model.model.to('cpu')
+            model.device = 'cpu'
+        else:
+            model = model.to('cpu')
     return model, pred_dict
 
 
@@ -211,6 +277,10 @@ def draw_and_save(image,
 
 
 def main():
+    if groundingdino == None and maskrcnn_benchmark == None and mmdet == None:
+        raise RuntimeError('detection model is not installed,\
+                 please install it follow README')
+
     args = parse_args()
     if args.cpu_off_load is True:
         if 'cpu' in args.det_device and 'cpu ' in args.sam_device:
@@ -222,18 +292,38 @@ def main():
     cpu_off_load = args.cpu_off_load
     out_dir = args.out_dir
 
-    if 'GroundingDINO' in args.det_config:
+    if 'GroundingDINO' in args.det_config or 'GLIP' in args.det_config or 'Detic' in args.det_config:
         assert args.text_prompt
 
     det_model = build_detecter(args)
     if not cpu_off_load:
-        det_model = det_model.to(args.det_device)
+        if 'GLIP' in args.det_config:
+            det_model.model = det_model.model.to(args.det_device)
+            det_model.device = args.det_device
+        else:
+            det_model = det_model.to(args.det_device)
+
+    if args.use_detic_mask:
+        only_det = True
 
     if not only_det:
         build_sam = sam_model_registry[args.sam_type]
         sam_model = SamPredictor(build_sam(checkpoint=args.sam_weight))
         if not cpu_off_load:
             sam_model.mode = sam_model.model.to(args.sam_device)
+
+    if 'Detic' in args.det_config:
+        from projects.Detic.detic.utils import (get_text_embeddings,
+                                reset_cls_layer_weight)
+        text_prompt = args.text_prompt
+        text_prompt = text_prompt.lower()
+        text_prompt = text_prompt.strip()
+        if text_prompt.endswith('.'):
+            text_prompt = text_prompt[:-1]
+        custom_vocabulary = text_prompt.split('.')
+        det_model.dataset_meta['classes'] = [c.strip() for c in custom_vocabulary]
+        embedding = get_text_embeddings(custom_vocabulary=custom_vocabulary)
+        reset_cls_layer_weight(det_model, embedding)
 
     os.makedirs(out_dir, exist_ok=True)
 
