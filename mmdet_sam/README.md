@@ -29,15 +29,18 @@
 4. 所有模型均支持分布式检测和分割评估和自动 COCO JSON 导出，方便用户对自定义数据进行评估
 
 ## 参数说明
+
 下面对每个脚本功能进行说明：
 
 1. `detector_sam_demo.py` 用于单张图片或者文件夹的检测和实例分割模型推理
-2. `mmdet_sam/coco_style_eval.py` 用于对输入的 COCO JSON 进行检测和实例分割模型推理、评估和导出
+2. `coco_style_eval.py` 用于对输入的 COCO JSON 进行检测和实例分割模型推理、评估和导出
 3. `browse_coco_json.py` 用于可视化导出的 JSON 文件
 
 (1) detector_sam_demo.py
 
+(2) coco_style_eval.py
 
+(3) browse_coco_json.py
 
 本工程参考了 [Grounded-Segment-Anything](https://github.com/IDEA-Research/Grounded-Segment-Anything)，非常感谢！
 
@@ -51,9 +54,11 @@ pip install mmengine
 ```
 
 ## 功能说明
+
 本工程中包括了引入了诸多优秀的开源算法，为了减少用户安装环境负担，如果不不想使用某部分功能，则可以不安装对应的依赖。下面分成 3 个部分说明。
 
 ### 1 MMDet 模型 + SAM
+
 其表示 MMDet 中的检测模型串联 SAM 从而实现实例分割任务，目前支持所有 MMDet 中已经支持的算法。
 
 #### 依赖安装
@@ -67,18 +72,42 @@ git clone https://github.com/open-mmlab/mmdetection.git
 cd mmdetection; pip install -e .; cd ..
 ```
 
-#### 功能演示
+#### 模型推理演示
 
-以 `Faster R-CNN` 模型为例
+1 `Faster R-CNN` 模型
 
 ```shell
 cd mmsam/mmdet_sam
 
 # 单张图片评估
-python detector_sam_demo.py ../images/cat_remote.jpg mmdetection/configs/dino/dino-5scale_swin-l_8xb2-12e_coco.py https://download.openmmlab.com/mmdetection/v3.0/dino/dino-5scale_swin-l_8xb2-12e_coco/dino-5scale_swin-l_8xb2-12e_coco_20230228_072924-a654145f.pth 
+python detector_sam_demo.py ../images/cat_remote.jpg mmdetection/configs/faster_rcnn/faster-rcnn_r50_fpn_2x_coco.py https://download.openmmlab.com/mmdetection/v2.0/faster_rcnn/faster_rcnn_r50_fpn_2x_coco/faster_rcnn_r50_fpn_2x_coco_bbox_mAP-0.384_20200504_210434-a5d8aa15.pth
 
 # 如果 GPU 显存不够，可以采用 CPU 推理
-python detector_sam_demo.py ../images/cat_remote.jpg mmdetection/configs/dino/dino-5scale_swin-l_8xb2-12e_coco.py https://download.openmmlab.com/mmdetection/v3.0/dino/dino-5scale_swin-l_8xb2-12e_coco/dino-5scale_swin-l_8xb2-12e_coco_20230228_072924-a654145f.pth 
+python detector_sam_demo.py ../images/cat_remote.jpg mmdetection/configs/faster_rcnn/faster-rcnn_r50_fpn_2x_coco.py https://download.openmmlab.com/mmdetection/v2.0/faster_rcnn/faster_rcnn_r50_fpn_2x_coco/faster_rcnn_r50_fpn_2x_coco_bbox_mAP-0.384_20200504_210434-a5d8aa15.pth  --sam-device cpu
+
+# 文件夹推理
+python detector_sam_demo.py ../images mmdetection/configs/faster_rcnn/faster-rcnn_r50_fpn_2x_coco.py https://download.openmmlab.com/mmdetection/v2.0/faster_rcnn/faster_rcnn_r50_fpn_2x_coco/faster_rcnn_r50_fpn_2x_coco_bbox_mAP-0.384_20200504_210434-a5d8aa15.pth  --sam-device cpu
+
+# 如果你的 GPU 每次只能支持一个模型的推理，则可以开启 --cpu-off-load
+python detector_sam_demo.py ../images mmdetection/configs/faster_rcnn/faster-rcnn_r50_fpn_2x_coco.py https://download.openmmlab.com/mmdetection/v2.0/faster_rcnn/faster_rcnn_r50_fpn_2x_coco/faster_rcnn_r50_fpn_2x_coco_bbox_mAP-0.384_20200504_210434-a5d8aa15.pth  --cpu-off-load
+```
+
+2 `DINO` 模型
+
+```shell
+cd mmsam/mmdet_sam
+
+python detector_sam_demo.py ../images/cat_remote.jpg mmdetection/configs/dino/dino-5scale_swin-l_8xb2-12e_coco.py https://download.openmmlab.com/mmdetection/v3.0/dino/dino-5scale_swin-l_8xb2-12e_coco/dino-5scale_swin-l_8xb2-12e_coco_20230228_072924-a654145f.pth  --sam-device cpu
+```
+
+#### 分布式评估演示
+
+对于 `coco_style_eval.py` 脚本，你可以采用分布式或者非分布式方式进行推理和评估。以 `Faster R-CNN` 为例
+
+```shell
+cd mmsam/mmdet_sam
+
+python coco_style_eval.py ${DATA_ROOT} mmdetection/configs/faster_rcnn/faster-rcnn_r50_fpn_2x_coco.py https://download.openmmlab.com/mmdetection/v2.0/faster_rcnn/faster_rcnn_r50_fpn_2x_coco/faster_rcnn_r50_fpn_2x_coco_bbox_mAP-0.384_20200504_210434-a5d8aa15.pth
 ```
 
 ### 2 Open-Vocabulary + SAM
@@ -88,7 +117,6 @@ python detector_sam_demo.py ../images/cat_remote.jpg mmdetection/configs/dino/di
 #### 功能演示
 
 ### 2 Zero-shot + SAM
-
 
 #### 依赖安装
 
@@ -103,7 +131,9 @@ git clone https://github.com/IDEA-Research/GroundingDINO.git
 cd GroundingDINO; pip install -e .; cd ..
 ```
 
-#### 功能演示
+#### 模型推理演示
+
+使用方式和前面完全相同。只不过其需要额外输入 `--text-prompt`
 
 ```shell
 cd mmsam/mmdet_sam
@@ -114,4 +144,16 @@ python detector_sam_demo.py ../images/cat_remote.jpg ../GroundingDINO/groundingd
 python coco_style_eval.py {DATA_ROOT} ../GroundingDINO/groundingdino/config/GroundingDINO_SwinT_OGC.py ../models/groundingdino_swint_ogc.pth -t coco_cls_name.txt --sam-device cpu
 
 bash ./dist_coco_style_eval.sh 8 {DATA_ROOT} ../GroundingDINO/groundingdino/config/GroundingDINO_SwinT_OGC.py ../models/groundingdino_swint_ogc.pth -t coco_cls_name.txt
+```
+
+#### 分布式评估演示
+
+```shell
+cd mmsam/mmdet_sam
+
+# 非分布式评估
+python coco_style_eval.py ${DATA_ROOT} ../GroundingDINO/groundingdino/config/GroundingDINO_SwinT_OGC.py ../models/groundingdino_swint_ogc.pth -t coco_cls_name.txt --sam-device cpu
+
+# 分布式单机8卡评估
+bash ./dist_coco_style_eval.sh 8 ${DATA_ROOT} ../GroundingDINO/groundingdino/config/GroundingDINO_SwinT_OGC.py ../models/groundingdino_swint_ogc.pth -t coco_cls_name.txt
 ```

@@ -9,7 +9,6 @@ from functools import partial
 import cv2
 # Grounding DINO
 import groundingdino.datasets.transforms as T
-import matplotlib.pyplot as plt
 import numpy as np
 import pycocotools.mask as mask_util
 import torch
@@ -40,7 +39,9 @@ def parse_args():
     parser.add_argument('--data-prefix', type=str, default='val2017/')
     parser.add_argument('--only-det', action='store_true')
     parser.add_argument(
-        '--sam-type', type=str, default='vit_h',
+        '--sam-type',
+        type=str,
+        default='vit_h',
         choices=['vit_h', 'vit_l', 'vit_b'],
         help='sam type')
     parser.add_argument(
