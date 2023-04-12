@@ -16,7 +16,7 @@ from mmengine.config import Config
 from mmengine.utils import ProgressBar
 from PIL import Image
 # segment anything
-from segment_anything import SamPredictor, build_sam
+from segment_anything import SamPredictor, sam_model_registry
 
 from core.utils import get_file_list
 
@@ -29,6 +29,10 @@ def parse_args():
     parser.add_argument('det_weight', type=str, help='path to det weight file')
     parser.add_argument('--only-det', action='store_true')
     parser.add_argument('--not-show-label', action='store_true')
+    parser.add_argument(
+        '--sam-type', type=str, default='vit_h',
+        choices=['vit_h', 'vit_l', 'vit_b'],
+        help='sam type')
     parser.add_argument(
         '--sam-weight',
         type=str,
@@ -224,6 +228,7 @@ def main():
         det_model = det_model.to(args.det_device)
 
     if not only_det:
+        build_sam = sam_model_registry[args.sam_type]
         sam_model = SamPredictor(build_sam(checkpoint=args.sam_weight))
         if not cpu_off_load:
             sam_model.mode = sam_model.model.to(args.sam_device)
