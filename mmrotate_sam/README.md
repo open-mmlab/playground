@@ -1,14 +1,15 @@
 # MMRotate-SAM
 
-本工程目录存放 MMRotate 和 SAM 相关的代码。
+The project folder holds codes related to MMRotate and SAM.
 
-脚本说明：
-1. `eval_zero-shot-oriented-detection_dota.py` 实现了 SAM 的 Zero-shot Oriented Object Detection。在 SAM 前级联水平框检测器（当使用旋转框检测器时，取旋转框的最小水平外接矩作为水平框输出），将检测器输出的边界框作为 prompt 输入 SAM 中，输出掩码的最小有向外接矩即为对应目标的旋转框。
-2. `data_builder` 存放数据集、数据加载器的配置信息以及配置过程。
+Script Descriptions:
+1. `eval_zero-shot-oriented-detection_dota.py` implement Zero-shot Oriented Object Detection with SAM. It prompts SAM with predicted boxes from a horizontal object detector. 
+2. `demo_zero-shot-oriented-detection.py` inference single image for Zero-shot Oriented Object Detection with SAM.
+3. `data_builder` holds configuration information and process of dataset, dataloader.
 
-本工程参考了 [sam-mmrotate](https://github.com/Li-Qingyun/sam-mmrotate)
+The project is refer to [sam-mmrotate](https://github.com/Li-Qingyun/sam-mmrotate).
 
-## 环境安装
+## Installation
 
 ```shell
 conda create -n mmrotate-sam python=3.8 -y
@@ -21,3 +22,26 @@ mim install mmengine 'mmcv>=2.0.0rc0' 'mmrotate>=1.0.0rc0'
 pip install git+https://github.com/facebookresearch/segment-anything.git
 pip install opencv-python pycocotools matplotlib onnxruntime onnx
 ``` 
+
+## Usage
+
+1. Inference MMRotate-SAM with a single image and obtain visualization result.
+```shell
+python demo_zero-shot-oriented-detection.py \
+  data/split_ss_dota/test/images/P0006__1024__0___0.png \
+  configs/rotated_fcos/rotated-fcos-hbox-le90_r50_fpn_1x_dota.py \
+  rotated_fcos_sep_angle_r50_fpn_1x_dota_le90-0be71a0c.pth \
+  --sam-type "vit_b" --sam-weight sam_vit_b_01ec64.pth --out-path output.png
+```
+
+<div align=center>
+<img src="https://user-images.githubusercontent.com/79644233/231568599-58694ec9-a3b1-44a4-833f-74cfb4d4ca45.png"/>
+</div>
+
+2. Evaluate the quantitative evaluation metric on DOTA data set.
+```shell
+python eval_zero-shot-oriented-detection_dota.py \
+  configs/rotated_fcos/rotated-fcos-hbox-le90_r50_fpn_1x_dota.py \
+  rotated_fcos_sep_angle_r50_fpn_1x_dota_le90-0be71a0c.pth \
+  --sam-type "vit_b" --sam-weight sam_vit_b_01ec64.pth
+```
