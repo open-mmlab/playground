@@ -1,31 +1,31 @@
 # Copyright (c) OpenMMLab. All rights reserved.
 # Refer from https://github.com/Li-Qingyun/sam-mmrotate
-import argparse
 import os
+import argparse
+from copy import deepcopy
 
-from data_builder import build_data_loader, build_evaluator
+import cv2
+import numpy as np
 
-from segment_anything import sam_model_registry, SamPredictor
+import torch
 
 from mmengine import Config
+from mmengine.structures import InstanceData
 from mmengine.dist import (collect_results, get_dist_info, get_rank, init_dist,
                            is_distributed)
 from mmengine.utils import ProgressBar
 
-from mmrotate.utils import register_all_modules
 from mmdet.apis import init_detector
+from mmdet.models.utils import samplelist_boxtype2tensor
 
-from engine import single_sample_step
+from mmrotate.utils import register_all_modules
+from mmrotate.structures import RotatedBoxes
+
+from data_builder import build_data_loader, build_evaluator
+from segment_anything import sam_model_registry, SamPredictor
 
 
 def parse_args():
-    # sam_checkpoint = r"../segment-anything/checkpoints/sam_vit_b_01ec64.pth"
-    # model_type = "vit_b"
-    # device = "cuda"
-
-    # ckpt_path = './rotated_fcos_sep_angle_r50_fpn_1x_dota_le90-0be71a0c.pth'
-    # model_cfg_path = 'configs/rotated_fcos/rotated-fcos-hbox-le90_r50_fpn_1x_dota.py'
-
     parser = argparse.ArgumentParser(
         'Evaluation for Zero-shot Oriented Detector with Segment-Anything-'
         'Model Prompt by Predicted HBox of Horizontal Detector', add_help=True)
@@ -54,7 +54,7 @@ def parse_args():
     parser.add_argument('--set-min-box', action='store_true')
     parser.add_argument('--result-with-mask', action='store_true')
     parser.add_argument(
-        '--max-batch-num-pred', type=int, default=200,
+        '--max-batch-num-pred', type=int, default=100,
         help='max prediction number of mask generation (avoid OOM)')
     parser.add_argument('--only-det', action='store_true')
     parser.add_argument(
@@ -79,6 +79,93 @@ def parse_args():
         os.environ['LOCAL_RANK'] = str(args.local_rank)
 
     return args
+
+
+@torch.no_grad()
+def single_sample_step(data, det_model, sam_predictor, evaluator, args):
+    device = sam_predictor.model.device
+    copied_data = deepcopy(data)  # for sam
+
+    # Stage 1
+    for item in data.values():
+        item[0].to(device)
+    pred_results = det_model.test_step(data)
+    pred_r_bboxes = pred_results[0].pred_instances.bboxes
+    pred_r_bboxes = RotatedBoxes(pred_r_bboxes)
+    h_bboxes = pred_r_bboxes.convert_to('hbox').tensor
+    labels = pred_results[0].pred_instances.labels
+    scores = pred_results[0].pred_instances.scores
+
+    # Stage 2
+    if len(h_bboxes) == 0:
+        masks = h_bboxes.new_tensor((0, *data['inputs'][0].shape[:2]))
+        data_samples = data['data_samples']
+        r_bboxes = []
+    else:
+        img = copied_data['inputs'][0].permute(1, 2, 0).numpy()[:, :, ::-1]
+        data_samples = copied_data['data_samples']
+        data_sample = data_samples[0]
+        data_sample.to(device=device)
+
+        sam_predictor.set_image(img)
+
+        # Too many predictions may result in OOM, hence,
+        # we process the predictions in multiple batches.
+        masks = []
+        N = args.max_batch_num_pred
+        num_pred = len(h_bboxes)
+        num_batches = int(np.ceil(num_pred / N))
+        for i in range(num_batches):
+            left_index = i * N
+            right_index = (i + 1) * N
+            if i == num_batches - 1:
+                batch_boxes = h_bboxes[left_index:]
+            else:
+                batch_boxes = h_bboxes[left_index: right_index]
+
+            transformed_boxes = sam_predictor.transform.apply_boxes_torch(batch_boxes, img.shape[:2])
+            batch_masks, qualities, lr_logits = sam_predictor.predict_torch(
+                point_coords=None,
+                point_labels=None,
+                boxes=transformed_boxes,
+                multimask_output=False)
+            batch_masks = batch_masks.squeeze(1).cpu()
+            masks.extend([*batch_masks])
+        masks = torch.stack(masks, dim=0)
+        r_bboxes = [mask2rbox(mask.numpy()) for mask in masks]
+
+    results_list = get_instancedata_resultlist(r_bboxes, labels, masks, scores, args.result_with_mask)
+    data_samples = add_pred_to_datasample(results_list, data_samples)
+
+    evaluator.process(data_samples=data_samples, data_batch=data)
+    return evaluator
+
+
+def mask2rbox(mask):
+    y, x = np.nonzero(mask)
+    points = np.stack([x, y], axis=-1)
+    (cx, cy), (w, h), a = cv2.minAreaRect(points)
+    r_bbox = np.array([cx, cy, w, h, a / 180 * np.pi])
+    return r_bbox
+
+
+def get_instancedata_resultlist(r_bboxes, labels, masks, scores, result_with_mask=False):
+    results = InstanceData()
+    results.bboxes = RotatedBoxes(r_bboxes)
+    # results.scores = qualities
+    results.scores = scores
+    results.labels = labels
+    if result_with_mask:
+        results.masks = masks.cpu().numpy()
+    results_list = [results]
+    return results_list
+
+
+def add_pred_to_datasample(results_list, data_samples):
+    for data_sample, pred_instances in zip(data_samples, results_list):
+        data_sample.pred_instances = pred_instances
+    samplelist_boxtype2tensor(data_samples)
+    return data_samples
 
 
 if __name__ == '__main__':
@@ -109,8 +196,7 @@ if __name__ == '__main__':
 
     # prepare dataset
     # data_cfg = Config.fromfile(args.data_config)  # TODO: get data cfg from a file, instead of hard-code
-    # dataloader = build_data_loader('test_without_hbox')
-    dataloader = build_data_loader('trainval_with_hbox')
+    dataloader = build_data_loader('test_without_hbox')
     evaluator = build_evaluator(args.merge_patches, args.format_only)
     evaluator.dataset_meta = dataloader.dataset.metainfo  # TODO: add assert to make sure the CLASSES in ckpt and in dataset are the same
 
