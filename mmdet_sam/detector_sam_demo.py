@@ -83,6 +83,7 @@ def parse_args():
         default='cuda:0',
         help='Device used for inference')
     parser.add_argument('--cpu-off-load', '-c', action='store_true')
+    parser.add_argument('--use-detic-mask', '-u', action='store_true')
 
     # GroundingDINO param
     parser.add_argument('--text-prompt', '-t', type=str, help='text prompt')
@@ -122,6 +123,8 @@ def build_detecter(args):
         config = Config.fromfile(args.det_config)
         if 'init_cfg' in config.model.backbone:
             config.model.backbone.init_cfg = None
+        if not args.use_detic_mask:
+            config.model.roi_head.mask_head = None
         detecter = init_detector(
             config, args.det_weight, device='cpu', cfg_options={})
     return detecter
@@ -208,18 +211,7 @@ def run_detector(model, image_path, args):
         pred_dict['scores'] = scores
         pred_dict['boxes'] = top_predictions.bbox
     else:
-        if args.text_prompt is not None:
-            from projects.Detic.detic.utils import (get_text_embeddings,
-                                reset_cls_layer_weight)
-            text_prompt = args.text_prompt
-            text_prompt = text_prompt.lower()
-            text_prompt = text_prompt.strip()
-            if text_prompt.endswith('.'):
-                text_prompt = text_prompt[:-1]
-            custom_vocabulary = text_prompt.split('.')
-            model.dataset_meta['classes'] = custom_vocabulary
-            embedding = get_text_embeddings(custom_vocabulary=custom_vocabulary)
-            reset_cls_layer_weight(model, embedding)
+
         result = inference_detector(model, image_path)
         pred_instances = result.pred_instances[
             result.pred_instances.scores > args.box_thr]
@@ -299,7 +291,7 @@ def main():
     cpu_off_load = args.cpu_off_load
     out_dir = args.out_dir
 
-    if 'GroundingDINO' in args.det_config or 'GLIP' in args.det_config:
+    if 'GroundingDINO' in args.det_config or 'GLIP' in args.det_config or 'Detic' in args.det_config:
         assert args.text_prompt
 
     det_model = build_detecter(args)
@@ -315,6 +307,19 @@ def main():
         sam_model = SamPredictor(build_sam(checkpoint=args.sam_weight))
         if not cpu_off_load:
             sam_model.mode = sam_model.model.to(args.sam_device)
+
+    if 'Detic' in args.det_config:
+        from projects.Detic.detic.utils import (get_text_embeddings,
+                                reset_cls_layer_weight)
+        text_prompt = args.text_prompt
+        text_prompt = text_prompt.lower()
+        text_prompt = text_prompt.strip()
+        if text_prompt.endswith('.'):
+            text_prompt = text_prompt[:-1]
+        custom_vocabulary = text_prompt.split('.')
+        det_model.dataset_meta['classes'] = [c.strip() for c in custom_vocabulary]
+        embedding = get_text_embeddings(custom_vocabulary=custom_vocabulary)
+        reset_cls_layer_weight(det_model, embedding)
 
     os.makedirs(out_dir, exist_ok=True)
 

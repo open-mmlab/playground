@@ -19,7 +19,7 @@ reg_layer = [
     dict(type='Linear', in_features=1024, out_features=4)
 ]
 
-num_classes = 11493
+num_classes = 22047
 
 model = dict(
     type='CascadeRCNN',
