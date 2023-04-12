@@ -221,6 +221,8 @@ def run_detector(model, image_path, args):
             model.dataset_meta['classes'][label]
             for label in pred_instances.labels
         ]
+        if args.use_detic_mask:
+            pred_dict['masks'] = pred_instances.masks
 
     if args.cpu_off_load:
         if 'GLIP' in args.det_config:
@@ -300,6 +302,9 @@ def main():
             det_model.device = args.det_device
         else:
             det_model = det_model.to(args.det_device)
+
+    if args.use_detic_mask:
+        only_det = True
 
     if not only_det:
         build_sam = sam_model_registry[args.sam_type]
