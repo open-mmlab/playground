@@ -4,22 +4,37 @@ import argparse
 import os
 
 import cv2
-# Grounding DINO
-import groundingdino.datasets.transforms as T
-import matplotlib.pyplot as plt
-import numpy as np
 import torch
-from groundingdino.models import build_model
-from groundingdino.util.utils import clean_state_dict, get_phrases_from_posmap
-from mmdet.apis import inference_detector, init_detector
+import numpy as np
+import matplotlib.pyplot as plt
+# Grounding DINO
+try:
+    import groundingdino
+    import groundingdino.datasets.transforms as T
+    from groundingdino.models import build_model
+    from groundingdino.util.utils import clean_state_dict, get_phrases_from_posmap
+except ImportError:
+    groundingdino = None
+# GLIP
+try:
+    import maskrcnn_benchmark
+    from maskrcnn_benchmark.engine.predictor_glip import GLIPDemo
+    from maskrcnn_benchmark.config import cfg
+except ImportError:
+    maskrcnn_benchmark = None
+# mmdet
+try:
+    import mmdet
+    from mmdet.apis import inference_detector, init_detector
+except ImportError:
+    mmdet = None
+
 from mmengine.config import Config
 from mmengine.utils import ProgressBar
 from PIL import Image
 # segment anything
-from segment_anything import SamPredictor, build_sam
-# GLIP
-from maskrcnn_benchmark.engine.predictor_glip import GLIPDemo
-from maskrcnn_benchmark.config import cfg
+from segment_anything import SamPredictor, sam_model_registry
+
 import sys
 sys.path.append('../')
 from core.utils import get_file_list
@@ -82,8 +97,6 @@ def __build_grounding_dino_model(args):
 
 
 def __build_glip_model(args):
-    cfg.local_rank = 0
-    cfg.num_gpus = 1
     cfg.merge_from_file(args.det_config)
     cfg.merge_from_list(['MODEL.WEIGHT', args.det_weight])
     cfg.merge_from_list(['MODEL.DEVICE', 'cpu'])
@@ -93,13 +106,6 @@ def __build_glip_model(args):
         confidence_threshold=0.7,
         show_mask_heatmaps=False)
     return model
-
-
-grounding_dino_transform = T.Compose([
-    T.RandomResize([800], max_size=1333),
-    T.ToTensor(),
-    T.Normalize([0.485, 0.456, 0.406], [0.229, 0.224, 0.225]),
-])
 
 
 def build_detecter(args):
@@ -127,6 +133,12 @@ def run_detector(model, image_path, args):
             model = model.to(args.det_device)
 
     if 'GroundingDINO' in args.det_config:
+        grounding_dino_transform = T.Compose([
+            T.RandomResize([800], max_size=1333),
+            T.ToTensor(),
+            T.Normalize([0.485, 0.456, 0.406], [0.229, 0.224, 0.225]),
+        ])
+
         image_pil = Image.open(image_path).convert('RGB')  # load image
         image, _ = grounding_dino_transform(image_pil, None)  # 3, h, w
 
@@ -261,6 +273,10 @@ def draw_and_save(image,
 
 
 def main():
+    if groundingdino == None and maskrcnn_benchmark == None and mmdet == None:
+        raise RuntimeError('detection model is not installed,\
+                 please install it follow README')
+
     args = parse_args()
     if args.cpu_off_load is True:
         if 'cpu' in args.det_device and 'cpu ' in args.sam_device:
