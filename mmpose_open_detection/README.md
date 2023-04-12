@@ -80,6 +80,7 @@ python grounding_demo.py ../images/pexels-jopwell-2422290.jpg configs/GroundingD
 ```
 
 会在当前路径生成 `outputs/pexels-jopwell-2422290.jpg`，效果如下所示：
+![group_people](https://user-images.githubusercontent.com/8425513/231439110-c0e7d6f8-5692-4bcb-b6cf-c3c243a990a5.jpg)
 
 
 可以通过text-prompt修改需要检测的物体，例如改成检测猫。但需要提供可以进行猫姿态识别的模型才能获得正确的姿态识别结果。MMPose目前支持多种动物以及人体，人脸，手的姿态识别任务，只需替换相应模型的配置文件及权重文件即可。
