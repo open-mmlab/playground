@@ -4,27 +4,29 @@ import argparse
 import os
 
 import cv2
-import torch
-import numpy as np
 import matplotlib.pyplot as plt
+import numpy as np
+import torch
+
 # Grounding DINO
 try:
     import groundingdino
     import groundingdino.datasets.transforms as T
     from groundingdino.models import build_model
-    from groundingdino.util.utils import clean_state_dict, get_phrases_from_posmap
+    from groundingdino.util.utils import (clean_state_dict,
+                                          get_phrases_from_posmap)
     grounding_dino_transform = T.Compose([
-            T.RandomResize([800], max_size=1333),
-            T.ToTensor(),
-            T.Normalize([0.485, 0.456, 0.406], [0.229, 0.224, 0.225]),
+        T.RandomResize([800], max_size=1333),
+        T.ToTensor(),
+        T.Normalize([0.485, 0.456, 0.406], [0.229, 0.224, 0.225]),
     ])
 except ImportError:
     groundingdino = None
 # GLIP
 try:
     import maskrcnn_benchmark
-    from maskrcnn_benchmark.engine.predictor_glip import GLIPDemo
     from maskrcnn_benchmark.config import cfg
+    from maskrcnn_benchmark.engine.predictor_glip import GLIPDemo
 except ImportError:
     maskrcnn_benchmark = None
 # mmdet
@@ -34,13 +36,14 @@ try:
 except ImportError:
     mmdet = None
 
+import sys
+
 from mmengine.config import Config
 from mmengine.utils import ProgressBar
 from PIL import Image
 # segment anything
 from segment_anything import SamPredictor, sam_model_registry
 
-import sys
 sys.path.append('../')
 from core.utils import get_file_list
 
@@ -193,8 +196,8 @@ def run_detector(model, image_path, args):
         if not text_prompt.endswith('.'):
             text_prompt = text_prompt + '.'
         top_predictions = model.inference(image, text_prompt)
-        scores = top_predictions.get_field("scores").tolist()
-        labels = top_predictions.get_field("labels").tolist()
+        scores = top_predictions.get_field('scores').tolist()
+        labels = top_predictions.get_field('labels').tolist()
         new_labels = []
         if model.entities and model.plus:
             for i in labels:
