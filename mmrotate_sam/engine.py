@@ -1,18 +1,11 @@
-import os
 import torch
-from pathlib import Path
 from copy import deepcopy
-import matplotlib.pyplot as plt
 import numpy as np
 import cv2
 
 from mmrotate.structures import RotatedBoxes
 from mmdet.models.utils import samplelist_boxtype2tensor
-from mmengine.runner import load_checkpoint
-from utils import show_box, show_mask
-import matplotlib.pyplot as plt
 from mmengine.structures import InstanceData
-from data import build_visualizer
 
 
 VIS_SCORE_THR = 0.3
@@ -20,7 +13,7 @@ VIS_SCORE_THR = 0.3
 
 @torch.no_grad()
 def single_sample_step(data, det_model, sam_predictor, evaluator, args):
-    device = det_model.model.device
+    device = sam_predictor.model.device
     copied_data = deepcopy(data)  # for sam
 
     # Stage 1

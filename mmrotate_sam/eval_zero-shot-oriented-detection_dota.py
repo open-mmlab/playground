@@ -54,7 +54,7 @@ def parse_args():
     parser.add_argument('--set-min-box', action='store_true')
     parser.add_argument('--result-with-mask', action='store_true')
     parser.add_argument(
-        'max-batch-num-pred', type=int, default=200,
+        '--max-batch-num-pred', type=int, default=200,
         help='max prediction number of mask generation (avoid OOM)')
     parser.add_argument('--only-det', action='store_true')
     parser.add_argument(
@@ -100,17 +100,17 @@ if __name__ == '__main__':
         detector_cfg.model.test_cfg['min_bbox_size'] = 10
     det_model = init_detector(
         detector_cfg, args.det_weight, device='cpu', cfg_options={})
-    det_model = det_model.to(args.det_device)
+    det_model = det_model.to(args.device)
 
     # prepare the sam model
     build_sam = sam_model_registry[args.sam_type]
     sam_model = SamPredictor(build_sam(checkpoint=args.sam_weight))
-    sam_model.model = sam_model.model.to(args.sam_device)
+    sam_model.model = sam_model.model.to(args.device)
 
     # prepare dataset
     # data_cfg = Config.fromfile(args.data_config)  # TODO: get data cfg from a file, instead of hard-code
-    dataloader = build_data_loader('test_without_hbox')
-    # dataloader = build_data_loader('trainval_with_hbox')
+    # dataloader = build_data_loader('test_without_hbox')
+    dataloader = build_data_loader('trainval_with_hbox')
     evaluator = build_evaluator(args.merge_patches, args.format_only)
     evaluator.dataset_meta = dataloader.dataset.metainfo  # TODO: add assert to make sure the CLASSES in ckpt and in dataset are the same
 

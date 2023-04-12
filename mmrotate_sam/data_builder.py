@@ -9,11 +9,13 @@ from mmengine.evaluator import Evaluator
 from mmengine.dataset import worker_init_fn
 from mmengine.dist import get_rank
 from mmengine.logging import print_log
-from mmengine.registry import DATA_SAMPLERS, FUNCTIONS, EVALUATOR, VISUALIZERS
+from mmengine.registry import DATA_SAMPLERS, FUNCTIONS, EVALUATOR
 from mmengine.utils import digit_version
 from mmengine.utils.dl_utils import TORCH_VERSION
 
 from mmrotate.registry import DATASETS
+
+import transforms
 
 
 def build_data_loader(data_name=None):
@@ -33,8 +35,7 @@ def build_evaluator(merge_patches=True, format_only=False):
 
 # dataset settings
 dataset_type = 'DOTADataset'
-# data_root = 'data/split_ss_dota/'
-data_root = '../../dota_data/split_ss_dota/'
+data_root = 'data/split_ss_dota/'
 backend_args = None
 
 naive_trainval_pipeline = [
@@ -45,8 +46,6 @@ naive_trainval_pipeline = [
     # Horizontal GTBox, (x1,y1,x2,y2)
     dict(type='AddConvertedGTBox', box_type_mapping=dict(h_gt_bboxes='hbox')),
     dict(type='ConvertBoxType', box_type_mapping=dict(gt_bboxes='rbox')),
-    # # Horizontal GTBox, (x,y,w,h,theta)
-    # dict(type='ConvertBoxType', box_type_mapping=dict(gt_bboxes='rbox')),
     dict(
         type='mmdet.PackDetInputs',
         meta_keys=('img_id', 'img_path', 'ori_shape', 'img_shape',
@@ -65,13 +64,7 @@ naive_test_pipeline = [
 naive_trainval_dataset = dict(
     type=dataset_type,
     data_root=data_root,
-    # ann_file='trainval/annfiles/',
-    # ann_file='trainval/annfiles-1sample/',
-    ann_file='trainval/annfiles-3sample/',
-    # ann_file='trainval/annfiles-10sample/',
-    # ann_file='trainval/annfiles-30sample/',
-    # ann_file='trainval/annfiles-100sample/',
-    # ann_file='trainval/annfiles-1000sample/',
+    ann_file='trainval/annfiles/',
     data_prefix=dict(img_path='trainval/images/'),
     test_mode=True,  # we only inference the sam
     pipeline=naive_trainval_pipeline)
