@@ -44,6 +44,7 @@ import sys
 sys.path.append('../')
 from core.utils import get_file_list
 
+
 def parse_args():
     parser = argparse.ArgumentParser(
         'Detect-Segment-Anything Demo', add_help=True)
@@ -74,7 +75,7 @@ def parse_args():
     parser.add_argument(
         '--det-device',
         '-d',
-        default='cpu',
+        default='cuda:0',
         help='Device used for inference')
     parser.add_argument(
         '--sam-device',
