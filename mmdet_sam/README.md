@@ -125,22 +125,15 @@ python coco_style_eval.py ${DATA_ROOT} mmdetection/configs/faster_rcnn/faster-rc
 ```shell
 cd mmsam
 pip install git+https://github.com/facebookresearch/segment-anything.git
-
-git clone https://github.com/IDEA-Research/GroundingDINO.git
-cd GroundingDINO; pip install -e .; cd ..
+pip install git+https://github.com/IDEA-Research/GroundingDINO.git
 ```
 
 2. GLIP
 ```shell
 cd mmsam
 pip install git+https://github.com/facebookresearch/segment-anything.git
-
-git clone https://github.com/microsoft/GLIP
-cd GLIP
-pip install einops shapely timm yacs tensorboardX ftfy prettytable pymongo
-pip install transformers 
-pip install -e .
-cd ..
+pip install git+https://github.com/microsoft/GLIP.git
+pip install einops shapely timm yacs tensorboardX ftfy prettytable pymongo transformers nltk
 ```
 
 #### 模型推理演示
