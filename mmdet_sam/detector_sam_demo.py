@@ -16,8 +16,12 @@ from mmengine.config import Config
 from mmengine.utils import ProgressBar
 from PIL import Image
 # segment anything
-from segment_anything import SamPredictor, sam_model_registry
-
+from segment_anything import SamPredictor, build_sam
+# GLIP
+from maskrcnn_benchmark.engine.predictor_glip import GLIPDemo
+from maskrcnn_benchmark.config import cfg
+import sys
+sys.path.append('../')
 from core.utils import get_file_list
 
 
@@ -77,6 +81,20 @@ def __build_grounding_dino_model(args):
     return model
 
 
+def __build_glip_model(args):
+    cfg.local_rank = 0
+    cfg.num_gpus = 1
+    cfg.merge_from_file(args.det_config)
+    cfg.merge_from_list(['MODEL.WEIGHT', args.det_weight])
+    cfg.merge_from_list(['MODEL.DEVICE', 'cpu'])
+    model = GLIPDemo(
+        cfg,
+        min_image_size=800,
+        confidence_threshold=0.7,
+        show_mask_heatmaps=False)
+    return model
+
+
 grounding_dino_transform = T.Compose([
     T.RandomResize([800], max_size=1333),
     T.ToTensor(),
@@ -87,6 +105,8 @@ grounding_dino_transform = T.Compose([
 def build_detecter(args):
     if 'GroundingDINO' in args.det_config:
         detecter = __build_grounding_dino_model(args)
+    elif 'GLIP' in args.det_config:
+        detecter = __build_glip_model(args)
     else:
         config = Config.fromfile(args.det_config)
         if 'init_cfg' in config.model.backbone:
@@ -100,7 +120,11 @@ def run_detector(model, image_path, args):
     pred_dict = {}
 
     if args.cpu_off_load:
-        model = model.to(args.det_device)
+        if 'GLIP' in args.det_config:
+            model.model = model.model.to(args.det_device)
+            model.device = args.det_device
+        else:
+            model = model.to(args.det_device)
 
     if 'GroundingDINO' in args.det_config:
         image_pil = Image.open(image_path).convert('RGB')  # load image
@@ -150,6 +174,28 @@ def run_detector(model, image_path, args):
             boxes_filt[i][:2] -= boxes_filt[i][2:] / 2
             boxes_filt[i][2:] += boxes_filt[i][:2]
         pred_dict['boxes'] = boxes_filt
+    elif 'GLIP' in args.det_config:
+        image = cv2.imread(image_path)
+        text_prompt = args.text_prompt
+        text_prompt = text_prompt.lower()
+        text_prompt = text_prompt.strip()
+        if not text_prompt.endswith('.'):
+            text_prompt = text_prompt + '.'
+        top_predictions = model.inference(image, text_prompt)
+        scores = top_predictions.get_field("scores").tolist()
+        labels = top_predictions.get_field("labels").tolist()
+        new_labels = []
+        if model.entities and model.plus:
+            for i in labels:
+                if i <= len(model.entities):
+                    new_labels.append(model.entities[i - model.plus])
+                else:
+                    new_labels.append('object')
+        else:
+            new_labels = ['object' for i in labels]
+        pred_dict['labels'] = new_labels
+        pred_dict['scores'] = scores
+        pred_dict['boxes'] = top_predictions.bbox
     else:
         result = inference_detector(model, image_path)
         pred_instances = result.pred_instances[
@@ -163,7 +209,11 @@ def run_detector(model, image_path, args):
         ]
 
     if args.cpu_off_load:
-        model = model.to('cpu')
+        if 'GLIP' in args.det_config:
+            model.model = model.model.to('cpu')
+            model.device = args.det_device
+        else:
+            model = model.to('cpu')
     return model, pred_dict
 
 
@@ -227,7 +277,11 @@ def main():
 
     det_model = build_detecter(args)
     if not cpu_off_load:
-        det_model = det_model.to(args.det_device)
+        if 'GLIP' in args.det_config:
+            det_model.model = det_model.model.to(args.det_device)
+            det_model.device = args.det_device
+        else:
+            det_model = det_model.to(args.det_device)
 
     if not only_det:
         build_sam = sam_model_registry[args.sam_type]
