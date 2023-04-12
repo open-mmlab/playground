@@ -13,6 +13,11 @@ try:
     import groundingdino.datasets.transforms as T
     from groundingdino.models import build_model
     from groundingdino.util.utils import clean_state_dict, get_phrases_from_posmap
+    grounding_dino_transform = T.Compose([
+            T.RandomResize([800], max_size=1333),
+            T.ToTensor(),
+            T.Normalize([0.485, 0.456, 0.406], [0.229, 0.224, 0.225]),
+    ])
 except ImportError:
     groundingdino = None
 # GLIP
@@ -133,12 +138,6 @@ def run_detector(model, image_path, args):
             model = model.to(args.det_device)
 
     if 'GroundingDINO' in args.det_config:
-        grounding_dino_transform = T.Compose([
-            T.RandomResize([800], max_size=1333),
-            T.ToTensor(),
-            T.Normalize([0.485, 0.456, 0.406], [0.229, 0.224, 0.225]),
-        ])
-
         image_pil = Image.open(image_path).convert('RGB')  # load image
         image, _ = grounding_dino_transform(image_pil, None)  # 3, h, w
 
