@@ -30,7 +30,9 @@ def parse_args():
     parser.add_argument('--only-det', action='store_true')
     parser.add_argument('--not-show-label', action='store_true')
     parser.add_argument(
-        '--sam-type', type=str, default='vit_h',
+        '--sam-type',
+        type=str,
+        default='vit_h',
         choices=['vit_h', 'vit_l', 'vit_b'],
         help='sam type')
     parser.add_argument(
@@ -94,7 +96,7 @@ def build_detecter(args):
     return detecter
 
 
-def run_detecter(model, image_path, args):
+def run_detector(model, image_path, args):
     pred_dict = {}
 
     if args.cpu_off_load:
@@ -239,7 +241,7 @@ def main():
     progress_bar = ProgressBar(len(files))
     for image_path in files:
         save_path = os.path.join(out_dir, os.path.basename(image_path))
-        det_model, pred_dict = run_detecter(det_model, image_path, args)
+        det_model, pred_dict = run_detector(det_model, image_path, args)
 
         if pred_dict['boxes'].shape[0] == 0:
             print('No objects detected !')
