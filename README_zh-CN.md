@@ -35,12 +35,12 @@
 <br>
 目前包括如下相关应用
 
-|                                                                        |                                                                   效果图                                                                    | 说明                                                                                                           |
-| :--------------------------------------------------------------------: | :-----------------------------------------------------------------------------------------------------------------------------------------: | :------------------------------------------------------------------------------------------------------------- |
-|                 [mmdet_sam](mmdet_sam/README_zh-CN.md)                 | <img src="https://user-images.githubusercontent.com/17425982/231419108-bc5ef1ed-cb0b-496a-a19e-9b3b55479426.png" width="50%" height="10%"/> | 目标检测检测相关模型 + SAM。将闭集目标检测、开放词汇目标检测、 Grounding 目标检测和 SAM 结合探索实例分割新玩法 |
-|              [mmrotate_sam](mmrotate_sam/README_zh-CN.md)              | <img src="https://user-images.githubusercontent.com/79644233/231568599-58694ec9-a3b1-44a4-833f-74cfb4d4ca45.png" width="50%" height="10%"/> | 旋转框检测相关模型 + SAM。 将 SAM 和弱监督即水平框检测联合实现旋转框检测，从此省掉累人的旋转框标注             |
-|     [mmpose_open_detection](mmpose_open_detection/README_zh-CN.md)     | <img src="https://user-images.githubusercontent.com/8425513/231439110-c0e7d6f8-5692-4bcb-b6cf-c3c243a990a5.jpg" width="50%" height="10%"/>  | 开放目标检测 + mmpose。探索开放目标检测和各类姿态估计算法结合实现万物皆可摆 Pose                               |
-| [mmtracking_open_detection](mmtracking_open_detection/README_zh-CN.md) |                      <img src="https://github.com/zwhus/pictures/raw/main/demo%2B(1).gif" width="50%" height="10%" />                       | 开放目标检测 + tracking。探索开放目标检测和视频任务相结合，轻松实现开放类别的视频跟踪和分割                    |
+|                                                                        |                                                                     效果图                                                                     | 说明                                                                                                           |
+| :--------------------------------------------------------------------: |:-------------------------------------------------------------------------------------------------------------------------------------------:| :------------------------------------------------------------------------------------------------------------- |
+|                 [mmdet_sam](mmdet_sam/README_zh-CN.md)                 | <img src="https://user-images.githubusercontent.com/17425982/231419108-bc5ef1ed-cb0b-496a-a19e-9b3b55479426.png" width="70%" height="20%"/> | 目标检测检测相关模型 + SAM。将闭集目标检测、开放词汇目标检测、 Grounding 目标检测和 SAM 结合探索实例分割新玩法 |
+|              [mmrotate_sam](mmrotate_sam/README_zh-CN.md)              | <img src="https://user-images.githubusercontent.com/79644233/231568599-58694ec9-a3b1-44a4-833f-74cfb4d4ca45.png" width="70%" height="20%"/> | 旋转框检测相关模型 + SAM。 将 SAM 和弱监督即水平框检测联合实现旋转框检测，从此省掉累人的旋转框标注             |
+|     [mmpose_open_detection](mmpose_open_detection/README_zh-CN.md)     | <img src="https://user-images.githubusercontent.com/8425513/231439110-c0e7d6f8-5692-4bcb-b6cf-c3c243a990a5.jpg" width="70%" height="20%"/>  | 开放目标检测 + mmpose。探索开放目标检测和各类姿态估计算法结合实现万物皆可摆 Pose                               |
+| [mmtracking_open_detection](mmtracking_open_detection/README_zh-CN.md) |                      <img src="https://github.com/zwhus/pictures/raw/main/demo%2B(1).gif" width="70%" height="20%" />                       | 开放目标检测 + tracking。探索开放目标检测和视频任务相结合，轻松实现开放类别的视频跟踪和分割                    |
 
 下面详细说明。
 
