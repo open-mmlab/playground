@@ -385,7 +385,27 @@ Evaluate annotation type *segm*
 
 GroudingDINO 在COCO数据集的测试结果：
 
-使用`--box-thr` = 0.3 以及 `--apply-label-index`功能
+使用`--box-thr` (默认是 0.3)
+
+```text
+Evaluate annotation type *bbox*
+
+DONE (t=6.85s).
+ Average Precision  (AP) @[ IoU=0.50:0.95 | area=   all | maxDets=100 ] = 0.404
+ Average Precision  (AP) @[ IoU=0.50      | area=   all | maxDets=100 ] = 0.549
+ Average Precision  (AP) @[ IoU=0.75      | area=   all | maxDets=100 ] = 0.440
+ Average Precision  (AP) @[ IoU=0.50:0.95 | area= small | maxDets=100 ] = 0.244
+ Average Precision  (AP) @[ IoU=0.50:0.95 | area=medium | maxDets=100 ] = 0.434
+ Average Precision  (AP) @[ IoU=0.50:0.95 | area= large | maxDets=100 ] = 0.556
+ Average Recall     (AR) @[ IoU=0.50:0.95 | area=   all | maxDets=  1 ] = 0.322
+ Average Recall     (AR) @[ IoU=0.50:0.95 | area=   all | maxDets= 10 ] = 0.479
+ Average Recall     (AR) @[ IoU=0.50:0.95 | area=   all | maxDets=100 ] = 0.493
+ Average Recall     (AR) @[ IoU=0.50:0.95 | area= small | maxDets=100 ] = 0.308
+ Average Recall     (AR) @[ IoU=0.50:0.95 | area=medium | maxDets=100 ] = 0.524
+ Average Recall     (AR) @[ IoU=0.50:0.95 | area= large | maxDets=100 ] = 0.653
+ ```
+
+使用`--apply-label-index`功能
 
 ```text
 Evaluate annotation type *bbox*
@@ -405,5 +425,4 @@ DONE (t=6.85s).
  Average Recall     (AR) @[ IoU=0.50:0.95 | area= large | maxDets=100 ] = 0.691
 ```
 
-如果不使用`--apply-label-index`功能， coco数据集 map0.5-0.95 将会下降为40.5
 当然你依旧可以降低 `--box-thr`，例如设置为 0.001 从而提升检测性能。
