@@ -1,8 +1,14 @@
-# MMTracking-Grouding
+# MMtracking OpenDetection
 
 借助于开放集目标检测 Open-Set Object Detection, 利用运动信息（卡尔曼滤波器）来进行多目标跟踪。
 
 受限于时间，目前只支持GroundingDINO, GLIP以及Detic 结合Byte 方式进行跟踪
+
+<div align="center">
+<img src="https://github.com/zwhus/pictures/raw/main/bdd.gif">
+<img src="https://github.com/zwhus/pictures/raw/main/demo.gif">
+<img src="https://github.com/zwhus/pictures/raw/main/demo%2B(1).gif">
+</div>
 
 ## 参数说明
 
@@ -11,6 +17,7 @@
 本工程参考了 [GroundingDINO](https://github.com/IDEA-Research/GroundingDINO)，非常感谢！
 
 #### demo文件的获取
+
 ```shell
 cd mmsam
 wget https://download.openmmlab.com/playground/mmtracking/tracking_demo.zip
@@ -47,23 +54,40 @@ cd GroundingDINO; pip install -e .; cd ..
 ```
 
 ### GLIP环境安装
+
 ```shell
 git clone https://github.com/microsoft/GLIP.git
 cd GLIP
 pip install einops shapely timm yacs tensorboardX ftfy prettytable pymongo
-pip install transformers 
+pip install transformers
 python setup.py build develop --user
 cd ..
 ```
 
+### SAM环境安装
+
+```shell
+pip install git+https://github.com/facebookresearch/segment-anything.git
+```
 
 ## 模型推理演示
 
 仅以GroundingDINO为例
+
+### 多目标跟踪
+
 ```shell
 cd mmtracking_open_detection
 
 python tracking_demo.py "../tracking_demo/mot_challenge_track.mp4" "../GroundingDINO/groundingdino/config/GroundingDINO_SwinB.cfg.py" "../models/groundingdino_swinb_cogcoor.pth"  --text_prompt "person . rider . car . truck . bus . train . motorcycle . bicycle ." --out-dir "outputs/mot_challenge"
 
-python tracking_demo.py "../tracking_demo/bdd_val_track" "../GroundingDINO/groundingdino/config/GroundingDINO_SwinB.cfg.py" "../models/groundingdino_swinb_cogcoor.pth"  --text_prompt "person . rider . car . truck . bus . train . motorcycle . bicycle ." --out-dir "outputs/mot_challenge"
+python tracking_demo.py "../tracking_demo/bdd_val_track" "../GroundingDINO/groundingdino/config/GroundingDINO_SwinB.cfg.py" "../models/groundingdino_swinb_cogcoor.pth"  --text_prompt "person . rider . car . truck . bus . train . motorcycle . bicycle ." --out-dir "outputs/bdd100k" --fps 30
+```
+
+### 多目标跟踪和分割
+
+```shell
+cd mmtracking_open_detection
+
+python tracking_demo.py "../tracking_demo/bdd_val_track" "../GroundingDINO/groundingdino/config/GroundingDINO_SwinB.cfg.py" "../models/groundingdino_swinb_cogcoor.pth"  --text_prompt "person . rider . car . truck . bus . train . motorcycle . bicycle ." --out-dir "outputs/bdd100k" --fps 30 --mots
 ```

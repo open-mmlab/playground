@@ -24,34 +24,49 @@ except ImportError:
 # GLIP inflect
 try:
     import maskrcnn_benchmark
-    from maskrcnn_benchmark.engine.predictor_glip import GLIPDemo
     from maskrcnn_benchmark.config import cfg
+    from maskrcnn_benchmark.engine.predictor_glip import GLIPDemo
 except ImportError:
     maskrcnn_benchmark = None
 
 try:
     import mmcv
     import mmdet
+    from mmdet.apis import inference_detector, init_detector
     from mmdet.models.trackers import ByteTracker
     from mmdet.structures import DetDataSample
     from mmdet.visualization.local_visualizer import TrackLocalVisualizer
-    from mmdet.apis import inference_detector, init_detector
     from mmengine.config import Config
-    from mmengine.structures import InstanceData
     from mmengine.logging import print_log
+    from mmengine.structures import InstanceData
 except ImportError:
     mmdet = None
+
+try:
+    import segment_anything
+    from segment_anything import SamPredictor, sam_model_registry
+except ImportError:
+    segment_anything = None
 
 IMG_EXTENSIONS = ('.jpg', '.jpeg', '.png')
 
 
 def parse_args():
     parser = argparse.ArgumentParser('Open Tracking Demo', add_help=True)
-    parser.add_argument(
-        'inputs', type=str, help='path to video or image dirs')
+    parser.add_argument('inputs', type=str, help='path to video or image dirs')
     parser.add_argument('det_config', type=str, help='path to det config file')
     parser.add_argument('det_weight', type=str, help='path to det weight file')
-    
+    parser.add_argument(
+        '--sam-type',
+        type=str,
+        default='vit_l',
+        choices=['vit_h', 'vit_l', 'vit_b'],
+        help='sam type')
+    parser.add_argument(
+        '--sam-weight',
+        type=str,
+        default='../models/sam_vit_l_0b3195.pth',
+        help='path to checkpoint file')
     parser.add_argument('--text_prompt', '-t', type=str, help='text prompt')
     parser.add_argument('--show', action='store_true')
     parser.add_argument(
@@ -67,9 +82,18 @@ def parse_args():
         '-d',
         default='cuda:0',
         help='Device used for inference')
+    parser.add_argument(
+        '--sam-device',
+        '-s',
+        default='cuda:0',
+        help='Device used for inference')
     parser.add_argument('--cpu-off-load', '-c', action='store_true')
+    parser.add_argument('--mots', action='store_true')
 
     # track params
+    # you can modify tracker score to fit your task
+    # use grouding dino, in demo: mot challenge use init
+    # init_track_thr 0.35 and obj_score_thrs_high 0.3
     parser.add_argument(
         '--init_track_thr', type=float, default=0.45, help='init track')
     parser.add_argument(
@@ -94,6 +118,7 @@ def parse_args():
         '--out', type=str, default='demo.mp4', help='output video name')
     return parser.parse_args()
 
+
 def __build_grounding_dino_model(args):
     gdino_args = Config.fromfile(args.det_config)
     model = build_model(gdino_args)
@@ -101,6 +126,7 @@ def __build_grounding_dino_model(args):
     model.load_state_dict(clean_state_dict(checkpoint['model']), strict=False)
     model.eval()
     return model
+
 
 def __build_glip_model(args):
     cfg.merge_from_file(args.det_config)
@@ -112,6 +138,7 @@ def __build_glip_model(args):
         confidence_threshold=0.7,
         show_mask_heatmaps=False)
     return model
+
 
 def build_detecter(args):
     if 'GroundingDINO' in args.det_config:
@@ -126,8 +153,10 @@ def build_detecter(args):
             config, args.det_weight, device='cpu', cfg_options={})
     return detecter
 
+
 def create_positive_dict(tokenized, tokens_positive, labels):
-    """construct a dictionary such that positive_map[i] = j, iff token i is mapped to j label"""
+    """construct a dictionary such that positive_map[i] = j,
+    if token i is mapped to j label"""
 
     positive_map_label_to_token = {}
 
@@ -177,7 +206,7 @@ def run_detector(model, image_new, args, label_name=None):
             model = model.to(args.det_device)
 
     if 'GroundingDINO' in args.det_config:
-        
+
         image, _ = grounding_dino_transform(image_new, None)  # 3, h, w
         tokens_positive = []
         start_i = 0
@@ -188,20 +217,21 @@ def run_detector(model, image_new, args, label_name=None):
             if _index != len(label_name) - 1:
                 start_i = end_i + len(separation_tokens)
         tokenizer = get_tokenlizer.get_tokenlizer('bert-base-uncased')
-        tokenized = tokenizer(args.text_prompt, padding='longest', return_tensors='pt')
+        tokenized = tokenizer(
+            args.text_prompt, padding='longest', return_tensors='pt')
         positive_map_label_to_token = create_positive_dict(
             tokenized, tokens_positive, list(range(len(label_name))))
 
         image = image.to(next(model.parameters()).device)
         with torch.no_grad():
             outputs = model(image[None], captions=[args.text_prompt])
-        
+
         logits = outputs['pred_logits'].cpu().sigmoid()[0]  # (nq, 256)
         boxes = outputs['pred_boxes'].cpu()[0]  # (nq, 4)
 
         logits = convert_grounding_to_od_logits(
             logits, len(label_name),
-            positive_map_label_to_token)  #[N, num_classes]
+            positive_map_label_to_token)  # [N, num_classes]
 
         # filter output
         logits_filt = logits.clone()
@@ -224,22 +254,27 @@ def run_detector(model, image_new, args, label_name=None):
         pred_instances.scores = scores
 
     elif 'GLIP' in args.det_config:
-        top_predictions = model.inference(image_new, args.text_prompt)
-        
-        # glip will remove some unknown class, like pedestrain
+        predictions = model.compute_prediction(image_new, args.text_prompt)
+
+        # glip will remove some unknown class, like pedestrian
         custom_vocabulary = args.text_prompt[:-1].split('.')
         label_name = [c.strip() for c in custom_vocabulary]
         if len(label_name) != len(model.entities):
             for label in label_name:
                 if label not in model.entities:
-                    print_log(
-                        f'GLIP remove unknown class name: {label}, and don \'t visualize this class.')
-            
+                    print_log(f'GLIP remove unknown class name: {label}, and \
+                            don \'t visualize this class.')
+
+        # filter bbox
+        scores = predictions.get_field('scores')
+        keep = torch.nonzero(scores > args.box_thr).squeeze(1)
+        top_predictions = predictions[keep]
+
         pred_instances = InstanceData()
         pred_instances.bboxes = top_predictions.bbox
-        pred_instances.labels = top_predictions.get_field("labels") - 1
-        pred_instances.scores = top_predictions.get_field("scores")
-        
+        pred_instances.labels = top_predictions.get_field('labels') - 1
+        pred_instances.scores = top_predictions.get_field('scores')
+
     else:
         result = inference_detector(model, image_new)
         pred_instances = result.pred_instances[
@@ -254,20 +289,30 @@ def run_detector(model, image_new, args, label_name=None):
 
     return model, pred_instances
 
+
 def main():
-    if groundingdino == None and maskrcnn_benchmark == None and mmdet == None:
+    if groundingdino is None and mmdet is None:
         raise RuntimeError('detection model is not installed,\
                  please install it follow README')
-
     args = parse_args()
 
+    if 'GLIP' in args.det_config:
+        if maskrcnn_benchmark is None:
+            raise RuntimeError('detection model is not installed,\
+                 please install it follow README')
+    elif args.mots:
+        if segment_anything is None:
+            raise RuntimeError('mask model is not installed,\
+                 please install it follow README')
+
     if args.cpu_off_load is True:
-        if 'cpu' in args.det_device:
+        if 'cpu' in args.det_device and 'cpu ' in args.sam_device:
             raise RuntimeError(
                 'args.cpu_off_load is an invalid parameter due to '
-                'detection model IS on the cpu.')
-        
-    if 'GroundingDINO' in args.det_config or 'GLIP' in args.det_config or 'Detic' in args.det_config:
+                'detection and mask model IS on the cpu.')
+
+    if 'GroundingDINO' in args.det_config or 'GLIP' in args.det_config or \
+       'Detic' in args.det_config:
         assert args.text_prompt
 
     out_dir = args.out_dir
@@ -311,13 +356,20 @@ def main():
     # custom label name
     custom_vocabulary = text_prompt[:-1].split('.')
     label_name = [c.strip() for c in custom_vocabulary]
-    
+
     # visulization
     visualizer = TrackLocalVisualizer()
     visualizer.dataset_meta = {'classes': label_name}
-   
+
     # det model
     det_model = build_detecter(args)
+
+    # sam model
+    if args.mots:
+        build_sam = sam_model_registry[args.sam_type]
+        sam_model = SamPredictor(build_sam(checkpoint=args.sam_weight))
+        if not args.cpu_off_load:
+            sam_model.mode = sam_model.model.to(args.sam_device)
 
     # tracker
     tracker = ByteTracker(
@@ -338,7 +390,7 @@ def main():
 
     if 'Detic' in args.det_config:
         from projects.Detic.detic.utils import (get_text_embeddings,
-                                reset_cls_layer_weight)
+                                                reset_cls_layer_weight)
         det_model.dataset_meta['classes'] = label_name
         embedding = get_text_embeddings(custom_vocabulary=custom_vocabulary)
         reset_cls_layer_weight(det_model, embedding)
@@ -354,15 +406,17 @@ def main():
                 image_new = cv2.imread(image_path)
         else:
             if 'GroundingDINO' in args.det_config:
-                image_new = Image.fromarray(cv2.cvtColor(img, cv2.COLOR_BGR2RGB))
+                image_new = Image.fromarray(
+                    cv2.cvtColor(img, cv2.COLOR_BGR2RGB))
             else:
                 image_new = img
-        
-        model, pred_instances = run_detector(det_model, image_new, args, label_name)
-        
+
+        model, pred_instances = run_detector(det_model, image_new, args,
+                                             label_name)
+
         if 'GLIP' in args.det_config:
             visualizer.dataset_meta = {'classes': model.entities}
-            
+
         # track input
         img_data_sample = DetDataSample()
         img_data_sample.pred_instances = pred_instances
@@ -376,6 +430,31 @@ def main():
             vis_image = np.asarray(image_new)
         else:
             vis_image = image_new[..., ::-1]
+
+        if args.mots:
+            if args.cpu_off_load:
+                sam_model.mode = sam_model.model.to(args.sam_device)
+            if isinstance(img, str):
+                image = cv2.imread(image_path)
+                image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
+            else:
+                image = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
+
+            sam_model.set_image(image)
+
+            transformed_boxes = sam_model.transform.apply_boxes_torch(
+                pred_track_instances.bboxes, image.shape[:2])
+            transformed_boxes = transformed_boxes.to(sam_model.model.device)
+
+            masks, _, _ = sam_model.predict_torch(
+                point_coords=None,
+                point_labels=None,
+                boxes=transformed_boxes,
+                multimask_output=False)
+            pred_track_instances.masks = masks.squeeze().cpu().numpy()
+
+            if args.cpu_off_load:
+                sam_model.model = sam_model.model.to('cpu')
 
         visualizer.add_datasample(
             'mot',
