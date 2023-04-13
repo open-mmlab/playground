@@ -4,9 +4,8 @@
 <img src="https://user-images.githubusercontent.com/27466624/231666666-4f4c5696-df73-45cd-af04-758ea3806a82.png"/>
 </div>
 
-借助于开放目标检测，并利用运动信息（卡尔曼滤波器）来进行多目标跟踪。
-
-受限于时间，目前只支持 GroundingDINO, GLIP 以及 Detic 结合 ByteTrack 方式进行跟踪
+With the help of open object detection and utilizing motion information (Kalman filters), multi-object tracking can be performed.
+Due to time constraints, currently only GroundingDINO, GLIP, and Detic combined with ByteTrack are supported for tracking.
 
 <div align="center">
 <img src="https://github.com/zwhus/pictures/raw/main/bdd.gif">
@@ -14,34 +13,36 @@
 <img src="https://github.com/zwhus/pictures/raw/main/demo%2B(1).gif">
 </div>
 
-## 参数说明
+## Parameter Description
 
-`tracking_demo.py` 用于视频或者图片文件夹的多目标跟踪推理
+`tracking_demo.py` : for multi-object tracking inference on video or image folders.
 
-本工程参考了 [GroundingDINO](https://github.com/IDEA-Research/GroundingDINO)，非常感谢！
+This project referenced [GroundingDINO](https://github.com/IDEA-Research/GroundingDINO). Thanks!
 
-## 基础环境安装
+````
+
+## Base Development Environment Setup
 
 ```shell
 conda create -n mmtracking-sam python=3.8 -y
 conda activate mmtracking-sam
 pip install torch==1.9.1+cu111 torchvision==0.10.1+cu111 -f https://download.pytorch.org/whl/torch_stable.html
 git clone https://github.com/open-mmlab/playground.git
-```
+````
 
-### MMDet 环境安装
+### MMDet Dependencies Installation
 
 ```shell
 pip install -U openmim
 mim install "mmcv>=2.0.0"
 
-# 源码安装
+# build from source
 cd playground
 git clone -b tracking https://github.com/open-mmlab/mmdetection.git
 cd mmdetection; pip install -e .; cd ..
 ```
 
-### Grounding Dino 环境安装
+### Grounding Dino Dependencies Installation
 
 ```shell
 cd playground
@@ -49,7 +50,7 @@ pip install git+https://github.com/facebookresearch/segment-anything.git
 pip install git+https://github.com/IDEA-Research/GroundingDINO.git
 ```
 
-### GLIP 环境安装
+### GLIP Dependencies Installation
 
 ```shell
 cd playground
@@ -59,13 +60,13 @@ git clone https://github.com/microsoft/GLIP.git
 cd GLIP; python setup.py build develop --user; cd ..
 ```
 
-### SAM 环境安装
+### SAM Dependencies Installation
 
 ```shell
 pip install git+https://github.com/facebookresearch/segment-anything.git
 ```
 
-## demo视频和文件的获取
+## Obtaining the demo video and images
 
 ```shell
 cd playground
@@ -73,7 +74,7 @@ wget https://download.openmmlab.com/playground/mmtracking/tracking_demo.zip
 unzip tracking_demo.zip
 ```
 
-## 权重下载
+## Download weights
 
 ```shell
 mkdir ../models
@@ -83,11 +84,11 @@ wget -P ../models/ https://penzhanwu2bbs.blob.core.windows.net/data/GLIPv1_Open/
 wget -P ../models/ https://github.com/IDEA-Research/GroundingDINO/releases/download/v0.1.0-alpha2/groundingdino_swinb_cogcoor.pth
 ```
 
-## 模型推理演示
+## Demonstration of model inference
 
-仅以 GroundingDINO 为例
+Using GroundingDINO as an example only.
 
-### 多目标跟踪
+### MOT
 
 ```shell
 cd mmtracking_open_detection
@@ -99,11 +100,11 @@ python tracking_demo.py "../tracking_demo/mot_challenge_track.mp4" "configs/Grou
 python tracking_demo.py "../tracking_demo/bdd_val_track" "configs/GroundingDINO_SwinB.cfg.py" "../models/groundingdino_swinb_cogcoor.pth"  --text_prompt "person . rider . car . truck . bus . train . motorcycle . bicycle ." --out-dir "outputs/bdd100k" --fps 30
 ```
 
-### 多目标跟踪和分割
+### MOTS
 
 ```shell
 cd mmtracking_open_detection
 
-# input a images folder
+# input a video
 python tracking_demo.py "../tracking_demo/bdd_val_track" "configs/GroundingDINO_SwinB.cfg.py" "../models/groundingdino_swinb_cogcoor.pth"  --text_prompt "person . rider . car . truck . bus . train . motorcycle . bicycle ." --out-dir "outputs/bdd100k" --fps 30 --mots
 ```
