@@ -1,6 +1,8 @@
 # Collection of Awesome OpenMMLab Applications
 
--- 这里放一张logo
+<div align=center>
+<img src="resources/playground-logo.png"/>
+</div>
 
 [English](README.md) | 简体中文
 
@@ -17,6 +19,8 @@
 
 ## mmdet_sam
 
+-- 贴一张图片
+
 提供了和 mmdet 相关的结合 sam 的应用。具体特性包括：
 
 1. 支持 MMDet 中包括的所有检测模型 (Closed-Set)，典型的如 Faster R-CNN 和 DINO 等串联 SAM 模型进行自动检测和实例分割标注
@@ -24,11 +28,18 @@
 3. 支持 Grounding Object Detection 模型，典型的如 Grounding DINO 和 GLIP 串联 SAM 模型进行自动检测和实例分割标注
 4. 所有模型均支持分布式检测和分割评估和自动 COCO JSON 导出，方便用户对自定义数据进行评估
 
--- 贴一张图片
-
 详情见 [README](mmdet_sam/README_zh-CN.md)
 
 ## mmrotate_sam
+
+<div align=center>
+<img src="https://user-images.githubusercontent.com/79644233/231636420-8b7f81f3-51d2-439c-87cc-6f7eebd32193.png"/>
+</div>
+
+提供了和 mmrotate 相关的结合 sam 的应用。具体特性包括：
+
+1. 支持 sam 的 Zero-shot Oriented Object Detection
+2. 对单张图片进行 sam 的 Zero-shot Oriented Object Detection 推理
 
 详情见 [README](mmrotate_sam/README_zh-CN.md)
 
@@ -37,6 +48,15 @@
 详情见 [README](mmtracking_open_detection/README_zh-CN.md)
 
 ## mmpose_open_detection
+
+<div align=center>
+<img src="https://user-images.githubusercontent.com/17425982/231637220-bebcea80-afad-4039-92c0-5c9cb2c82cad.png"/>
+</div>
+
+提供了和 mmpose 相关的结合 open-set 检测的应用。具体特性包括：
+
+1. 支持单张图片或者文件夹的开发集检测和姿态估计模型推理
+2. 即将支持输入不同的 text prompt 实现对图片中不同类别物体的姿态检测
 
 详情见 [README](mmpose_open_detection/README_zh-CN.md)
 
