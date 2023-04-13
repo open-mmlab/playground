@@ -11,12 +11,11 @@ import torch.nn.functional as F
 from mmengine import Registry
 from mmengine.config import Config
 from mmengine.utils import ProgressBar
-from PIL import Image
-
 from mmpose.apis import inference_topdown
 from mmpose.apis import init_model as init_pose_estimator
 from mmpose.registry import VISUALIZERS
 from mmpose.structures import merge_data_samples
+from PIL import Image
 
 # Grounding DINO
 try:
@@ -108,7 +107,7 @@ def parse_args():
 
 
 def __reset_cls_layer_weight(model, weight):
-    if type(weight) == str:
+    if isinstance(str, weight):
         print(f'Resetting cls_layer_weight from file: {weight}')
         zs_weight = torch.tensor(
             np.load(weight),
@@ -138,8 +137,10 @@ def __build_grounding_dino_model(args):
 
 
 def __build_glip_model(args):
-    assert maskrcnn_benchmark is not None
-    from maskrcnn_benchmark.config import cfg
+    try:
+        from maskrcnn_benchmark.config import cfg
+    except ImportError:
+        assert "'maskrcnn_benchmark' does not exist"
     cfg.merge_from_file(args.det_config)
     cfg.merge_from_list(['MODEL.WEIGHT', args.det_weight])
     cfg.merge_from_list(['MODEL.DEVICE', 'cpu'])
