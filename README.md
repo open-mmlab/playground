@@ -13,6 +13,7 @@ English | [简体中文](README_zh-CN.md)
 🥳 🚀 **Join the playground now and unleash your creativity in the world of AI!**
 
 <div align="center">
+<br>
   <a href="https://openmmlab.medium.com/" style="text-decoration:none;">
     <img src="https://user-images.githubusercontent.com/25839884/219255827-67c1a27f-f8c5-46a9-811d-5e57448c61d1.png" width="3%" alt="" /></a>
   <img src="https://user-images.githubusercontent.com/25839884/218346358-56cc8e2f-a2b8-487f-9088-32480cceabcf.png" width="3%" alt="" />
@@ -30,6 +31,7 @@ English | [简体中文](README_zh-CN.md)
   <img src="https://user-images.githubusercontent.com/25839884/218346358-56cc8e2f-a2b8-487f-9088-32480cceabcf.png" width="3%" alt="" />
   <a href="https://www.zhihu.com/people/openmmlab" style="text-decoration:none;">
     <img src="https://user-images.githubusercontent.com/25839884/219026120-ba71e48b-6e94-4bd4-b4e9-b7d175b5e362.png" width="3%" alt="" /></a>
+<br>
 </div>
 
 Currently, the following applications are included:
