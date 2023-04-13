@@ -1,9 +1,12 @@
 # MMRotate-SAM
 
+<div align=center>
+<img src="https://user-images.githubusercontent.com/79644233/231636420-8b7f81f3-51d2-439c-87cc-6f7eebd32193.png"/>
+</div>
+
 本工程目录存放 MMRotate 和 SAM 相关的代码。
 
 脚本说明：
-
 1. `eval_zero-shot-oriented-detection_dota.py` 实现了 SAM 的 Zero-shot Oriented Object Detection。在 SAM 前级联水平框检测器（当使用旋转框检测器时，取旋转框的最小水平外接矩作为水平框输出），将检测器输出的边界框作为 prompt 输入 SAM 中，输出掩码的最小有向外接矩即为对应目标的旋转框。
 2. `demo_zero-shot-oriented-detection.py` 对单张图片进行 SAM 的 Zero-shot Oriented Object Detection 推理。
 3. `data_builder` 存放数据集、数据加载器的配置信息以及配置过程。
@@ -22,12 +25,11 @@ mim install mmengine 'mmcv>=2.0.0rc0' 'mmrotate>=1.0.0rc0'
 
 pip install git+https://github.com/facebookresearch/segment-anything.git
 pip install opencv-python pycocotools matplotlib onnxruntime onnx
-```
+``` 
 
 ## 使用方式
 
 1. 在单张图上推理检测器级联 SAM 的旋转检测结果，获得可视化结果图。
-
 ```shell
 python demo_zero-shot-oriented-detection.py \
   data/split_ss_dota/test/images/P0006__1024__0___0.png \
@@ -41,7 +43,6 @@ python demo_zero-shot-oriented-detection.py \
 </div>
 
 2. 在 DOTA 数据集上对检测器级联 SAM 的旋转检测结果进行定量评估。
-
 ```shell
 python eval_zero-shot-oriented-detection_dota.py \
   configs/rotated_fcos/rotated-fcos-hbox-le90_r50_fpn_1x_dota.py \
