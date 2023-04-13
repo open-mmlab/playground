@@ -379,3 +379,5 @@ Evaluate annotation type *segm*
  Average Recall     (AR) @[ IoU=0.50:0.95 | area=medium | maxDets=100 ] = 0.605
  Average Recall     (AR) @[ IoU=0.50:0.95 | area= large | maxDets=100 ] = 0.674
 ```
+
+We can see that the performance improves quite significantly.
