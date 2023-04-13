@@ -8,10 +8,14 @@
 
 本工程用于收集 OpenMMLab 相关的有趣应用并且将不断更新。我们非常欢迎社区用户能参与进这些项目中来，任何和 OpenMMLab 相关的有趣应用或者 Demo 都欢迎来贡献。目前包括如下相关应用
 
+<div align=center>
+<img src="https://user-images.githubusercontent.com/27466624/231665783-4a97e86c-6f89-4d63-b828-e7c414d1ff2b.png"/>
+</div>
+
 - `mmdet_sam` 检测相关模型串联 sam
 - `mmrotate_sam` 旋转目标检测模型串联 sam
-- `mmtracking_open_detection` 基于开发集检测的目标跟踪
-- `mmpose_open_detection` 基于开发集检测的姿态估计
+- `mmtracking_open_detection` 基于开放词汇检测的目标跟踪
+- `mmpose_open_detection` 基于开放词汇检测的姿态估计
 
 -- 这里放一个总表
 
@@ -19,7 +23,9 @@
 
 ## mmdet_sam
 
--- 贴一张图片
+<div align=center>
+<img src="https://user-images.githubusercontent.com/27466624/231659917-e3069822-2193-4261-b216-5f53baa64b53.PNG"/>
+</div>
 
 提供了和 mmdet 相关的结合 sam 的应用。具体特性包括：
 
@@ -33,7 +39,7 @@
 ## mmrotate_sam
 
 <div align=center>
-<img src="https://user-images.githubusercontent.com/79644233/231636420-8b7f81f3-51d2-439c-87cc-6f7eebd32193.png"/>
+<img src="https://user-images.githubusercontent.com/27466624/231659969-adf7dd4d-fcec-4677-9105-aa72b2ced00f.PNG"/>
 </div>
 
 提供了和 mmrotate 相关的结合 sam 的应用。具体特性包括：
@@ -50,12 +56,12 @@
 ## mmpose_open_detection
 
 <div align=center>
-<img src="https://user-images.githubusercontent.com/17425982/231637220-bebcea80-afad-4039-92c0-5c9cb2c82cad.png"/>
+<img src="https://user-images.githubusercontent.com/27466624/231660029-03166059-e8cf-4b17-8aa5-b42f3a52f12a.PNG"/>
 </div>
 
 提供了和 mmpose 相关的结合 open-set 检测的应用。具体特性包括：
 
-1. 支持单张图片或者文件夹的开发集检测和姿态估计模型推理
+1. 支持单张图片或者文件夹的开放词汇检测和姿态估计模型推理
 2. 即将支持输入不同的 text prompt 实现对图片中不同类别物体的姿态检测
 
 详情见 [README](mmpose_open_detection/README_zh-CN.md)
