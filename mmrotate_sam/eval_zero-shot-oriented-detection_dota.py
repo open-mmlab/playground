@@ -1,45 +1,44 @@
 # Copyright (c) OpenMMLab. All rights reserved.
 # Refer from https://github.com/Li-Qingyun/sam-mmrotate
-import os
 import argparse
+import os
 from copy import deepcopy
 
 import cv2
 import numpy as np
-
 import torch
-
-from mmengine import Config
-from mmengine.structures import InstanceData
-from mmengine.dist import (collect_results, get_dist_info, get_rank, init_dist,
-                           is_distributed)
-from mmengine.utils import ProgressBar
-
+from data_builder import build_data_loader, build_evaluator
 from mmdet.apis import init_detector
 from mmdet.models.utils import samplelist_boxtype2tensor
-
-from mmrotate.utils import register_all_modules
+from mmengine import Config
+from mmengine.dist import (collect_results, get_dist_info, get_rank, init_dist,
+                           is_distributed)
+from mmengine.structures import InstanceData
+from mmengine.utils import ProgressBar
 from mmrotate.structures import RotatedBoxes
-
-from data_builder import build_data_loader, build_evaluator
-from segment_anything import sam_model_registry, SamPredictor
+from mmrotate.utils import register_all_modules
+from segment_anything import SamPredictor, sam_model_registry
 
 
 def parse_args():
     parser = argparse.ArgumentParser(
         'Evaluation for Zero-shot Oriented Detector with Segment-Anything-'
-        'Model Prompt by Predicted HBox of Horizontal Detector', add_help=True)
+        'Model Prompt by Predicted HBox of Horizontal Detector',
+        add_help=True)
     # parser.add_argument(  # TODO: get data cfg from a file, instead of hard-code
     #     'data_config', type=str,
     #     help='path to config file contains `data` cfg of the oriented object '
     #          'detection data set for evaluation')
     parser.add_argument(
-        'det_config', type=str,
+        'det_config',
+        type=str,
         help='path to config file contains `model` cfg of the detector')
     parser.add_argument(
         'det_weight', type=str, help='path to detector weight file')
     parser.add_argument(
-        '--sam-type', type=str, default='vit_h',
+        '--sam-type',
+        type=str,
+        default='vit_h',
         choices=['vit_h', 'vit_l', 'vit_b'],
         help='sam type')
     parser.add_argument(
@@ -54,7 +53,9 @@ def parse_args():
     parser.add_argument('--set-min-box', action='store_true')
     parser.add_argument('--result-with-mask', action='store_true')
     parser.add_argument(
-        '--max-batch-num-pred', type=int, default=100,
+        '--max-batch-num-pred',
+        type=int,
+        default=100,
         help='max prediction number of mask generation (avoid OOM)')
     parser.add_argument('--only-det', action='store_true')
     parser.add_argument(
@@ -121,9 +122,10 @@ def single_sample_step(data, det_model, sam_predictor, evaluator, args):
             if i == num_batches - 1:
                 batch_boxes = h_bboxes[left_index:]
             else:
-                batch_boxes = h_bboxes[left_index: right_index]
+                batch_boxes = h_bboxes[left_index:right_index]
 
-            transformed_boxes = sam_predictor.transform.apply_boxes_torch(batch_boxes, img.shape[:2])
+            transformed_boxes = sam_predictor.transform.apply_boxes_torch(
+                batch_boxes, img.shape[:2])
             batch_masks, qualities, lr_logits = sam_predictor.predict_torch(
                 point_coords=None,
                 point_labels=None,
@@ -134,7 +136,8 @@ def single_sample_step(data, det_model, sam_predictor, evaluator, args):
         masks = torch.stack(masks, dim=0)
         r_bboxes = [mask2rbox(mask.numpy()) for mask in masks]
 
-    results_list = get_instancedata_resultlist(r_bboxes, labels, masks, scores, args.result_with_mask)
+    results_list = get_instancedata_resultlist(r_bboxes, labels, masks, scores,
+                                               args.result_with_mask)
     data_samples = add_pred_to_datasample(results_list, data_samples)
 
     evaluator.process(data_samples=data_samples, data_batch=data)
@@ -149,7 +152,11 @@ def mask2rbox(mask):
     return r_bbox
 
 
-def get_instancedata_resultlist(r_bboxes, labels, masks, scores, result_with_mask=False):
+def get_instancedata_resultlist(r_bboxes,
+                                labels,
+                                masks,
+                                scores,
+                                result_with_mask=False):
     results = InstanceData()
     results.bboxes = RotatedBoxes(r_bboxes)
     results.scores = scores
@@ -200,15 +207,16 @@ if __name__ == '__main__':
     evaluator.dataset_meta = dataloader.dataset.metainfo  # TODO: add assert to make sure the CLASSES in ckpt and in dataset are the same
 
     if get_rank() == 0:
-        print('data len: ', len(dataloader.dataset),
-              'num_word_size: ', get_dist_info()[1])
+        print('data len: ', len(dataloader.dataset), 'num_word_size: ',
+              get_dist_info()[1])
 
         progress_bar = ProgressBar(len(dataloader))
 
     det_model.eval()
     for i, data in enumerate(dataloader):
 
-        evaluator = single_sample_step(data, det_model, sam_model, evaluator, args)
+        evaluator = single_sample_step(data, det_model, sam_model, evaluator,
+                                       args)
         if get_rank() == 0:
             progress_bar.update()
 
