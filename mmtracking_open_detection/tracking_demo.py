@@ -21,14 +21,24 @@ try:
 except ImportError:
     groundingdino = None
 
+# GLIP inflect
+try:
+    import maskrcnn_benchmark
+    from maskrcnn_benchmark.engine.predictor_glip import GLIPDemo
+    from maskrcnn_benchmark.config import cfg
+except ImportError:
+    maskrcnn_benchmark = None
+
 try:
     import mmcv
     import mmdet
     from mmdet.models.trackers import ByteTracker
     from mmdet.structures import DetDataSample
     from mmdet.visualization.local_visualizer import TrackLocalVisualizer
+    from mmdet.apis import inference_detector, init_detector
     from mmengine.config import Config
     from mmengine.structures import InstanceData
+    from mmengine.logging import print_log
 except ImportError:
     mmdet = None
 
@@ -38,19 +48,10 @@ IMG_EXTENSIONS = ('.jpg', '.jpeg', '.png')
 def parse_args():
     parser = argparse.ArgumentParser('Open Tracking Demo', add_help=True)
     parser.add_argument(
-        '--config_file',
-        '-c',
-        type=str,
-        required=True,
-        help='path to config file')
-    parser.add_argument(
-        '--checkpoint_path',
-        '-p',
-        type=str,
-        required=True,
-        help='path to checkpoint file')
-    parser.add_argument(
-        '--inputs', '-i', type=str, help='path to video or image dirs')
+        'inputs', type=str, help='path to video or image dirs')
+    parser.add_argument('det_config', type=str, help='path to det config file')
+    parser.add_argument('det_weight', type=str, help='path to det weight file')
+    
     parser.add_argument('--text_prompt', '-t', type=str, help='text prompt')
     parser.add_argument('--show', action='store_true')
     parser.add_argument(
@@ -62,17 +63,19 @@ def parse_args():
     parser.add_argument(
         '--box-thr', '-b', type=float, default=0.05, help='box threshold')
     parser.add_argument(
-        '--cpu-only',
-        action='store_true',
-        help='running on cpu only!, default=False')
+        '--det-device',
+        '-d',
+        default='cuda:0',
+        help='Device used for inference')
+    parser.add_argument('--cpu-off-load', '-c', action='store_true')
 
     # track params
     parser.add_argument(
-        '--init_track_thr', type=float, default=0.4, help='init track')
+        '--init_track_thr', type=float, default=0.45, help='init track')
     parser.add_argument(
         '--obj_score_thrs_high',
         type=float,
-        default=0.3,
+        default=0.4,
         help='first association threshold')
     parser.add_argument(
         '--obj_score_thrs_low',
@@ -91,60 +94,37 @@ def parse_args():
         '--out', type=str, default='demo.mp4', help='output video name')
     return parser.parse_args()
 
-
-def build_grounding_dino_model(args):
-    gdino_args = Config.fromfile(args.config_file)
+def __build_grounding_dino_model(args):
+    gdino_args = Config.fromfile(args.det_config)
     model = build_model(gdino_args)
-    checkpoint = torch.load(args.checkpoint_path, map_location='cpu')
+    checkpoint = torch.load(args.det_weight, map_location='cpu')
     model.load_state_dict(clean_state_dict(checkpoint['model']), strict=False)
     model.eval()
     return model
 
+def __build_glip_model(args):
+    cfg.merge_from_file(args.det_config)
+    cfg.merge_from_list(['MODEL.WEIGHT', args.det_weight])
+    cfg.merge_from_list(['MODEL.DEVICE', 'cpu'])
+    model = GLIPDemo(
+        cfg,
+        min_image_size=800,
+        confidence_threshold=0.7,
+        show_mask_heatmaps=False)
+    return model
 
-def get_grounding_output(model, image, args):
-    caption = args.text_prompt
-    caption = caption.lower()
-    caption = caption.strip()
-    if not caption.endswith('.'):
-        caption = caption + '.'
-    label_name = caption[:-1].split('. ')
-
-    tokens_positive = []
-    start_i = 0
-    separation_tokens = '. '
-    for _index, label in enumerate(label_name):
-        end_i = start_i + len(label)
-        tokens_positive.append([(start_i, end_i)])
-        if _index != len(label_name) - 1:
-            start_i = end_i + len(separation_tokens)
-    tokenizer = get_tokenlizer.get_tokenlizer('bert-base-uncased')
-    tokenized = tokenizer(caption, padding='longest', return_tensors='pt')
-    positive_map_label_to_token = create_positive_dict(
-        tokenized, tokens_positive, list(range(len(label_name))))
-
-    device = 'cuda' if not args.cpu_only else 'cpu'
-    model = model.to(device)
-    image = image.to(device)
-    with torch.no_grad():
-        outputs = model(image[None], captions=[caption])
-    logits = outputs['pred_logits'].cpu().sigmoid()[0]  # (nq, 256)
-    boxes = outputs['pred_boxes'].cpu()[0]  # (nq, 4)
-
-    logits = convert_grounding_to_od_logits(
-        logits, len(label_name),
-        positive_map_label_to_token)  #[N, num_classes]
-
-    # filter output
-    logits_filt = logits.clone()
-    boxes_filt = boxes.clone()
-    filt_mask = logits_filt.max(dim=1)[0] > args.box_thr
-    logits_filt = logits_filt[filt_mask]  # num_filt, 256
-    boxes_filt = boxes_filt[filt_mask]  # num_filt, 4
-
-    scores, pred_phrase_idx = logits_filt.max(1)
-
-    return boxes_filt, pred_phrase_idx, scores, label_name
-
+def build_detecter(args):
+    if 'GroundingDINO' in args.det_config:
+        detecter = __build_grounding_dino_model(args)
+    elif 'GLIP' in args.det_config:
+        detecter = __build_glip_model(args)
+    else:
+        config = Config.fromfile(args.det_config)
+        if 'init_cfg' in config.model.backbone:
+            config.model.backbone.init_cfg = None
+        detecter = init_detector(
+            config, args.det_weight, device='cpu', cfg_options={})
+    return detecter
 
 def create_positive_dict(tokenized, tokens_positive, labels):
     """construct a dictionary such that positive_map[i] = j, iff token i is mapped to j label"""
@@ -187,12 +167,108 @@ def convert_grounding_to_od_logits(logits,
     return scores
 
 
+def run_detector(model, image_new, args, label_name=None):
+
+    if args.cpu_off_load:
+        if 'GLIP' in args.det_config:
+            model.model = model.model.to(args.det_device)
+            model.device = args.det_device
+        else:
+            model = model.to(args.det_device)
+
+    if 'GroundingDINO' in args.det_config:
+        
+        image, _ = grounding_dino_transform(image_new, None)  # 3, h, w
+        tokens_positive = []
+        start_i = 0
+        separation_tokens = ' . '
+        for _index, label in enumerate(label_name):
+            end_i = start_i + len(label)
+            tokens_positive.append([(start_i, end_i)])
+            if _index != len(label_name) - 1:
+                start_i = end_i + len(separation_tokens)
+        tokenizer = get_tokenlizer.get_tokenlizer('bert-base-uncased')
+        tokenized = tokenizer(args.text_prompt, padding='longest', return_tensors='pt')
+        positive_map_label_to_token = create_positive_dict(
+            tokenized, tokens_positive, list(range(len(label_name))))
+
+        image = image.to(next(model.parameters()).device)
+        with torch.no_grad():
+            outputs = model(image[None], captions=[args.text_prompt])
+        
+        logits = outputs['pred_logits'].cpu().sigmoid()[0]  # (nq, 256)
+        boxes = outputs['pred_boxes'].cpu()[0]  # (nq, 4)
+
+        logits = convert_grounding_to_od_logits(
+            logits, len(label_name),
+            positive_map_label_to_token)  #[N, num_classes]
+
+        # filter output
+        logits_filt = logits.clone()
+        boxes_filt = boxes.clone()
+        filt_mask = logits_filt.max(dim=1)[0] > args.box_thr
+        logits_filt = logits_filt[filt_mask]  # num_filt, 256
+        boxes_filt = boxes_filt[filt_mask]  # num_filt, 4
+
+        scores, pred_phrase_idx = logits_filt.max(1)
+
+        size = image_new.size
+        boxes_filt = boxes_filt * torch.tensor(
+            [size[0], size[1], size[0], size[1]]).repeat(len(boxes_filt), 1)
+        boxes_filt[:, :2] -= boxes_filt[:, 2:] / 2
+        boxes_filt[:, 2:] += boxes_filt[:, :2]
+
+        pred_instances = InstanceData()
+        pred_instances.bboxes = boxes_filt
+        pred_instances.labels = pred_phrase_idx
+        pred_instances.scores = scores
+
+    elif 'GLIP' in args.det_config:
+        top_predictions = model.inference(image_new, args.text_prompt)
+        
+        # glip will remove some unknown class, like pedestrain
+        custom_vocabulary = args.text_prompt[:-1].split('.')
+        label_name = [c.strip() for c in custom_vocabulary]
+        if len(label_name) != len(model.entities):
+            for label in label_name:
+                if label not in model.entities:
+                    print_log(
+                        f'GLIP remove unknown class name: {label}, and don \'t visualize this class.')
+            
+        pred_instances = InstanceData()
+        pred_instances.bboxes = top_predictions.bbox
+        pred_instances.labels = top_predictions.get_field("labels") - 1
+        pred_instances.scores = top_predictions.get_field("scores")
+        
+    else:
+        result = inference_detector(model, image_new)
+        pred_instances = result.pred_instances[
+            result.pred_instances.scores > args.box_thr]
+
+    if args.cpu_off_load:
+        if 'GLIP' in args.det_config:
+            model.model = model.model.to('cpu')
+            model.device = 'cpu'
+        else:
+            model = model.to('cpu')
+
+    return model, pred_instances
+
 def main():
-    if groundingdino == None and mmdet == None:
+    if groundingdino == None and maskrcnn_benchmark == None and mmdet == None:
         raise RuntimeError('detection model is not installed,\
                  please install it follow README')
 
     args = parse_args()
+
+    if args.cpu_off_load is True:
+        if 'cpu' in args.det_device:
+            raise RuntimeError(
+                'args.cpu_off_load is an invalid parameter due to '
+                'detection model IS on the cpu.')
+        
+    if 'GroundingDINO' in args.det_config or 'GLIP' in args.det_config or 'Detic' in args.det_config:
+        assert args.text_prompt
 
     out_dir = args.out_dir
     os.makedirs(out_dir, exist_ok=True)
@@ -224,6 +300,26 @@ def main():
             raise ValueError('Please set the FPS for the output video.')
         fps = int(fps)
 
+    # text_prompt
+    text_prompt = args.text_prompt
+    text_prompt = text_prompt.lower()
+    text_prompt = text_prompt.strip()
+    if not text_prompt.endswith('.'):
+        text_prompt = text_prompt + '.'
+    args.text_prompt = text_prompt
+
+    # custom label name
+    custom_vocabulary = text_prompt[:-1].split('.')
+    label_name = [c.strip() for c in custom_vocabulary]
+    
+    # visulization
+    visualizer = TrackLocalVisualizer()
+    visualizer.dataset_meta = {'classes': label_name}
+   
+    # det model
+    det_model = build_detecter(args)
+
+    # tracker
     tracker = ByteTracker(
         motion=dict(type='KalmanFilter'),
         obj_score_thrs=dict(
@@ -233,51 +329,61 @@ def main():
         match_iou_thrs=dict(high=0.1, low=0.5, tentative=0.3),
         num_frames_retain=args.num_frames_retain)
 
-    visualizer = TrackLocalVisualizer()
+    if not args.cpu_off_load:
+        if 'GLIP' in args.det_config:
+            det_model.model = det_model.model.to(args.det_device)
+            det_model.device = args.det_device
+        else:
+            det_model = det_model.to(args.det_device)
+
+    if 'Detic' in args.det_config:
+        from projects.Detic.detic.utils import (get_text_embeddings,
+                                reset_cls_layer_weight)
+        det_model.dataset_meta['classes'] = label_name
+        embedding = get_text_embeddings(custom_vocabulary=custom_vocabulary)
+        reset_cls_layer_weight(det_model, embedding)
 
     for frame_id, img in enumerate(imgs):
-        if frame_id > 20:
-            break
+        save_path = os.path.join(args.out_dir, f'{frame_id:06d}.jpg')
+
         if isinstance(img, str):
             image_path = osp.join(args.inputs, img)
-            image_pil = Image.open(image_path).convert('RGB')
-            image, _ = grounding_dino_transform(image_pil, None)
+            if 'GroundingDINO' in args.det_config:
+                image_new = Image.open(image_path).convert('RGB')
+            else:
+                image_new = cv2.imread(image_path)
         else:
-            image_pil = Image.fromarray(cv2.cvtColor(img, cv2.COLOR_BGR2RGB))
-            image, _ = grounding_dino_transform(image_pil, None)
-
-        out_file = os.path.join(args.out_dir, f'{frame_id:06d}.jpg')
-        model = build_grounding_dino_model(args)
-        boxes_filt, pred_phrases, scores_filt, label_name = get_grounding_output(
-            model, image, args)
-
-        visualizer.dataset_meta = {'classes': label_name}
-
-        size = image_pil.size
-        boxes_filt = boxes_filt * torch.tensor(
-            [size[0], size[1], size[0], size[1]]).repeat(len(boxes_filt), 1)
-        boxes_filt[:, :2] -= boxes_filt[:, 2:] / 2
-        boxes_filt[:, 2:] += boxes_filt[:, :2]
-
+            if 'GroundingDINO' in args.det_config:
+                image_new = Image.fromarray(cv2.cvtColor(img, cv2.COLOR_BGR2RGB))
+            else:
+                image_new = img
+        
+        model, pred_instances = run_detector(det_model, image_new, args, label_name)
+        
+        if 'GLIP' in args.det_config:
+            visualizer.dataset_meta = {'classes': model.entities}
+            
         # track input
         img_data_sample = DetDataSample()
-        pred_instances = InstanceData()
-        pred_instances.bboxes = boxes_filt
-        pred_instances.labels = pred_phrases
-        pred_instances.scores = scores_filt
         img_data_sample.pred_instances = pred_instances
         img_data_sample.set_metainfo(dict(frame_id=frame_id))
 
+        # track
         pred_track_instances = tracker.track(img_data_sample)
         img_data_sample.pred_track_instances = pred_track_instances
 
+        if 'GroundingDINO' in args.det_config:
+            vis_image = np.asarray(image_new)
+        else:
+            vis_image = image_new[..., ::-1]
+
         visualizer.add_datasample(
             'mot',
-            np.asarray(image_pil),
+            vis_image,
             data_sample=img_data_sample,
             show=args.show,
             draw_gt=False,
-            out_file=out_file,
+            out_file=save_path,
             wait_time=float(1 / int(fps)) if fps else 0,
             pred_score_thr=0.0,
             step=frame_id)
