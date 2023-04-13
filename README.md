@@ -10,7 +10,7 @@ English | [简体中文](README_zh-CN.md)
 
 With the principles of openness, transparency, and cooperation, we encourage community members to join in our projects and explore the edges of AI. Our Playground project is the perfect place to collect exciting and cutting-edge applications related to OpenMMLab, which we constantly update.
 
-Join the playground now and unleash your creativity in the world of AI! 
+Join the playground now and unleash your creativity in the world of AI!
 
 The overview diagram is shown below.
 
@@ -20,10 +20,12 @@ The overview diagram is shown below.
 
 Currently, the following applications are included:
 
-- `mmdet_sam`: Detection models with SAM
-- `mmrotate_sam`: Rotated object detection models with SAM
-- `mmpose_open_detection`: Pose estimation based on open detection
-- `mmtracking_open_detection`: Object tracking based on open detection
+|                                                                  |                                                                    Demo                                                                     | Description                      |
+| :--------------------------------------------------------------: | :-----------------------------------------------------------------------------------------------------------------------------------------: | :------------------------------- |
+|                 [mmdet_sam](mmdet_sam/README.md)                 | <img src="https://user-images.githubusercontent.com/17425982/231419108-bc5ef1ed-cb0b-496a-a19e-9b3b55479426.png" width="50%" height="10%"/> | Detection models + sam           |
+|              [mmrotate_sam](mmrotate_sam/README.md)              | <img src="https://user-images.githubusercontent.com/79644233/231568599-58694ec9-a3b1-44a4-833f-74cfb4d4ca45.png" width="50%" height="10%"/> | Rotated object detection + sam   |
+|     [mmpose_open_detection](mmpose_open_detection/README.md)     | <img src="https://user-images.githubusercontent.com/8425513/231439110-c0e7d6f8-5692-4bcb-b6cf-c3c243a990a5.jpg" width="50%" height="10%"/>  | Open object detection + mmpose   |
+| [mmtracking_open_detection](mmtracking_open_detection/README.md) |                      <img src="https://github.com/zwhus/pictures/raw/main/demo%2B(1).gif" width="50%" height="10%" />                       | Open object detection + tracking |
 
 The following is a detailed description.
 
