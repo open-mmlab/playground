@@ -1,0 +1,4 @@
+# These must be installed before building mmocr
+numpy
+pyclipper
+torch>=1.1

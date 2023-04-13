@@ -1,0 +1,17 @@
+imgaug
+kwarray
+lanms-neo==1.0.2
+lmdb
+matplotlib
+mmcv>=2.0.0rc1
+mmdet>=3.0.0rc0
+mmengine>=0.1.0
+pyclipper
+rapidfuzz>=2.0.0
+regex
+scikit-image
+scipy
+shapely
+titlecase
+torch
+torchvision

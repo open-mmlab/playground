@@ -1,0 +1,41 @@
+Collections:
+- Name: PANet
+  Metadata:
+    Training Data: ICDAR2015 SCUT-CTW1500
+    Training Techniques:
+      - Adam
+    Training Resources: 1x NVIDIA A100-SXM4-80GB
+    Architecture:
+      - ResNet
+      - FPEM_FFM
+  Paper:
+    URL: https://arxiv.org/pdf/1803.01534.pdf
+    Title: 'Path Aggregation Network for Instance Segmentation'
+  README: configs/textdet/panet/README.md
+
+Models:
+  - Name: panet_resnet18_fpem-ffm_600e_ctw1500
+    Alias: PANet_CTW
+    In Collection: PANet
+    Config: configs/textdet/panet/panet_resnet18_fpem-ffm_600e_ctw1500.py
+    Metadata:
+      Training Data: CTW1500
+    Results:
+      - Task: Text Detection
+        Dataset: CTW1500
+        Metrics:
+          hmean-iou: 0.7770
+    Weights: https://download.openmmlab.com/mmocr/textdet/panet/panet_resnet18_fpem-ffm_600e_ctw1500/panet_resnet18_fpem-ffm_600e_ctw1500_20220826_144818-980f32d0.pth
+
+  - Name: panet_resnet18_fpem-ffm_600e_icdar2015
+    Alias: PANet_IC15
+    In Collection: PANet
+    Config: configs/textdet/panet/panet_resnet18_fpem-ffm_600e_icdar2015.py
+    Metadata:
+      Training Data: ICDAR2015
+    Results:
+      - Task: Text Detection
+        Dataset: ICDAR2015
+        Metrics:
+          hmean-iou: 0.7848
+    Weights: https://download.openmmlab.com/mmocr/textdet/panet/panet_resnet18_fpem-ffm_600e_icdar2015/panet_resnet18_fpem-ffm_600e_icdar2015_20220826_144817-be2acdb4.pth
