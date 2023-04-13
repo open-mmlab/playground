@@ -67,7 +67,7 @@ mim install "mmcv>=2.0.0"
 
 # build from source
 git clone https://github.com/open-mmlab/mmdetection.git
-cd mmdetection; mim install -e .; cd ..
+cd mmdetection; pip install -e .; cd ..
 
 pip install git+https://github.com/facebookresearch/segment-anything.git
 pip install git+https://github.com/openai/CLIP.git
@@ -181,7 +181,7 @@ mim install "mmcv>=2.0.0"
 
 # build from source
 git clone https://github.com/open-mmlab/mmdetection.git
-cd mmdetection; mim install -e .; cd ..
+cd mmdetection; pip install -e .; cd ..
 ```
 
 #### Demonstration
