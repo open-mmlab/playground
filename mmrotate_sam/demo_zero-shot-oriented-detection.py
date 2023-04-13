@@ -71,11 +71,10 @@ def mask2rbox(mask):
 
 def get_instancedata_resultlist(r_bboxes, labels, masks, scores, result_with_mask=False):
     results = InstanceData()
-    # results.bboxes = RotatedBoxes(r_bboxes)
+    results.bboxes = RotatedBoxes(r_bboxes)
     results.scores = scores
     results.labels = labels
-    # if result_with_mask:
-    if True:
+    if result_with_mask:
         results.masks = masks.cpu().numpy()
     results_list = [results]
     return results_list
