@@ -322,4 +322,4 @@ bash ./dist_coco_style_eval.sh 8 ${COCO_DATA_ROOT} \
 |       [GroundingDino\*](./configs/GroundingDINO_SwinT_OGC.pyy)       |     0.3     | COCO2017 Val | 0.404  |        |
 
 **Note**:
-\*意思是使用原始GroundingDino的方式进行评估
+\*意思是使用原始 GroundingDino 的方式进行评估
