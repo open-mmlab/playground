@@ -19,13 +19,12 @@ AI 领域日新月异，OpenMMLab 作为深度学习领域头部社区始终秉�
 
 目前包括如下相关应用
 
-|       |                                                                     效果图                                                                     | 说明                        |
-| :---: |:-------------------------------------------------------------------------------------------------------------------------------------------:|:--------------------------|
-|  mmdet_sam     | <img src="https://user-images.githubusercontent.com/17425982/231419108-bc5ef1ed-cb0b-496a-a19e-9b3b55479426.png" width="40%" height="40%"/> | 目标检测检测相关模型 + sam          |
-|  mmrotate_sam     | <img src="https://user-images.githubusercontent.com/79644233/231568599-58694ec9-a3b1-44a4-833f-74cfb4d4ca45.png" width="40%" height="40%"/> | 旋转框检测相关模型 + sam           |
-|  mmpose_open_detection     | <img src="https://user-images.githubusercontent.com/8425513/231439110-c0e7d6f8-5692-4bcb-b6cf-c3c243a990a5.jpg" width="40%" height="40%"/>  | 开放目标检测 + mmpose           |
-|  mmtracking_open_detection     |                      <img src="https://github.com/zwhus/pictures/raw/main/demo%2B(1).gif" width="40%" height="40%" />                       | 开放目标检测 + tracking |
-
+|                                                                  |                                                                     效果图                                                                     | 说明                        |
+|:----------------------------------------------------------------:|:-------------------------------------------------------------------------------------------------------------------------------------------:|:--------------------------|
+|             [mmdet_sam]((mmdet_sam/README_zh-CN.md))             | <img src="https://user-images.githubusercontent.com/17425982/231419108-bc5ef1ed-cb0b-496a-a19e-9b3b55479426.png" width="50%" height="10%"/> | 目标检测检测相关模型 + sam          |
+|           [mmrotate_sam](mmrotate_sam/README_zh-CN.md)           | <img src="https://user-images.githubusercontent.com/79644233/231568599-58694ec9-a3b1-44a4-833f-74cfb4d4ca45.png" width="50%" height="10%"/> | 旋转框检测相关模型 + sam           |
+| [mmpose_open_detection]((mmpose_open_detection/README_zh-CN.md)) | <img src="https://user-images.githubusercontent.com/8425513/231439110-c0e7d6f8-5692-4bcb-b6cf-c3c243a990a5.jpg" width="50%" height="10%"/>  | 开放目标检测 + mmpose           |
+|                   [mmtracking_open_detection](mmtracking_open_detection/README_zh-CN.md)                    |                      <img src="https://github.com/zwhus/pictures/raw/main/demo%2B(1).gif" width="50%" height="10%" />                       | 开放目标检测 + tracking |
 
 下面详细说明。
 
