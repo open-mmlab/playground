@@ -56,7 +56,7 @@ from segment_anything import SamPredictor, sam_model_registry
 from torch.utils.data import DataLoader, Dataset
 
 sys.path.append('../')
-from core.utils import get_file_list  # noqa
+from mmdet_sam.utils import get_file_list  # noqa
 
 
 def parse_args():

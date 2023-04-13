@@ -1,14 +1,16 @@
 # MMDetection-SAM
 
---这里放图
+<div align=center>
+<img src="https://user-images.githubusercontent.com/27466624/231659917-e3069822-2193-4261-b216-5f53baa64b53.PNG"/>
+</div>
 
-目前通用目标检测研究方向朝着多模态大模型发展。除了图片输入外，目前新的研究大部分都会加入文本模态来提升性能。一旦加入文本模态后，通用检测算法就会出现一些非常好的性质，典型的如：
+目前通用目标检测研究方向朝着多模态大模型发展。除了图片输入外，目前新的研究大部分都会加入文本模态来提升性能。一旦加入文本模态后，通用检测算法就会出现一些非常好的性质，典型的如
 
 1. 可以充分利用大量容易获取的文本数据来联合训练
-2. 容易实现开放集目标检测，进而通向真正的通用检测
+2. 容易实现开放词汇目标检测，进而通向真正的通用检测
 3. 可以和 NLP 中已经发布的超强模型联合使用，从而做到一些很有趣且实用的功能
 
-最近 Meta AI 提出了 [Segment Anything](https://github.com/facebookresearch/segment-anything) 模型，号称可以对任意物体进行分割，基于此国内外也出现了不少应用，MMDet 中集成了大量性能强且易用的检测模型，因此也可以基于 MMDet 模型和 Segment Anything 联合尝试做一些有趣的事情。
+最近 Meta AI 提出了 [Segment Anything](https://github.com/facebookresearch/segment-anything) 模型，号称可以对任意物体进行分割，基于此国内外也出现了不少下应用。MMDet 中集成了大量性能强且易用的检测模型，因此也可以基于 MMDet 模型和 Segment Anything 联合尝试做一些有趣的事情。
 
 从目前来看，通用目标检测可以分成两大类：
 
@@ -18,7 +20,7 @@
 随着多模态算法的流行，开放类别的目标检测已经成为了新的研究方向，在这其中有 3 个比较热门的研究方向：
 
 1. Zero-Shot Object Detection，即零样本目标检测，其强调的是测试集类别不在训练集中
-2. Open-Vocabulary Object Detection，即开放词汇目标检测，给定图片和类别词汇表，检测所有物体
+2. Open-Vocabulary Object Detection，即开发词汇目标检测，给定图片和类别词汇表，检测所有物体
 3. Grounding Object Detection，即给定图片和文本描述，预测文本中所提到的在图片中的物体位置
 
 实际上三个方向没法完全区分，只是通俗说法不同而已。基于上述描述，结合 Segment Anything，我们提供了多个模型串联的推理和评估脚本。具体包括如下功能：
@@ -57,7 +59,7 @@ cd playground
 
 ### 1 Open-Vocabulary + SAM
 
-采用 Open-Vocabulary 目标检测器串联 SAM 模型，目前支持 Detic 算法。
+其表示采用 Open-Vocabulary 目标检测器串联 SAM 模型，目前支持 Detic 算法
 
 #### 依赖安装
 
@@ -84,7 +86,11 @@ wget -P ../models/ https://download.openmmlab.com/mmdetection/v3.0/detic/detic_c
 wget -P ../models/ https://dl.fbaipublicfiles.com/segment_anything/sam_vit_h_4b8939.pth
 
 # 单张图片输入
-python detector_sam_demo.py ../images/cat_remote.jpg configs/Detic_LI21k_CLIP_SwinB_896b32_4x_ft4x_max-size.py ../models/detic_centernet2_swin-b_fpn_4x_lvis-coco-in21k_20230120-0d301978.pth -t cat --sam-device cpu
+python detector_sam_demo.py ../images/cat_remote.jpg \
+    configs/Detic_LI21k_CLIP_SwinB_896b32_4x_ft4x_max-size.py \
+    ../models/detic_centernet2_swin-b_fpn_4x_lvis-coco-in21k_20230120-0d301978.pth \
+    -t cat \
+    --sam-device cpu
 ```
 
 会在当前路径生成 `outputs/cat_remote.jpg`，效果如下所示：
@@ -93,11 +99,15 @@ python detector_sam_demo.py ../images/cat_remote.jpg configs/Detic_LI21k_CLIP_Sw
 <img src="https://user-images.githubusercontent.com/17425982/231418323-97b489b1-43df-4065-853e-1e2539679ee3.png"/>
 </div>
 
-我们可以修改 `--text-prompt` 来检测出遥控器，注意不同类别间要用空格和 `.` 区分开。
+我们可以修改 `--text-prompt` 来检测出遥控器，注意不同类别间要用空格和 . 区分开。
 
 ```shell
 # 单张图片输入
-python detector_sam_demo.py ../images/cat_remote.jpg configs/Detic_LI21k_CLIP_SwinB_896b32_4x_ft4x_max-size.py ../models/detic_centernet2_swin-b_fpn_4x_lvis-coco-in21k_20230120-0d301978.pth -t "cat . remote" --sam-device cpu
+python detector_sam_demo.py ../images/cat_remote.jpg \
+    configs/Detic_LI21k_CLIP_SwinB_896b32_4x_ft4x_max-size.py \
+    ../models/detic_centernet2_swin-b_fpn_4x_lvis-coco-in21k_20230120-0d301978.pth \
+    -t "cat . remote" \
+    --sam-device cpu
 ```
 
 会在当前路径生成 `outputs/cat_remote.jpg`，效果如下所示：
@@ -110,32 +120,49 @@ python detector_sam_demo.py ../images/cat_remote.jpg configs/Detic_LI21k_CLIP_Sw
 
 ```shell
 # 文件夹输入
-python detector_sam_demo.py ../images configs/Detic_LI21k_CLIP_SwinB_896b32_4x_ft4x_max-size.py ../models/detic_centernet2_swin-b_fpn_4x_lvis-coco-in21k_20230120-0d301978.pth -t "cat . remote" --sam-device cpu
+python detector_sam_demo.py ../images \
+    configs/Detic_LI21k_CLIP_SwinB_896b32_4x_ft4x_max-size.py \
+    ../models/detic_centernet2_swin-b_fpn_4x_lvis-coco-in21k_20230120-0d301978.pth \
+    -t "cat . remote" \
+    --sam-device cpu
 ```
 
-会在当前路径生成的 `outputs` 文件夹里面存放两种图片。
+会在当前路径生成 `outputs` 文件夹里面存放了两种图片。
 
-如果你的 GPU 显存只能支持一个模型运行，可以指定 `--cpu-off-load` 来设置每次只将一个模型放置到 GPU 上：
+如果你的 GPU 显存只能支持一个模型运行，可以指定 `--cpu-off-load` 来设置每次只将一个模型放置到 GPU 上
 
 ```shell
 # 文件夹输入
-python detector_sam_demo.py ../images configs/Detic_LI21k_CLIP_SwinB_896b32_4x_ft4x_max-size.py ../models/detic_centernet2_swin-b_fpn_4x_lvis-coco-in21k_20230120-0d301978.pth -t "cat . remote" --cpu-off-load
+python detector_sam_demo.py ../images \
+    configs/Detic_LI21k_CLIP_SwinB_896b32_4x_ft4x_max-size.py \
+    ../models/detic_centernet2_swin-b_fpn_4x_lvis-coco-in21k_20230120-0d301978.pth \
+    -t "cat . remote" \
+    --cpu-off-load
 ```
 
-目前也支持 CPU 推理，你可以设置 `--det-device cpu --sam-device cpu` 。
+目前也支持 CPU 推理，你可以设置 `--det-device cpu --sam-device cpu`。
 
-由于 Detic 算法实际上包括了 mask 结果，因此我们增加了额外参数 `--use-detic-mask`，当指定该参数时候表示仅仅运行 Detic 而不运行 sam 。
+由于 Detic 算法实际上包括了 mask 结果，因此我们增加了额外参数 `--use-detic-mask`，当指定该参数时候表示仅仅运行 Detic 而不运行 sam。
 
 ```shell
 # 文件夹输入
-python detector_sam_demo.py ../images configs/Detic_LI21k_CLIP_SwinB_896b32_4x_ft4x_max-size.py ../models/detic_centernet2_swin-b_fpn_4x_lvis-coco-in21k_20230120-0d301978.pth -t "cat . remote" --det-device cpu --use-detic-mask
+python detector_sam_demo.py ../images \
+    configs/Detic_LI21k_CLIP_SwinB_896b32_4x_ft4x_max-size.py \
+    ../models/detic_centernet2_swin-b_fpn_4x_lvis-coco-in21k_20230120-0d301978.pth \
+    -t "cat . remote" \
+    --det-device cpu \
+    --use-detic-mask
 ```
 
 如果你只想可视化检测结果，则可以指定 `--only-det` 则也不会运行 sam 模型。
 
 ```shell
 # 单张图片输入
-python detector_sam_demo.py ../images/cat_remote.jpg configs/Detic_LI21k_CLIP_SwinB_896b32_4x_ft4x_max-size.py ../models/detic_centernet2_swin-b_fpn_4x_lvis-coco-in21k_20230120-0d301978.pth -t "cat" --only-det
+python detector_sam_demo.py ../images/cat_remote.jpg \
+    configs/Detic_LI21k_CLIP_SwinB_896b32_4x_ft4x_max-size.py \
+    ../models/detic_centernet2_swin-b_fpn_4x_lvis-coco-in21k_20230120-0d301978.pth \
+    -t "cat" \
+    --only-det
 ```
 
 会在当前路径生成 `outputs/cat_remote.jpg`，效果如下所示：
@@ -146,7 +173,7 @@ python detector_sam_demo.py ../images/cat_remote.jpg configs/Detic_LI21k_CLIP_Sw
 
 ### 2 MMDet 模型 + SAM
 
-采用 MMDet 中的检测模型串联 SAM 从而实现实例分割任务，目前支持所有 MMDet 中已经支持的检测算法。
+其表示 MMDet 中的检测模型串联 SAM 从而实现实例分割任务，目前支持所有 MMDet 中已经支持的检测算法。
 
 #### 依赖安装
 
@@ -166,36 +193,42 @@ cd mmdetection; mim install -e .; cd ..
 1 `Faster R-CNN` 模型
 
 ```shell
-cd mmsam/mmdet_sam
+cd mmdet_sam
 
 mkdir ../models
 wget -P ../models/ https://download.openmmlab.com/mmdetection/v2.0/faster_rcnn/faster_rcnn_r50_fpn_2x_coco/faster_rcnn_r50_fpn_2x_coco_bbox_mAP-0.384_20200504_210434-a5d8aa15.pth
 
 # 单张图片评估
-python detector_sam_demo.py ../images/cat_remote.jpg ../mmdetection/configs/faster_rcnn/faster-rcnn_r50_fpn_2x_coco.py ../models/faster_rcnn_r50_fpn_2x_coco_bbox_mAP-0.384_20200504_210434-a5d8aa15.pth --sam-device cpu
+python detector_sam_demo.py ../images/cat_remote.jpg \
+    ../mmdetection/configs/faster_rcnn/faster-rcnn_r50_fpn_2x_coco.py \
+    ../models/faster_rcnn_r50_fpn_2x_coco_bbox_mAP-0.384_20200504_210434-a5d8aa15.pth \
+    --sam-device cpu
 ```
 
 2 `DINO` 模型
 
 ```shell
-cd mmsam/mmdet_sam
+cd mmdet_sam
 
 mkdir ../models
 wget -P ../models/ https://download.openmmlab.com/mmdetection/v3.0/dino/dino-5scale_swin-l_8xb2-12e_coco/dino-5scale_swin-l_8xb2-12e_coco_20230228_072924-a654145f.pth
 
-python detector_sam_demo.py ../images/cat_remote.jpg ../mmdetection/configs/dino/dino-5scale_swin-l_8xb2-12e_coco.py dino-5scale_swin-l_8xb2-12e_coco_20230228_072924-a654145f.pth  --sam-device cpu
+python detector_sam_demo.py ../images/cat_remote.jpg \
+    ../mmdetection/configs/dino/dino-5scale_swin-l_8xb2-12e_coco.py \
+    dino-5scale_swin-l_8xb2-12e_coco_20230228_072924-a654145f.pth  \
+    --sam-device cpu
 ```
 
 ### 3 Grounding 模型 + SAM
 
-引入 Grounding 目标检测模型串联 SAM 从而实现实例分割任务，目前支持 Grounding DINO 和 GLIP。
+其表示引入 Grounding 目标检测模型串联 SAM 从而实现实例分割任务，目前支持 Grounding DINO 和 GLIP。
 
 #### 依赖安装
 
 如果是 Grounding DINO 则安装如下依赖即可
 
 ```shell
-cd ../playground
+cd playground
 pip install git+https://github.com/facebookresearch/segment-anything.git
 pip install git+https://github.com/IDEA-Research/GroundingDINO.git # 需要编译 CUDA OP，请确保你的 PyTorch 版本、GCC 版本和 NVCC 编译版本兼容
 ```
@@ -203,10 +236,13 @@ pip install git+https://github.com/IDEA-Research/GroundingDINO.git # 需要编�
 如果是 GLIP 则安装如下依赖即可
 
 ```shell
-cd ../playground
+cd playground
+
 pip install git+https://github.com/facebookresearch/segment-anything.git
-pip install git+https://github.com/microsoft/GLIP.git # 需要编译 CUDA OP，请确保你的 PyTorch 版本、GCC 版本和 NVCC 编译版本兼容，暂时不支持 PyTorch 1.11+ 版本
-pip install einops shapely timm yacs tensorboardX ftfy prettytable pymongo transformers nltk inflect
+pip install einops shapely timm yacs tensorboardX ftfy prettytable pymongo transformers nltk inflect scipy pycocotools opencv-python matplotlib
+
+git clone https://github.com/microsoft/GLIP.git
+cd GLIP; python setup.py build develop --user  # 需要编译 CUDA OP，请确保你的 PyTorch 版本、GCC 版本和 NVCC 编译版本兼容，暂时不支持 PyTorch 1.11+ 版本
 ```
 
 #### 功能演示
@@ -220,8 +256,11 @@ mkdir ../models
 wget -P ../models/ https://github.com/IDEA-Research/GroundingDINO/releases/download/v0.1.0-alpha/groundingdino_swint_ogc.pth
 
 # 单张图片输入
-# python detector_sam_demo.py ../images/cat_remote.jpg configs/GroundingDINO_SwinT_OGC.py ../models/groundingdino_swint_ogc.pth -t cat --sam-device cpu
-python detector_sam_demo.py ../images/cat_remote.jpg configs/GroundingDINO_SwinT_OGC.py ../models/groundingdino_swint_ogc.pth -t "cat . remote" --sam-device cpu
+python detector_sam_demo.py ../images/cat_remote.jpg \
+    configs/GroundingDINO_SwinT_OGC.py \
+    ../models/groundingdino_swint_ogc.pth \
+    -t "cat . remote" \
+    --sam-device cpu
 ```
 
 会在当前路径生成 `outputs/cat_remote.jpg`，效果如下所示：
@@ -237,8 +276,11 @@ mkdir ../models
 wget -P ../models/ https://penzhanwu2bbs.blob.core.windows.net/data/GLIPv1_Open/models/glip_a_tiny_o365.pth
 
 # 单张图片输入
-# python detector_sam_demo.py ../images/cat_remote configs/glip_A_Swin_T_O365.yaml ../models/glip_a_tiny_o365.pth -t cat --sam-device cpu
-python detector_sam_demo.py ../images/cat_remote.jpg configs/glip_A_Swin_T_O365.yaml ../models/glip_a_tiny_o365.pth -t "cat . remote" --sam-device cpu
+python detector_sam_demo.py ../images/cat_remote.jpg \
+    configs/glip_A_Swin_T_O365.yaml \
+    ../models/glip_a_tiny_o365.pth \
+    -t "cat . remote" \
+    --sam-device cpu
 ```
 
 ### 4 COCO JSON 评估
@@ -258,10 +300,16 @@ python detector_sam_demo.py ../images/cat_remote.jpg configs/glip_A_Swin_T_O365.
 cd mmdet_sam
 
 # 非分布式评估
-python coco_style_eval.py ${COCO_DATA_ROOT} configs/Detic_LI21k_CLIP_SwinB_896b32_4x_ft4x_max-size.py ../models/detic_centernet2_swin-b_fpn_4x_lvis-coco-in21k_20230120-0d301978.pth -t coco_cls_name.txt
+python coco_style_eval.py ${COCO_DATA_ROOT} \
+    configs/Detic_LI21k_CLIP_SwinB_896b32_4x_ft4x_max-size.py \
+    ../models/detic_centernet2_swin-b_fpn_4x_lvis-coco-in21k_20230120-0d301978.pth \
+    -t coco_cls_name.txt
 
 # 分布式单机 8 卡评估
-bash ./dist_coco_style_eval.sh 8 ${COCO_DATA_ROOT} configs/Detic_LI21k_CLIP_SwinB_896b32_4x_ft4x_max-size.py ../models/detic_centernet2_swin-b_fpn_4x_lvis-coco-in21k_20230120-0d301978.pth -t coco_cls_name.txt
+bash ./dist_coco_style_eval.sh 8 ${COCO_DATA_ROOT} \
+    configs/Detic_LI21k_CLIP_SwinB_896b32_4x_ft4x_max-size.py \
+    ../models/detic_centernet2_swin-b_fpn_4x_lvis-coco-in21k_20230120-0d301978.pth \
+    -t coco_cls_name.txt
 ```
 
 输出结果如下所示：
@@ -299,7 +347,7 @@ Evaluate annotation type *segm*
  Average Recall     (AR) @[ IoU=0.50:0.95 | area= large | maxDets=100 ] = 0.639
 ```
 
-你可以降低 `--box-thr` (默认是 0.2)，例如设置为 0.001 从而提升检测性能。
+你可以降低 `--box-thr` (默认是 0.2)，例如设置为 0.001 从而提升检测性能，性能如下所示
 
 ```text
 Evaluate annotation type *bbox*
@@ -332,3 +380,5 @@ Evaluate annotation type *segm*
  Average Recall     (AR) @[ IoU=0.50:0.95 | area=medium | maxDets=100 ] = 0.605
  Average Recall     (AR) @[ IoU=0.50:0.95 | area= large | maxDets=100 ] = 0.674
 ```
+
+可以发现性能提升不少。

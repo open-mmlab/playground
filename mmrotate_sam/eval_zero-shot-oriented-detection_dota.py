@@ -11,8 +11,7 @@ from data_builder import build_data_loader, build_evaluator
 from mmdet.apis import init_detector
 from mmdet.models.utils import samplelist_boxtype2tensor
 from mmengine import Config
-from mmengine.dist import (collect_results, get_dist_info, get_rank, init_dist,
-                           is_distributed)
+from mmengine.dist import get_dist_info, get_rank, init_dist, is_distributed
 from mmengine.structures import InstanceData
 from mmengine.utils import ProgressBar
 from mmrotate.structures import RotatedBoxes
@@ -25,9 +24,11 @@ def parse_args():
         'Evaluation for Zero-shot Oriented Detector with Segment-Anything-'
         'Model Prompt by Predicted HBox of Horizontal Detector',
         add_help=True)
-    # parser.add_argument(  # TODO: get data cfg from a file, instead of hard-code
+    # TODO: get data cfg from a file, instead of hard-code
+    # parser.add_argument(
     #     'data_config', type=str,
-    #     help='path to config file contains `data` cfg of the oriented object '
+    #     help='path to config file contains `data`
+    #           cfg of the oriented object '
     #          'detection data set for evaluation')
     parser.add_argument(
         'det_config',
@@ -201,10 +202,13 @@ if __name__ == '__main__':
     sam_model.model = sam_model.model.to(args.device)
 
     # prepare dataset
-    # data_cfg = Config.fromfile(args.data_config)  # TODO: get data cfg from a file, instead of hard-code
+    # TODO: get data cfg from a file, instead of hard-code
+    # data_cfg = Config.fromfile(args.data_config)
     dataloader = build_data_loader('test_without_hbox')
     evaluator = build_evaluator(args.merge_patches, args.format_only)
-    evaluator.dataset_meta = dataloader.dataset.metainfo  # TODO: add assert to make sure the CLASSES in ckpt and in dataset are the same
+    # TODO: add assert to make sure the CLASSES in ckpt and
+    #  in dataset are the same
+    evaluator.dataset_meta = dataloader.dataset.metainfo
 
     if get_rank() == 0:
         print('data len: ', len(dataloader.dataset), 'num_word_size: ',
