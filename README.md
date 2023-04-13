@@ -8,7 +8,11 @@ English | [简体中文](README_zh-CN.md)
 
 </div>
 
-This project is used to collect interesting applications related to OpenMMLab and will be updated continuously. We are very welcome for community users to participate in these projects. Any interesting applications or demos related to OpenMMLab are welcome to contribute. The overview is shown below.
+With the principles of openness, transparency, and cooperation, we encourage community members to join in our projects and explore the edges of AI. Our Playground project is the perfect place to collect exciting and cutting-edge applications related to OpenMMLab, which we constantly update.
+
+Join the playground now and unleash your creativity in the world of AI! 
+
+The overview diagram is shown below.
 
 <div align=center>
 <img src="https://user-images.githubusercontent.com/27466624/231665783-4a97e86c-6f89-4d63-b828-e7c414d1ff2b.png"/>
