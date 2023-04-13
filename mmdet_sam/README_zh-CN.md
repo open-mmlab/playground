@@ -323,3 +323,25 @@ bash ./dist_coco_style_eval.sh 8 ${COCO_DATA_ROOT} \
 
 **Note**:
 \*意思是使用原始GroundingDino的方式进行评估
+
+### 6 自定义数据集
+以下将使用一个具体例子来说明自定义的数据集如何得到模型推理的标注文件
+
+#### 数据准备
+使用以下命令下载 cat 数据集
+```
+cd playground
+python tools/misc/download_dataset.py --dataset-name cat --save-dir ./data/cat --unzip --delete
+```
+**注意**:，需要将`cat/class_with_id.txt`里面的`1 cat`换成 `cat`
+
+使用 `images2coco.py` 脚本生成没有标注的 json 文件
+```
+python images2coco.py ../cat/images/ ../cat/class_with_id.txt "cat_coco.json"
+```
+
+#### 模型推理
+这里使用 GroundingDINO 串联 SAM 模型为例进行推理，得到预测结果的 json 文件
+```
+python coco_style_eval.py '../cat' configs/GroundingDINO_SwinT_OGC.py ../models/groundingdino_swint_ogc.pth -t '../cat/class_with_id.txt' --data-prefix 'images' --ann-file 'annotations/cat_coco.json' --out-dir '../cat'
+```
