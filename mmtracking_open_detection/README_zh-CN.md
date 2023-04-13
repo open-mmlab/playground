@@ -65,7 +65,7 @@ cd GLIP; python setup.py build develop --user; cd ..
 pip install git+https://github.com/facebookresearch/segment-anything.git
 ```
 
-## demo视频和文件的获取
+## demo 视频和文件的获取
 
 ```shell
 cd playground
