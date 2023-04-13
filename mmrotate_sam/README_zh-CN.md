@@ -1,7 +1,7 @@
 # MMRotate-SAM
 
 <div align=center>
-<img src="https://user-images.githubusercontent.com/79644233/231636420-8b7f81f3-51d2-439c-87cc-6f7eebd32193.png"/>
+<img src="https://user-images.githubusercontent.com/27466624/231659969-adf7dd4d-fcec-4677-9105-aa72b2ced00f.PNG"/>
 </div>
 
 本工程目录存放 MMRotate 和 SAM 相关的代码。
@@ -34,10 +34,10 @@ pip install opencv-python pycocotools matplotlib onnxruntime onnx
 
 ```shell
 python demo_zero-shot-oriented-detection.py \
-  data/split_ss_dota/test/images/P0006__1024__0___0.png \
-  configs/rotated_fcos/rotated-fcos-hbox-le90_r50_fpn_1x_dota.py \
-  rotated_fcos_sep_angle_r50_fpn_1x_dota_le90-0be71a0c.pth \
-  --sam-type "vit_b" --sam-weight sam_vit_b_01ec64.pth --out-path output.png
+    data/split_ss_dota/test/images/P0006__1024__0___0.png \
+    configs/rotated_fcos/rotated-fcos-hbox-le90_r50_fpn_1x_dota.py \
+    rotated_fcos_sep_angle_r50_fpn_1x_dota_le90-0be71a0c.pth \
+    --sam-type "vit_b" --sam-weight sam_vit_b_01ec64.pth --out-path output.png
 ```
 
 <div align=center>
@@ -48,7 +48,7 @@ python demo_zero-shot-oriented-detection.py \
 
 ```shell
 python eval_zero-shot-oriented-detection_dota.py \
-  configs/rotated_fcos/rotated-fcos-hbox-le90_r50_fpn_1x_dota.py \
-  rotated_fcos_sep_angle_r50_fpn_1x_dota_le90-0be71a0c.pth \
-  --sam-type "vit_b" --sam-weight sam_vit_b_01ec64.pth
+    configs/rotated_fcos/rotated-fcos-hbox-le90_r50_fpn_1x_dota.py \
+    rotated_fcos_sep_angle_r50_fpn_1x_dota_le90-0be71a0c.pth \
+    --sam-type "vit_b" --sam-weight sam_vit_b_01ec64.pth
 ```

@@ -1,16 +1,16 @@
-# 开发集目标检测联合 MMPose
+# 开放词汇目标检测联合 MMPose
 
 <div align=center>
-<img src="https://user-images.githubusercontent.com/17425982/231637220-bebcea80-afad-4039-92c0-5c9cb2c82cad.png"/>
+<img src="https://user-images.githubusercontent.com/27466624/231660029-03166059-e8cf-4b17-8aa5-b42f3a52f12a.PNG"/>
 </div>
 
-本工程将 MMPose 联合开发集目标检测实现开发集姿态识别。
+本工程将 MMPose 联合开放词汇目标检测实现开放词汇姿态识别。
 
 ## 参数说明
 
 下面对每个脚本功能进行说明：
 
-1. `mmpose_open_demo.py` 用于单张图片或者文件夹的开发集检测和姿态估计模型推理
+1. `mmpose_open_demo.py` 用于单张图片或者文件夹的开放词汇检测和姿态估计模型推理
 
 (1) mmpose_open_demo.py
 
@@ -88,7 +88,12 @@ wget -P ../models/ https://download.openmmlab.com/mmpose/v1/projects/rtmpose/rtm
 </div>
 
 ```shell
-python mmpose_open_demo.py ../images/pexels-photo-2422290.jpeg ../mmdet_sam/configs/Detic_LI21k_CLIP_SwinB_896b32_4x_ft4x_max-size.py ../models/detic_centernet2_swin-b_fpn_4x_lvis-coco-in21k_20230120-0d301978.pth ../mmpose/projects/rtmpose/rtmpose/body_2d_keypoint/rtmpose-m_8xb256-420e_coco-256x192.py ../models/rtmpose-m_simcc-aic-coco_pt-aic-coco_420e-256x192-63eb25f7_20230126.pth -t person
+python mmpose_open_demo.py ../images/pexels-photo-2422290.jpeg \
+    ../mmdet_sam/configs/Detic_LI21k_CLIP_SwinB_896b32_4x_ft4x_max-size.py \
+    ../models/detic_centernet2_swin-b_fpn_4x_lvis-coco-in21k_20230120-0d301978.pth \
+    ../mmpose/projects/rtmpose/rtmpose/body_2d_keypoint/rtmpose-m_8xb256-420e_coco-256x192.py \
+    ../models/rtmpose-m_simcc-aic-coco_pt-aic-coco_420e-256x192-63eb25f7_20230126.pth \
+    -t person
 ```
 
 会在当前路径生成 `outputs/pexels-photo-2422290.jpeg`，效果如下所示：
@@ -123,7 +128,12 @@ mkdir ../models
 wget -P ../models/ https://huggingface.co/ShilongLiu/GroundingDINO/resolve/main/groundingdino_swint_ogc.pth
 wget -P ../models/ https://download.openmmlab.com/mmpose/v1/projects/rtmpose/rtmpose-m_simcc-aic-coco_pt-aic-coco_420e-256x192-63eb25f7_20230126.pth
 
-python mmpose_open_demo.py ../images/pexels-photo-2422290.jpeg ../mmdet_sam/configs/GroundingDINO_SwinT_OGC.py ../models/groundingdino_swint_ogc.pth ../mmpose/projects/rtmpose/rtmpose/body_2d_keypoint/rtmpose-m_8xb256-420e_coco-256x192.py ../models/rtmpose-m_simcc-aic-coco_pt-aic-coco_420e-256x192-63eb25f7_20230126.pth -t human
+python mmpose_open_demo.py ../images/pexels-photo-2422290.jpeg \
+    ../mmdet_sam/configs/GroundingDINO_SwinT_OGC.py \
+    ../models/groundingdino_swint_ogc.pth \
+    ../mmpose/projects/rtmpose/rtmpose/body_2d_keypoint/rtmpose-m_8xb256-420e_coco-256x192.py \
+    ../models/rtmpose-m_simcc-aic-coco_pt-aic-coco_420e-256x192-63eb25f7_20230126.pth \
+    -t human
 ```
 
 会在当前路径生成 `outputs/pexels-photo-2422290.jpeg`，效果如下所示：
