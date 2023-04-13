@@ -319,6 +319,9 @@ def run_detector(model, image_path, args):
                 pred_labels.append(pred_phrase)
                 pred_scores.append(str(logit.max().item())[:4])
 
+        pred_dict['labels'] = pred_labels
+        pred_dict['scores'] = pred_scores
+
         size = image_pil.size
         H, W = size[1], size[0]
         for i in range(boxes_filt.size(0)):
