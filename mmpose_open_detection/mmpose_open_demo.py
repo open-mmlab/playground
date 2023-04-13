@@ -50,7 +50,7 @@ except ImportError:
 import sys
 
 sys.path.append('../')
-from core.utils import get_file_list
+from core.utils import get_file_list  # noqa
 
 
 def parse_args():
