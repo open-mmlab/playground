@@ -1,7 +1,7 @@
 # MMRotate-SAM
 
 <div align=center>
-<img src="https://user-images.githubusercontent.com/79644233/231636420-8b7f81f3-51d2-439c-87cc-6f7eebd32193.png"/>
+<img src="https://user-images.githubusercontent.com/27466624/231659969-adf7dd4d-fcec-4677-9105-aa72b2ced00f.PNG"/>
 </div>
 
 本工程目录存放 MMRotate 和 SAM 相关的代码。
