@@ -102,7 +102,9 @@ def parse_args():
     parser.add_argument(
         '--text-thr', type=float, default=0.25, help='text threshold')
     parser.add_argument(
-        '--apply-label-index', action='store_true', help='limit label')
+        '--apply-original-groudingdino',
+        action='store_true',
+        help='use original groudingdino label predict')
 
     # dist param
     parser.add_argument(
@@ -260,7 +262,7 @@ def run_detector(model, image_path, args):
         # so we provide a category-restricted approach to address this
         # use this approach can improve coco map from 40.5 to 41.9
         # (set box-thr = 0.3)
-        if args.apply_label_index:
+        if not args.apply_original_groudingdino:
             # custom label name
             custom_vocabulary = text_prompt[:-1].split('.')
             label_name = [c.strip() for c in custom_vocabulary]
@@ -286,7 +288,7 @@ def run_detector(model, image_path, args):
         logits = outputs['pred_logits'].cpu().sigmoid()[0]  # (nq, 256)
         boxes = outputs['pred_boxes'].cpu()[0]  # (nq, 4)
 
-        if args.apply_label_index:
+        if not args.apply_original_groudingdino:
             logits = convert_grounding_to_od_logits(
                 logits, len(label_name),
                 positive_map_label_to_token)  # [N, num_classes]
@@ -298,15 +300,7 @@ def run_detector(model, image_path, args):
         logits_filt = logits_filt[filt_mask]  # num_filt, 256
         boxes_filt = boxes_filt[filt_mask]  # num_filt, 4
 
-        if args.apply_label_index:
-            scores, pred_phrase_idxs = logits_filt.max(1)
-            # build pred
-            pred_labels = []
-            pred_scores = []
-            for score, pred_phrase_idx in zip(scores, pred_phrase_idxs):
-                pred_labels.append(label_name[pred_phrase_idx])
-                pred_scores.append(str(score.item())[:4])
-        else:
+        if args.apply_original_groudingdino:
             # get phrase
             tokenlizer = model.tokenizer
             tokenized = tokenlizer(text_prompt)
@@ -318,6 +312,14 @@ def run_detector(model, image_path, args):
                                                       tokenized, tokenlizer)
                 pred_labels.append(pred_phrase)
                 pred_scores.append(str(logit.max().item())[:4])
+        else:
+            scores, pred_phrase_idxs = logits_filt.max(1)
+            # build pred
+            pred_labels = []
+            pred_scores = []
+            for score, pred_phrase_idx in zip(scores, pred_phrase_idxs):
+                pred_labels.append(label_name[pred_phrase_idx])
+                pred_scores.append(str(score.item())[:4])
 
         pred_dict['labels'] = pred_labels
         pred_dict['scores'] = pred_scores

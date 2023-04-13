@@ -20,12 +20,7 @@
 
 本工程参考了 [GroundingDINO](https://github.com/IDEA-Research/GroundingDINO)，非常感谢！
 
-#### demo文件的获取
-
-```shell
-cd playground
-wget https://download.openmmlab.com/playground/mmtracking/tracking_demo.zip
-```
+````
 
 ## 基础环境安装
 
@@ -34,7 +29,7 @@ conda create -n mmtracking-sam python=3.8 -y
 conda activate mmtracking-sam
 pip install torch==1.9.1+cu111 torchvision==0.10.1+cu111 -f https://download.pytorch.org/whl/torch_stable.html
 git clone https://github.com/open-mmlab/playground.git
-```
+````
 
 ### 基础依赖安装
 
@@ -43,6 +38,7 @@ pip install -U openmim
 mim install "mmcv>=2.0.0"
 
 # 源码安装
+cd playground
 git clone -b tracking https://github.com/open-mmlab/mmdetection.git
 cd mmdetection; pip install -e .; cd ..
 ```
@@ -50,25 +46,33 @@ cd mmdetection; pip install -e .; cd ..
 ### Grounding Dino 环境安装
 
 ```shell
-git clone https://github.com/IDEA-Research/GroundingDINO.git
-cd GroundingDINO; pip install -e .; cd ..
+cd playground
+pip install git+https://github.com/facebookresearch/segment-anything.git
+pip install git+https://github.com/IDEA-Research/GroundingDINO.git
 ```
 
 ### GLIP 环境安装
 
 ```shell
+cd playground
+pip install einops shapely timm yacs tensorboardX ftfy prettytable pymongo transformers nltk inflect scipy pycocotools opencv-python matplotlib
+
 git clone https://github.com/microsoft/GLIP.git
-cd GLIP
-pip install einops shapely timm yacs tensorboardX ftfy prettytable pymongo
-pip install transformers
-python setup.py build develop --user
-cd ..
+cd GLIP; python setup.py build develop --user; cd ..
 ```
 
 ### SAM 环境安装
 
 ```shell
 pip install git+https://github.com/facebookresearch/segment-anything.git
+```
+
+## demo文件的获取
+
+```shell
+cd playground
+wget https://download.openmmlab.com/playground/mmtracking/tracking_demo.zip
+unzip tracking_demo.zip
 ```
 
 ## 模型推理演示
@@ -90,5 +94,5 @@ python tracking_demo.py "../tracking_demo/bdd_val_track" "configs/GroundingDINO_
 ```shell
 cd mmtracking_open_detection
 
-python tracking_demo.py "../tracking_demo/bdd_val_track" "configs/GroundingDINO_SwinB.cfg.py" "../models/groundingdino_swinb_cogcoor.pth"  --text_prompt "person . rider . car . truck . bus . train . motorcycle . bicycle ." --out-dir "outputs/bdd100k" --fps 30 --mots --sam-device cpu
+python tracking_demo.py "../tracking_demo/bdd_val_track" "configs/GroundingDINO_SwinB.cfg.py" "../models/groundingdino_swinb_cogcoor.pth"  --text_prompt "person . rider . car . truck . bus . train . motorcycle . bicycle ." --out-dir "outputs/bdd100k" --fps 30 --mots
 ```
