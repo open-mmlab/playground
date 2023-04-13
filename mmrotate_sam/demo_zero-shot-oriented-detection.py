@@ -71,10 +71,11 @@ def mask2rbox(mask):
 
 def get_instancedata_resultlist(r_bboxes, labels, masks, scores, result_with_mask=False):
     results = InstanceData()
-    results.bboxes = RotatedBoxes(r_bboxes)
+    # results.bboxes = RotatedBoxes(r_bboxes)
     results.scores = scores
     results.labels = labels
-    if result_with_mask:
+    # if result_with_mask:
+    if True:
         results.masks = masks.cpu().numpy()
     results_list = [results]
     return results_list
@@ -113,9 +114,16 @@ def main():
 
     # predict with detector
     pred_results = det_model.test_step(data)
-    pred_r_bboxes = pred_results[0].pred_instances.bboxes
-    pred_r_bboxes = RotatedBoxes(pred_r_bboxes)
-    h_bboxes = pred_r_bboxes.convert_to('hbox').tensor
+    pred_bboxes = pred_results[0].pred_instances.bboxes
+    # If horizontal detector is used, directly use the predicted HBB as
+    # prompts. If oriented detector is used, the OBB is converted to HBB.
+    if pred_bboxes.size(-1) == 5:
+        pred_r_bboxes = RotatedBoxes(pred_bboxes)
+        h_bboxes = pred_r_bboxes.convert_to('hbox').tensor
+    elif pred_bboxes.size(-1) == 4:
+        h_bboxes = pred_bboxes
+    else:
+        raise ValueError(f'The dimension of box is {pred_bboxes.size(-1)}.')
     labels = pred_results[0].pred_instances.labels
     scores = pred_results[0].pred_instances.scores
     keep = scores > args.box_thr
