@@ -4,7 +4,11 @@
 <img src="resources/playground-logo.png"/>
 </div>
 
+<div align="center">
+
 [English](README.md) | 简体中文
+
+</div>
 
 本工程用于收集 OpenMMLab 相关的有趣应用并且将不断更新。我们非常欢迎社区用户能参与进这些项目中来，任何和 OpenMMLab 相关的有趣应用或者 Demo 都欢迎来贡献。目前包括如下相关应用
 
