@@ -312,73 +312,14 @@ bash ./dist_coco_style_eval.sh 8 ${COCO_DATA_ROOT} \
     -t coco_cls_name.txt
 ```
 
-输出结果如下所示：
+### 5 COCO 评估结果
 
-```text
-Evaluate annotation type *bbox*
+|                                Method                                | bbox thresh |   Test set   | Box AP | Seg AP |
+| :------------------------------------------------------------------: | :---------: | :----------: | :----: | :----: |
+| [Detic](./configs/Detic_LI21k_CLIP_SwinB_896b32_4x_ft4x_max-size.py) |     0.2     | COCO2017 Val | 0.465  | 0.388  |
+| [Detic](./configs/Detic_LI21k_CLIP_SwinB_896b32_4x_ft4x_max-size.py) |    0.001    | COCO2017 Val | 0.481  | 0.403  |
+|        [GroundingDino](./configs/GroundingDINO_SwinT_OGC.pyy)        |     0.3     | COCO2017 Val | 0.419  |        |
+|       [GroundingDino\*](./configs/GroundingDINO_SwinT_OGC.pyy)       |     0.3     | COCO2017 Val | 0.404  |        |
 
-DONE (t=6.85s).
- Average Precision  (AP) @[ IoU=0.50:0.95 | area=   all | maxDets=100 ] = 0.465
- Average Precision  (AP) @[ IoU=0.50      | area=   all | maxDets=100 ] = 0.640
- Average Precision  (AP) @[ IoU=0.75      | area=   all | maxDets=100 ] = 0.511
- Average Precision  (AP) @[ IoU=0.50:0.95 | area= small | maxDets=100 ] = 0.303
- Average Precision  (AP) @[ IoU=0.50:0.95 | area=medium | maxDets=100 ] = 0.515
- Average Precision  (AP) @[ IoU=0.50:0.95 | area= large | maxDets=100 ] = 0.614
- Average Recall     (AR) @[ IoU=0.50:0.95 | area=   all | maxDets=  1 ] = 0.362
- Average Recall     (AR) @[ IoU=0.50:0.95 | area=   all | maxDets= 10 ] = 0.560
- Average Recall     (AR) @[ IoU=0.50:0.95 | area=   all | maxDets=100 ] = 0.583
- Average Recall     (AR) @[ IoU=0.50:0.95 | area= small | maxDets=100 ] = 0.404
- Average Recall     (AR) @[ IoU=0.50:0.95 | area=medium | maxDets=100 ] = 0.630
- Average Recall     (AR) @[ IoU=0.50:0.95 | area= large | maxDets=100 ] = 0.746
-
-Evaluate annotation type *segm*
-
- Average Precision  (AP) @[ IoU=0.50:0.95 | area=   all | maxDets=100 ] = 0.388
- Average Precision  (AP) @[ IoU=0.50      | area=   all | maxDets=100 ] = 0.601
- Average Precision  (AP) @[ IoU=0.75      | area=   all | maxDets=100 ] = 0.420
- Average Precision  (AP) @[ IoU=0.50:0.95 | area= small | maxDets=100 ] = 0.269
- Average Precision  (AP) @[ IoU=0.50:0.95 | area=medium | maxDets=100 ] = 0.441
- Average Precision  (AP) @[ IoU=0.50:0.95 | area= large | maxDets=100 ] = 0.503
- Average Recall     (AR) @[ IoU=0.50:0.95 | area=   all | maxDets=  1 ] = 0.315
- Average Recall     (AR) @[ IoU=0.50:0.95 | area=   all | maxDets= 10 ] = 0.490
- Average Recall     (AR) @[ IoU=0.50:0.95 | area=   all | maxDets=100 ] = 0.511
- Average Recall     (AR) @[ IoU=0.50:0.95 | area= small | maxDets=100 ] = 0.371
- Average Recall     (AR) @[ IoU=0.50:0.95 | area=medium | maxDets=100 ] = 0.558
- Average Recall     (AR) @[ IoU=0.50:0.95 | area= large | maxDets=100 ] = 0.639
-```
-
-你可以降低 `--box-thr` (默认是 0.2)，例如设置为 0.001 从而提升检测性能，性能如下所示
-
-```text
-Evaluate annotation type *bbox*
-
- Average Precision  (AP) @[ IoU=0.50:0.95 | area=   all | maxDets=100 ] = 0.481
- Average Precision  (AP) @[ IoU=0.50      | area=   all | maxDets=100 ] = 0.670
- Average Precision  (AP) @[ IoU=0.75      | area=   all | maxDets=100 ] = 0.527
- Average Precision  (AP) @[ IoU=0.50:0.95 | area= small | maxDets=100 ] = 0.318
- Average Precision  (AP) @[ IoU=0.50:0.95 | area=medium | maxDets=100 ] = 0.531
- Average Precision  (AP) @[ IoU=0.50:0.95 | area= large | maxDets=100 ] = 0.631
- Average Recall     (AR) @[ IoU=0.50:0.95 | area=   all | maxDets=  1 ] = 0.377
- Average Recall     (AR) @[ IoU=0.50:0.95 | area=   all | maxDets= 10 ] = 0.601
- Average Recall     (AR) @[ IoU=0.50:0.95 | area=   all | maxDets=100 ] = 0.632
- Average Recall     (AR) @[ IoU=0.50:0.95 | area= small | maxDets=100 ] = 0.461
- Average Recall     (AR) @[ IoU=0.50:0.95 | area=medium | maxDets=100 ] = 0.680
- Average Recall     (AR) @[ IoU=0.50:0.95 | area= large | maxDets=100 ] = 0.788
-
-Evaluate annotation type *segm*
-
- Average Precision  (AP) @[ IoU=0.50:0.95 | area=   all | maxDets=100 ] = 0.403
- Average Precision  (AP) @[ IoU=0.50      | area=   all | maxDets=100 ] = 0.628
- Average Precision  (AP) @[ IoU=0.75      | area=   all | maxDets=100 ] = 0.435
- Average Precision  (AP) @[ IoU=0.50:0.95 | area= small | maxDets=100 ] = 0.283
- Average Precision  (AP) @[ IoU=0.50:0.95 | area=medium | maxDets=100 ] = 0.455
- Average Precision  (AP) @[ IoU=0.50:0.95 | area= large | maxDets=100 ] = 0.517
- Average Recall     (AR) @[ IoU=0.50:0.95 | area=   all | maxDets=  1 ] = 0.329
- Average Recall     (AR) @[ IoU=0.50:0.95 | area=   all | maxDets= 10 ] = 0.527
- Average Recall     (AR) @[ IoU=0.50:0.95 | area=   all | maxDets=100 ] = 0.556
- Average Recall     (AR) @[ IoU=0.50:0.95 | area= small | maxDets=100 ] = 0.425
- Average Recall     (AR) @[ IoU=0.50:0.95 | area=medium | maxDets=100 ] = 0.605
- Average Recall     (AR) @[ IoU=0.50:0.95 | area= large | maxDets=100 ] = 0.674
-```
-
-可以发现性能提升不少。
+**Note**:
+\*意思是使用原始GroundingDino的方式进行评估

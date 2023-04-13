@@ -60,13 +60,13 @@ def parse_args():
     parser.add_argument(
         '--sam-type',
         type=str,
-        default='vit_l',
+        default='vit_h',
         choices=['vit_h', 'vit_l', 'vit_b'],
         help='sam type')
     parser.add_argument(
         '--sam-weight',
         type=str,
-        default='../models/sam_vit_l_0b3195.pth',
+        default='../models/sam_vit_h_4b8939.pth',
         help='path to checkpoint file')
     parser.add_argument('--text_prompt', '-t', type=str, help='text prompt')
     parser.add_argument('--show', action='store_true')
