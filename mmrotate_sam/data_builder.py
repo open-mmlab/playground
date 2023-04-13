@@ -3,19 +3,16 @@ import logging
 from functools import partial
 from typing import Dict, Optional
 
-from torch.utils.data import DataLoader
-
 from mmcv.transforms import BaseTransform
-
-from mmengine.evaluator import Evaluator
 from mmengine.dataset import worker_init_fn
 from mmengine.dist import get_rank
+from mmengine.evaluator import Evaluator
 from mmengine.logging import print_log
-from mmengine.registry import DATA_SAMPLERS, FUNCTIONS, EVALUATOR
+from mmengine.registry import DATA_SAMPLERS, EVALUATOR, FUNCTIONS
 from mmengine.utils import digit_version
 from mmengine.utils.dl_utils import TORCH_VERSION
-
 from mmrotate.registry import DATASETS, TRANSFORMS
+from torch.utils.data import DataLoader
 
 
 def build_data_loader(data_name=None):
@@ -28,8 +25,8 @@ def build_data_loader(data_name=None):
 
 
 def build_evaluator(merge_patches=True, format_only=False):
-    naive_evaluator.update(dict(
-        merge_patches=merge_patches, format_only=format_only))
+    naive_evaluator.update(
+        dict(merge_patches=merge_patches, format_only=format_only))
     return MMEngine_build_evaluator(evaluator=naive_evaluator)
 
 
@@ -138,8 +135,7 @@ def MMEngine_build_dataloader(dataloader: Dict,
     if isinstance(sampler_cfg, dict):
         sampler_seed = None if diff_rank_seed else seed
         sampler = DATA_SAMPLERS.build(
-            sampler_cfg,
-            default_args=dict(dataset=dataset, seed=sampler_seed))
+            sampler_cfg, default_args=dict(dataset=dataset, seed=sampler_seed))
     else:
         # fallback to raise error in dataloader
         # if `sampler_cfg` is not a valid type
@@ -153,8 +149,7 @@ def MMEngine_build_dataloader(dataloader: Dict,
         batch_sampler = DATA_SAMPLERS.build(
             batch_sampler_cfg,
             default_args=dict(
-                sampler=sampler,
-                batch_size=dataloader_cfg.pop('batch_size')))
+                sampler=sampler, batch_size=dataloader_cfg.pop('batch_size')))
     else:
         # fallback to raise error in dataloader
         # if `batch_sampler_cfg` is not a valid type
