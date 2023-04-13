@@ -8,11 +8,13 @@
 
 </div>
 
-本工程用于收集 OpenMMLab 相关的有趣应用并且将不断更新。我们非常欢迎社区用户能参与进这些项目中来，任何和 OpenMMLab 相关的有趣应用或者 Demo 都欢迎来贡献。目前包括如下相关应用
+本工程用于收集 OpenMMLab 相关的有趣应用并且将不断更新。我们非常欢迎社区用户能参与进这些项目中来，任何和 OpenMMLab 相关的有趣应用或者 Demo 都欢迎来贡献。总览图如下所示
 
 <div align=center>
 <img src="https://user-images.githubusercontent.com/27466624/231665783-4a97e86c-6f89-4d63-b828-e7c414d1ff2b.png"/>
 </div>
+
+目前包括如下相关应用
 
 - `mmdet_sam` 检测相关模型串联 sam
 - `mmrotate_sam` 旋转目标检测模型串联 sam
