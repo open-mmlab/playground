@@ -1,16 +1,16 @@
-# 开放词汇目标检测联合 MMPose
+# 开放目标检测联合 MMPose
 
 <div align=center>
 <img src="https://user-images.githubusercontent.com/27466624/231660029-03166059-e8cf-4b17-8aa5-b42f3a52f12a.PNG"/>
 </div>
 
-本工程将 MMPose 联合开放词汇目标检测实现开放词汇姿态识别。
+本工程将 MMPose 联合开放目标检测实现开放词汇姿态识别。
 
 ## 参数说明
 
 下面对每个脚本功能进行说明：
 
-1. `mmpose_open_demo.py` 用于单张图片或者文件夹的开放词汇检测和姿态估计模型推理
+1. `mmpose_open_demo.py` 用于单张图片或者文件夹的开放检测和姿态估计模型推理
 
 (1) mmpose_open_demo.py
 
@@ -35,7 +35,6 @@ pose_weight 姿态估计模型权重文件路径
 
 ## 基础环境安装
 
-````shell
 ```shell
 conda create -n mmpose python=3.8 -y
 conda activate mmpose
@@ -50,7 +49,7 @@ mim install "mmcv>=2.0.0"
 
 git clone https://github.com/open-mmlab/mmpose.git
 cd mmpose; pip install -e .; cd ..
-````
+```
 
 ## 功能说明
 

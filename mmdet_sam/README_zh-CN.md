@@ -193,7 +193,7 @@ cd mmdetection; pip install -e .; cd ..
 1 `Faster R-CNN` 模型
 
 ```shell
-cd mmsam/mmdet_sam
+cd mmdet_sam
 
 mkdir ../models
 wget -P ../models/ https://download.openmmlab.com/mmdetection/v2.0/faster_rcnn/faster_rcnn_r50_fpn_2x_coco/faster_rcnn_r50_fpn_2x_coco_bbox_mAP-0.384_20200504_210434-a5d8aa15.pth
@@ -208,7 +208,7 @@ python detector_sam_demo.py ../images/cat_remote.jpg \
 2 `DINO` 模型
 
 ```shell
-cd mmsam/mmdet_sam
+cd mmdet_sam
 
 mkdir ../models
 wget -P ../models/ https://download.openmmlab.com/mmdetection/v3.0/dino/dino-5scale_swin-l_8xb2-12e_coco/dino-5scale_swin-l_8xb2-12e_coco_20230228_072924-a654145f.pth
@@ -228,7 +228,7 @@ python detector_sam_demo.py ../images/cat_remote.jpg \
 如果是 Grounding DINO 则安装如下依赖即可
 
 ```shell
-cd mmsam
+cd playground
 pip install git+https://github.com/facebookresearch/segment-anything.git
 pip install git+https://github.com/IDEA-Research/GroundingDINO.git # 需要编译 CUDA OP，请确保你的 PyTorch 版本、GCC 版本和 NVCC 编译版本兼容
 ```
@@ -236,11 +236,13 @@ pip install git+https://github.com/IDEA-Research/GroundingDINO.git # 需要编�
 如果是 GLIP 则安装如下依赖即可
 
 ```shell
-cd mmsam
+cd playground
+
 pip install git+https://github.com/facebookresearch/segment-anything.git
 pip install einops shapely timm yacs tensorboardX ftfy prettytable pymongo transformers nltk inflect scipy pycocotools opencv-python matplotlib
+
 git clone https://github.com/microsoft/GLIP.git
-cd GLIP; python setup.py build develop --user; cd .. # 需要编译 CUDA OP，请确保你的 PyTorch 版本、GCC 版本和 NVCC 编译版本兼容，暂时不支持 PyTorch 1.11+ 版本
+cd GLIP; python setup.py build develop --user  # 需要编译 CUDA OP，请确保你的 PyTorch 版本、GCC 版本和 NVCC 编译版本兼容，暂时不支持 PyTorch 1.11+ 版本
 ```
 
 #### 功能演示
@@ -345,4 +347,38 @@ Evaluate annotation type *segm*
  Average Recall     (AR) @[ IoU=0.50:0.95 | area= large | maxDets=100 ] = 0.639
 ```
 
-你可以降低 `--box-thr` (默认是 0.2)，例如设置为 0.001 从而提升检测性能。
+你可以降低 `--box-thr` (默认是 0.2)，例如设置为 0.001 从而提升检测性能，性能如下所示
+
+```text
+Evaluate annotation type *bbox*
+
+ Average Precision  (AP) @[ IoU=0.50:0.95 | area=   all | maxDets=100 ] = 0.481
+ Average Precision  (AP) @[ IoU=0.50      | area=   all | maxDets=100 ] = 0.670
+ Average Precision  (AP) @[ IoU=0.75      | area=   all | maxDets=100 ] = 0.527
+ Average Precision  (AP) @[ IoU=0.50:0.95 | area= small | maxDets=100 ] = 0.318
+ Average Precision  (AP) @[ IoU=0.50:0.95 | area=medium | maxDets=100 ] = 0.531
+ Average Precision  (AP) @[ IoU=0.50:0.95 | area= large | maxDets=100 ] = 0.631
+ Average Recall     (AR) @[ IoU=0.50:0.95 | area=   all | maxDets=  1 ] = 0.377
+ Average Recall     (AR) @[ IoU=0.50:0.95 | area=   all | maxDets= 10 ] = 0.601
+ Average Recall     (AR) @[ IoU=0.50:0.95 | area=   all | maxDets=100 ] = 0.632
+ Average Recall     (AR) @[ IoU=0.50:0.95 | area= small | maxDets=100 ] = 0.461
+ Average Recall     (AR) @[ IoU=0.50:0.95 | area=medium | maxDets=100 ] = 0.680
+ Average Recall     (AR) @[ IoU=0.50:0.95 | area= large | maxDets=100 ] = 0.788
+
+Evaluate annotation type *segm*
+
+ Average Precision  (AP) @[ IoU=0.50:0.95 | area=   all | maxDets=100 ] = 0.403
+ Average Precision  (AP) @[ IoU=0.50      | area=   all | maxDets=100 ] = 0.628
+ Average Precision  (AP) @[ IoU=0.75      | area=   all | maxDets=100 ] = 0.435
+ Average Precision  (AP) @[ IoU=0.50:0.95 | area= small | maxDets=100 ] = 0.283
+ Average Precision  (AP) @[ IoU=0.50:0.95 | area=medium | maxDets=100 ] = 0.455
+ Average Precision  (AP) @[ IoU=0.50:0.95 | area= large | maxDets=100 ] = 0.517
+ Average Recall     (AR) @[ IoU=0.50:0.95 | area=   all | maxDets=  1 ] = 0.329
+ Average Recall     (AR) @[ IoU=0.50:0.95 | area=   all | maxDets= 10 ] = 0.527
+ Average Recall     (AR) @[ IoU=0.50:0.95 | area=   all | maxDets=100 ] = 0.556
+ Average Recall     (AR) @[ IoU=0.50:0.95 | area= small | maxDets=100 ] = 0.425
+ Average Recall     (AR) @[ IoU=0.50:0.95 | area=medium | maxDets=100 ] = 0.605
+ Average Recall     (AR) @[ IoU=0.50:0.95 | area= large | maxDets=100 ] = 0.674
+```
+
+可以发现性能提升不少。
