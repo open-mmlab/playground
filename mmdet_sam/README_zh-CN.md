@@ -4,42 +4,44 @@
 <img src="https://user-images.githubusercontent.com/27466624/231659917-e3069822-2193-4261-b216-5f53baa64b53.PNG"/>
 </div>
 
-The current research direction of general-purpose object detection is moving toward large multimodality models. In addition to image inputs, most recent research outcomes incorporate text modality to improve the performance. Once the text modality is added, some very good properties of generic detection algorithms start to emerge, such as:
+目前通用目标检测研究方向朝着多模态大模型发展。除了图片输入外，目前新的研究大部分都会加入文本模态来提升性能。一旦加入文本模态后，通用检测算法就会出现一些非常好的性质，典型的如
 
-1. a large amount of easily accessible text data can be leveraged for joint training.
-2. easy implementation of open-set object detection, leading to genuinely universal detection tasks.
-3. can be used with the superb models in NLP to create some interesting and useful features.
+1. 可以充分利用大量容易获取的文本数据来联合训练
+2. 容易实现开放词汇目标检测，进而通向真正的通用检测
+3. 可以和 NLP 中已经发布的超强模型联合使用，从而做到一些很有趣且实用的功能
 
-Recently, Meta AI proposed [Segment Anything](https://github.com/facebookresearch/segment-anything) which claims to be able to segment any object, and there are many great implementations based on it. MMDet integrates many high-performance and easy-to-use detection models, so why not we combine MMDet models and Segment Anything together to create something interesting?
+最近 Meta AI 提出了 [Segment Anything](https://github.com/facebookresearch/segment-anything) 模型，号称可以对任意物体进行分割，基于此国内外也出现了不少下应用。MMDet 中集成了大量性能强且易用的检测模型，因此也可以基于 MMDet 模型和 Segment Anything 联合尝试做一些有趣的事情。
 
-From the current point of view, generic object detection can be divided into two main categories:
+从目前来看，通用目标检测可以分成两大类：
 
-1. Closed-Set Object Detection, which can only detect a fixed number of classes of objects that appear in the training set
-2. Open-Set object detection, which can also detect objects and categories that are not in the training set.
+1. 封闭集目标检测 Closed-Set Object Detection，即只能检测训练集出现的固定类别数的物体
+2. 开发集目标检测 Open-Set Object Detection，即可以检测训练集外的类别的物体
 
-With the popularity of multimodal algorithms, open-set object detection has become a new research area, in which there are three popular directions:
+随着多模态算法的流行，开放类别的目标检测已经成为了新的研究方向，在这其中有 3 个比较热门的研究方向：
 
-1. Zero-Shot Object Detection, also known as zero-sample object detection, which emphasizes that the object categories of the testing set are not in the training set.
-2. Open-Vocabulary Object Detection, which detects all objects with given category list that appears in the target images.
-3. Grounding Object Detection, which predicts the location of the objects with given text descriptions that appears in the target images.
+1. Zero-Shot Object Detection，即零样本目标检测，其强调的是测试集类别不在训练集中
+2. Open-Vocabulary Object Detection，即开发词汇目标检测，给定图片和类别词汇表，检测所有物体
+3. Grounding Object Detection，即给定图片和文本描述，预测文本中所提到的在图片中的物体位置
 
-These three directions are not completely distinguishable in practice, but only different in general terms. Based on the above descriptions, we provide inference and evaluation scripts for multiple models to work with Segment Anything, which accomplished the following features:
+实际上三个方向没法完全区分，只是通俗说法不同而已。基于上述描述，结合 Segment Anything，我们提供了多个模型串联的推理和评估脚本。具体包括如下功能：
 
-1. supports classic Closed-Set object detection models in MMDet to work with SAM models for automatic detection and instance segmentation, such as Faster R-CNN and DINO.
-2. supports Open-Vocabulary detection model like Detic to work with SAM models for automatic detection and instance segmentation.
-3. supports Grounding Object Detection models to work with SAM models for automatic detection and instance segmentation, such as Grounding DINO and GLIP.
-4. supports distributed detection and segmentation evaluation and automatic COCO JSON exportation across all models for user-friendly custom data assessment.
+1. 支持 MMDet 模型经典检测模型 (Closed-Set)，典型的如 Faster R-CNN 和 DINO 等串联 SAM 模型进行自动检测和实例分割标注
+2. 支持 Open-Vocabulary 检测模型，典型的如 Detic 串联 SAM 模型进行自动检测和实例分割标注
+3. 支持 Grounding Object Detection 模型，典型的如 Grounding DINO 和 GLIP 串联 SAM 模型进行自动检测和实例分割标注
+4. 所有模型均支持分布式检测和分割评估和自动 COCO JSON 导出，方便用户对自定义数据进行评估
 
-## File Introduction
+## 项目文件说明
 
-1. `detector_sam_demo.py`: for detection and instance segmentation on both single image and image folders.
-2. `coco_style_eval.py`: for inference, evaluation and exportation on the given COCO JSON.
-3. `browse_coco_json.py`: for visualizing exported COCO JSON.
-4. `images2coco.py`: for customizd and unannotated COCO style JSON based on users' own image folder. This JSON can be used as the input to `coco_style_eval.py`.
+下面对每个脚本功能进行说明：
 
-This project referenced [Grounded-Segment-Anything](https://github.com/IDEA-Research/Grounded-Segment-Anything). Thanks!
+1. `detector_sam_demo.py` 用于单张图片或者文件夹的检测和实例分割模型推理
+2. `coco_style_eval.py` 用于对输入的 COCO JSON 进行检测和实例分割模型推理、评估和导出
+3. `browse_coco_json.py` 用于可视化导出的 JSON 文件
+4. `images2coco.py` 用于用户自定义且不包括标注的文件夹列表生成 COCO 格式的 JSON，该 JSON 可以作为 `coco_style_eval.py` 输入
 
-## Base Development Environment Setup
+本工程参考了 [Grounded-Segment-Anything](https://github.com/IDEA-Research/Grounded-Segment-Anything)，非常感谢！
+
+## 基础环境安装
 
 ```shell
 conda create -n mmdet-sam python=3.8 -y
@@ -51,21 +53,21 @@ git clone https://github.com/open-mmlab/playground.git
 cd playground
 ```
 
-## Feature Introduction
+## 功能说明
 
-This project has included many outstanding open-sourced algorithms, in order to reduce the burden of the environment installation. If you prefer not to use a certain part of the features, you can skip the corresponding part. Our project can be divided into the following three sections.
+本工程中包括了引入了诸多优秀的开源算法，为了减少用户安装环境负担，如果你不想使用某部分功能，则可以不安装对应的依赖。下面分成 3 个部分说明。
 
 ### 1 Open-Vocabulary + SAM
 
-Use Open-Vocabulary object detectors with SAM models. Currently we support Detic.
+其表示采用 Open-Vocabulary 目标检测器串联 SAM 模型，目前支持 Detic 算法
 
-#### Dependencies Installation
+#### 依赖安装
 
 ```shell
 pip install -U openmim
 mim install "mmcv>=2.0.0"
 
-# build from source
+# 源码安装
 git clone https://github.com/open-mmlab/mmdetection.git
 cd mmdetection; pip install -e .; cd ..
 
@@ -73,17 +75,17 @@ pip install git+https://github.com/facebookresearch/segment-anything.git
 pip install git+https://github.com/openai/CLIP.git
 ```
 
-#### Demonstration
+#### 功能演示
 
 ```shell
 cd mmdet_sam
 
-# download weights
+# 下载权重
 mkdir ../models
 wget -P ../models/ https://download.openmmlab.com/mmdetection/v3.0/detic/detic_centernet2_swin-b_fpn_4x_lvis-coco-in21k/detic_centernet2_swin-b_fpn_4x_lvis-coco-in21k_20230120-0d301978.pth
 wget -P ../models/ https://dl.fbaipublicfiles.com/segment_anything/sam_vit_h_4b8939.pth
 
-# input a single image
+# 单张图片输入
 python detector_sam_demo.py ../images/cat_remote.jpg \
     configs/Detic_LI21k_CLIP_SwinB_896b32_4x_ft4x_max-size.py \
     ../models/detic_centernet2_swin-b_fpn_4x_lvis-coco-in21k_20230120-0d301978.pth \
@@ -91,16 +93,16 @@ python detector_sam_demo.py ../images/cat_remote.jpg \
     --sam-device cpu
 ```
 
-The result will be generated at `outputs/cat_remote.jpg` like the following one:
+会在当前路径生成 `outputs/cat_remote.jpg`，效果如下所示：
 
 <div align=center>
 <img src="https://user-images.githubusercontent.com/17425982/231418323-97b489b1-43df-4065-853e-1e2539679ee3.png"/>
 </div>
 
-We can also detect the remote by editing `--test-prompt`. Please be aware that you must use empty space and `.` to separate different categories.
+我们可以修改 `--text-prompt` 来检测出遥控器，注意不同类别间要用空格和 . 区分开。
 
 ```shell
-# input a single image
+# 单张图片输入
 python detector_sam_demo.py ../images/cat_remote.jpg \
     configs/Detic_LI21k_CLIP_SwinB_896b32_4x_ft4x_max-size.py \
     ../models/detic_centernet2_swin-b_fpn_4x_lvis-coco-in21k_20230120-0d301978.pth \
@@ -108,16 +110,16 @@ python detector_sam_demo.py ../images/cat_remote.jpg \
     --sam-device cpu
 ```
 
-The generated `outputs/cat_remote.jpg` is now like this:
+会在当前路径生成 `outputs/cat_remote.jpg`，效果如下所示：
 
 <div align=center>
 <img src="https://user-images.githubusercontent.com/17425982/231419108-bc5ef1ed-cb0b-496a-a19e-9b3b55479426.png"/>
 </div>
 
-You can also run inferences on a folder by using this command:
+你也可以输入文件夹进行推理，如下所示：
 
 ```shell
-# input a folder
+# 文件夹输入
 python detector_sam_demo.py ../images \
     configs/Detic_LI21k_CLIP_SwinB_896b32_4x_ft4x_max-size.py \
     ../models/detic_centernet2_swin-b_fpn_4x_lvis-coco-in21k_20230120-0d301978.pth \
@@ -125,12 +127,12 @@ python detector_sam_demo.py ../images \
     --sam-device cpu
 ```
 
-The result images will be generated at the `outputs` folder.
+会在当前路径生成 `outputs` 文件夹里面存放了两种图片。
 
-If the graphics memory of your GPU can only support running one model, you can use `--cpu-off-load` to make sure every time there will be only one model running on the GPU:
+如果你的 GPU 显存只能支持一个模型运行，可以指定 `--cpu-off-load` 来设置每次只将一个模型放置到 GPU 上
 
 ```shell
-# input a folder
+# 文件夹输入
 python detector_sam_demo.py ../images \
     configs/Detic_LI21k_CLIP_SwinB_896b32_4x_ft4x_max-size.py \
     ../models/detic_centernet2_swin-b_fpn_4x_lvis-coco-in21k_20230120-0d301978.pth \
@@ -138,12 +140,12 @@ python detector_sam_demo.py ../images \
     --cpu-off-load
 ```
 
-We also support CPU inference by using `--det-device cpu --sam-device cpu`.
+目前也支持 CPU 推理，你可以设置 `--det-device cpu --sam-device cpu`。
 
-As Detic includes the mask results, we add a additional parameter `--use-detic-mask`. This allows us to run Detic only without running SAM models.
+由于 Detic 算法实际上包括了 mask 结果，因此我们增加了额外参数 `--use-detic-mask`，当指定该参数时候表示仅仅运行 Detic 而不运行 sam。
 
 ```shell
-# input a folder
+# 文件夹输入
 python detector_sam_demo.py ../images \
     configs/Detic_LI21k_CLIP_SwinB_896b32_4x_ft4x_max-size.py \
     ../models/detic_centernet2_swin-b_fpn_4x_lvis-coco-in21k_20230120-0d301978.pth \
@@ -152,10 +154,10 @@ python detector_sam_demo.py ../images \
     --use-detic-mask
 ```
 
-If you would like to visualize the results only, you can use set `--only-det` to run without SAM models.
+如果你只想可视化检测结果，则可以指定 `--only-det` 则也不会运行 sam 模型。
 
 ```shell
-# input a sinle image
+# 单张图片输入
 python detector_sam_demo.py ../images/cat_remote.jpg \
     configs/Detic_LI21k_CLIP_SwinB_896b32_4x_ft4x_max-size.py \
     ../models/detic_centernet2_swin-b_fpn_4x_lvis-coco-in21k_20230120-0d301978.pth \
@@ -163,32 +165,32 @@ python detector_sam_demo.py ../images/cat_remote.jpg \
     --only-det
 ```
 
-The `outputs/cat_remote.jpg` now is like this:
+会在当前路径生成 `outputs/cat_remote.jpg`，效果如下所示：
 
 <div align=center>
 <img src="https://user-images.githubusercontent.com/17425982/231426607-3b5ed4db-5077-463a-9462-f86b955a1f23.png"/>
 </div>
 
-### 2 MMdet models + SAM
+### 2 MMDet 模型 + SAM
 
-Use MMDet models with SAM models for instance segmentation tasks. Currently all MMDet models are supported.
+其表示 MMDet 中的检测模型串联 SAM 从而实现实例分割任务，目前支持所有 MMDet 中已经支持的检测算法。
 
-#### Dependencies Installation
+#### 依赖安装
 
 ```shell
 pip install -U openmim
 mim install "mmcv>=2.0.0"
 
-# build from source
+# 源码安装
 git clone https://github.com/open-mmlab/mmdetection.git
 cd mmdetection; pip install -e .; cd ..
 ```
 
-#### Demonstration
+#### 模型推理演示
 
-You can run all features like what we have covered in the above Detic section. The only difference is that you do not need to set `--text-prompt`. Here we demonstrate some classic usages.
+其用法和前面的 Detic 一样，只是不需要设置 `--text-prompt`, 下面仅仅列出典型用法
 
-1. `Faster R-CNN` models
+1 `Faster R-CNN` 模型
 
 ```shell
 cd mmdet_sam
@@ -196,14 +198,14 @@ cd mmdet_sam
 mkdir ../models
 wget -P ../models/ https://download.openmmlab.com/mmdetection/v2.0/faster_rcnn/faster_rcnn_r50_fpn_2x_coco/faster_rcnn_r50_fpn_2x_coco_bbox_mAP-0.384_20200504_210434-a5d8aa15.pth
 
-# input a single image
+# 单张图片评估
 python detector_sam_demo.py ../images/cat_remote.jpg \
     ../mmdetection/configs/faster_rcnn/faster-rcnn_r50_fpn_2x_coco.py \
     ../models/faster_rcnn_r50_fpn_2x_coco_bbox_mAP-0.384_20200504_210434-a5d8aa15.pth \
     --sam-device cpu
 ```
 
-2. `DINO` models
+2 `DINO` 模型
 
 ```shell
 cd mmdet_sam
@@ -211,28 +213,27 @@ cd mmdet_sam
 mkdir ../models
 wget -P ../models/ https://download.openmmlab.com/mmdetection/v3.0/dino/dino-5scale_swin-l_8xb2-12e_coco/dino-5scale_swin-l_8xb2-12e_coco_20230228_072924-a654145f.pth
 
-# input a single image
 python detector_sam_demo.py ../images/cat_remote.jpg \
     ../mmdetection/configs/dino/dino-5scale_swin-l_8xb2-12e_coco.py \
     dino-5scale_swin-l_8xb2-12e_coco_20230228_072924-a654145f.pth  \
     --sam-device cpu
 ```
 
-### 3 Grounding models + SAM
+### 3 Grounding 模型 + SAM
 
-Use Gounding object detectors with SAM models for instance segmentation tasks. Currently we support Gounding DINO and GLIP.
+其表示引入 Grounding 目标检测模型串联 SAM 从而实现实例分割任务，目前支持 Grounding DINO 和 GLIP。
 
-#### Dependencies Installation
+#### 依赖安装
 
-Gounding DINO:
+如果是 Grounding DINO 则安装如下依赖即可
 
 ```shell
 cd playground
 pip install git+https://github.com/facebookresearch/segment-anything.git
-pip install git+https://github.com/IDEA-Research/GroundingDINO.git # Please make sure your PyTorch, GCC and NVCC are all compatible to build CUDA ops successfully
+pip install git+https://github.com/IDEA-Research/GroundingDINO.git # 需要编译 CUDA OP，请确保你的 PyTorch 版本、GCC 版本和 NVCC 编译版本兼容
 ```
 
-GLIP:
+如果是 GLIP 则安装如下依赖即可
 
 ```shell
 cd playground
@@ -241,12 +242,12 @@ pip install git+https://github.com/facebookresearch/segment-anything.git
 pip install einops shapely timm yacs tensorboardX ftfy prettytable pymongo transformers nltk inflect scipy pycocotools opencv-python matplotlib
 
 git clone https://github.com/microsoft/GLIP.git
-cd GLIP; python setup.py build develop --user # Please make sure your PyTorch, GCC and NVCC are all compatible to build CUDA ops successfully
+cd GLIP; python setup.py build develop --user  # 需要编译 CUDA OP，请确保你的 PyTorch 版本、GCC 版本和 NVCC 编译版本兼容，暂时不支持 PyTorch 1.11+ 版本
 ```
 
-#### Demonstration
+#### 功能演示
 
-Still, the usages are identical to the Detic part, and we only demonstrate part of the features here.
+使用方式和 Detic 完全相同，下面仅演示部分功能。
 
 ```shell
 cd mmdet_sam
@@ -254,7 +255,7 @@ cd mmdet_sam
 mkdir ../models
 wget -P ../models/ https://github.com/IDEA-Research/GroundingDINO/releases/download/v0.1.0-alpha/groundingdino_swint_ogc.pth
 
-# input a single image
+# 单张图片输入
 python detector_sam_demo.py ../images/cat_remote.jpg \
     configs/GroundingDINO_SwinT_OGC.py \
     ../models/groundingdino_swint_ogc.pth \
@@ -262,7 +263,7 @@ python detector_sam_demo.py ../images/cat_remote.jpg \
     --sam-device cpu
 ```
 
-The result will be generated at `outputs/cat_remote.jpg` like the following one:
+会在当前路径生成 `outputs/cat_remote.jpg`，效果如下所示：
 
 <div align=center>
 <img src="https://user-images.githubusercontent.com/17425982/231431590-1c583de0-0f3a-410e-aded-6c5257540632.png"/>
@@ -274,7 +275,7 @@ cd mmdet_sam
 mkdir ../models
 wget -P ../models/ https://penzhanwu2bbs.blob.core.windows.net/data/GLIPv1_Open/models/glip_a_tiny_o365.pth
 
-# input a single image
+# 单张图片输入
 python detector_sam_demo.py ../images/cat_remote.jpg \
     configs/glip_A_Swin_T_O365.yaml \
     ../models/glip_a_tiny_o365.pth \
@@ -282,9 +283,9 @@ python detector_sam_demo.py ../images/cat_remote.jpg \
     --sam-device cpu
 ```
 
-### 4 COCO JSON evaluation
+### 4 COCO JSON 评估
 
-We support running `coco_style_eval.py` in both a distributed and a non-distributed manner. By default, this script runs on COCO Val2017 dataset organized in the format shown as follows:
+对于 `coco_style_eval.py` 脚本，你可以采用分布式或者非分布式方式进行推理和评估，默认参数是对 COCO Val2017 数据集进行评估，COCO 文件组织格式如下所示：
 
 ```text
 ├── ${COCO_DATA_ROOT}
@@ -293,25 +294,25 @@ We support running `coco_style_eval.py` in both a distributed and a non-distribu
 │   ├── val2017
 ```
 
-We use Detic to demonstrate how it works here, other algorithms are same to this.
+以 Detic 算法为例，其余算法用法相同。
 
 ```shell
 cd mmdet_sam
 
-# non-distributed
+# 非分布式评估
 python coco_style_eval.py ${COCO_DATA_ROOT} \
     configs/Detic_LI21k_CLIP_SwinB_896b32_4x_ft4x_max-size.py \
     ../models/detic_centernet2_swin-b_fpn_4x_lvis-coco-in21k_20230120-0d301978.pth \
     -t coco_cls_name.txt
 
-# distributed on eight cards on one machine
+# 分布式单机 8 卡评估
 bash ./dist_coco_style_eval.sh 8 ${COCO_DATA_ROOT} \
     configs/Detic_LI21k_CLIP_SwinB_896b32_4x_ft4x_max-size.py \
     ../models/detic_centernet2_swin-b_fpn_4x_lvis-coco-in21k_20230120-0d301978.pth \
     -t coco_cls_name.txt
 ```
 
-### 5 COCO evaluation results
+### 5 COCO 评估结果
 
 |                                Method                                | bbox thresh |   Test set   | Box AP | Seg AP |
 | :------------------------------------------------------------------: | :---------: | :----------: | :----: | :----: |
@@ -321,4 +322,4 @@ bash ./dist_coco_style_eval.sh 8 ${COCO_DATA_ROOT} \
 |       [GroundingDino\*](./configs/GroundingDINO_SwinT_OGC.pyy)       |     0.3     | COCO2017 Val | 0.404  |        |
 
 **Note**:
-\*means use original GroundingDINO approach to test
+\*意思是使用原始GroundingDino的方式进行评估
