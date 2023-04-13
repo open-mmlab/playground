@@ -2,13 +2,13 @@
 
 --这里放图
 
-目前通用目标检测研究方向朝着多模态大模型发展。除了图片输入外，目前新的研究大部分都会加入文本模态来提升性能。一旦加入文本模态后，通用检测算法就会出现一些非常好的性质，典型的如
+目前通用目标检测研究方向朝着多模态大模型发展。除了图片输入外，目前新的研究大部分都会加入文本模态来提升性能。一旦加入文本模态后，通用检测算法就会出现一些非常好的性质，典型的如：
 
 1. 可以充分利用大量容易获取的文本数据来联合训练
 2. 容易实现开放集目标检测，进而通向真正的通用检测
 3. 可以和 NLP 中已经发布的超强模型联合使用，从而做到一些很有趣且实用的功能
 
-最近 Meta AI 提出了 [Segment Anything](https://github.com/facebookresearch/segment-anything) 模型，号称可以对任意物体进行分割，基于此国内外也出现了不少下应用，MMDet 中集成了大量性能强且易用的检测模型，因此也可以基于 MMDet 模型和 Segment Anything 联合尝试做一些有趣的事情。
+最近 Meta AI 提出了 [Segment Anything](https://github.com/facebookresearch/segment-anything) 模型，号称可以对任意物体进行分割，基于此国内外也出现了不少应用，MMDet 中集成了大量性能强且易用的检测模型，因此也可以基于 MMDet 模型和 Segment Anything 联合尝试做一些有趣的事情。
 
 从目前来看，通用目标检测可以分成两大类：
 
@@ -18,10 +18,10 @@
 随着多模态算法的流行，开放类别的目标检测已经成为了新的研究方向，在这其中有 3 个比较热门的研究方向：
 
 1. Zero-Shot Object Detection，即零样本目标检测，其强调的是测试集类别不在训练集中
-2. Open-Vocabulary Object Detection，即开发词汇目标检测，给定图片和类别词汇表，检测所有物体
+2. Open-Vocabulary Object Detection，即开放词汇目标检测，给定图片和类别词汇表，检测所有物体
 3. Grounding Object Detection，即给定图片和文本描述，预测文本中所提到的在图片中的物体位置
 
-实际上三个方向没法完全区分，只是通俗说法不同而已。 基于上述描述，结合 Segment Anything，我们提供了多个模型串联的推理和评估脚本。 具体包括如下功能：
+实际上三个方向没法完全区分，只是通俗说法不同而已。基于上述描述，结合 Segment Anything，我们提供了多个模型串联的推理和评估脚本。具体包括如下功能：
 
 1. 支持 MMDet 模型经典检测模型 (Closed-Set)，典型的如 Faster R-CNN 和 DINO 等串联 SAM 模型进行自动检测和实例分割标注
 2. 支持 Open-Vocabulary 检测模型，典型的如 Detic 串联 SAM 模型进行自动检测和实例分割标注
@@ -57,7 +57,7 @@ cd playground
 
 ### 1 Open-Vocabulary + SAM
 
-其表示采用 Open-Vocabulary 目标检测器串联 SAM 模型，目前支持 Detic 算法
+采用 Open-Vocabulary 目标检测器串联 SAM 模型，目前支持 Detic 算法。
 
 #### 依赖安装
 
@@ -67,7 +67,7 @@ mim install "mmcv>=2.0.0"
 
 # 源码安装
 git clone https://github.com/open-mmlab/mmdetection.git
-cd mmdetection; pip install -e .; cd ..
+cd mmdetection; mim install -e .; cd ..
 
 pip install git+https://github.com/facebookresearch/segment-anything.git
 pip install git+https://github.com/openai/CLIP.git
@@ -93,7 +93,7 @@ python detector_sam_demo.py ../images/cat_remote.jpg configs/Detic_LI21k_CLIP_Sw
 <img src="https://user-images.githubusercontent.com/17425982/231418323-97b489b1-43df-4065-853e-1e2539679ee3.png"/>
 </div>
 
-我们可以修改 `--text-prompt` 来检测出遥控器，注意不同类别间要用空格和 . 区分开。
+我们可以修改 `--text-prompt` 来检测出遥控器，注意不同类别间要用空格和 `.` 区分开。
 
 ```shell
 # 单张图片输入
@@ -113,18 +113,18 @@ python detector_sam_demo.py ../images/cat_remote.jpg configs/Detic_LI21k_CLIP_Sw
 python detector_sam_demo.py ../images configs/Detic_LI21k_CLIP_SwinB_896b32_4x_ft4x_max-size.py ../models/detic_centernet2_swin-b_fpn_4x_lvis-coco-in21k_20230120-0d301978.pth -t "cat . remote" --sam-device cpu
 ```
 
-会在当前路径生成 `outputs` 文件夹里面存放了两种图片。
+会在当前路径生成的 `outputs` 文件夹里面存放两种图片。
 
-如果你的 GPU 显存只能支持一个模型运行，可以指定 `--cpu-off-load` 来设置每次只将一个模型放置到 GPU 上
+如果你的 GPU 显存只能支持一个模型运行，可以指定 `--cpu-off-load` 来设置每次只将一个模型放置到 GPU 上：
 
 ```shell
 # 文件夹输入
 python detector_sam_demo.py ../images configs/Detic_LI21k_CLIP_SwinB_896b32_4x_ft4x_max-size.py ../models/detic_centernet2_swin-b_fpn_4x_lvis-coco-in21k_20230120-0d301978.pth -t "cat . remote" --cpu-off-load
 ```
 
-目前也支持 CPU 推理，你可以设置 `--det-device cpu --sam-device cpu`。
+目前也支持 CPU 推理，你可以设置 `--det-device cpu --sam-device cpu` 。
 
-由于 Detic 算法实际上包括了 mask 结果，因此我们增加了额外参数 `--use-detic-mask`，当指定该参数时候表示仅仅运行 Detic 而不运行 sam。
+由于 Detic 算法实际上包括了 mask 结果，因此我们增加了额外参数 `--use-detic-mask`，当指定该参数时候表示仅仅运行 Detic 而不运行 sam 。
 
 ```shell
 # 文件夹输入
@@ -146,7 +146,7 @@ python detector_sam_demo.py ../images/cat_remote.jpg configs/Detic_LI21k_CLIP_Sw
 
 ### 2 MMDet 模型 + SAM
 
-其表示 MMDet 中的检测模型串联 SAM 从而实现实例分割任务，目前支持所有 MMDet 中已经支持的检测算法。
+采用 MMDet 中的检测模型串联 SAM 从而实现实例分割任务，目前支持所有 MMDet 中已经支持的检测算法。
 
 #### 依赖安装
 
@@ -156,7 +156,7 @@ mim install "mmcv>=2.0.0"
 
 # 源码安装
 git clone https://github.com/open-mmlab/mmdetection.git
-cd mmdetection; pip install -e .; cd ..
+cd mmdetection; mim install -e .; cd ..
 ```
 
 #### 模型推理演示
@@ -188,14 +188,14 @@ python detector_sam_demo.py ../images/cat_remote.jpg ../mmdetection/configs/dino
 
 ### 3 Grounding 模型 + SAM
 
-其表示引入 Grounding 目标检测模型串联 SAM 从而实现实例分割任务，目前支持 Grounding DINO 和 GLIP。
+引入 Grounding 目标检测模型串联 SAM 从而实现实例分割任务，目前支持 Grounding DINO 和 GLIP。
 
 #### 依赖安装
 
 如果是 Grounding DINO 则安装如下依赖即可
 
 ```shell
-cd mmsam
+cd ../playground
 pip install git+https://github.com/facebookresearch/segment-anything.git
 pip install git+https://github.com/IDEA-Research/GroundingDINO.git # 需要编译 CUDA OP，请确保你的 PyTorch 版本、GCC 版本和 NVCC 编译版本兼容
 ```
@@ -203,7 +203,7 @@ pip install git+https://github.com/IDEA-Research/GroundingDINO.git # 需要编�
 如果是 GLIP 则安装如下依赖即可
 
 ```shell
-cd mmsam
+cd ../playground
 pip install git+https://github.com/facebookresearch/segment-anything.git
 pip install git+https://github.com/microsoft/GLIP.git # 需要编译 CUDA OP，请确保你的 PyTorch 版本、GCC 版本和 NVCC 编译版本兼容，暂时不支持 PyTorch 1.11+ 版本
 pip install einops shapely timm yacs tensorboardX ftfy prettytable pymongo transformers nltk inflect
