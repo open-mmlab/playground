@@ -8,9 +8,9 @@ English | [简体中文](README_zh-CN.md)
 
 </div>
 
-With the principles of openness, transparency, and cooperation, we encourage community members to join in our projects and explore the edges of AI. Our Playground project is the perfect place to collect exciting and cutting-edge applications related to OpenMMLab, which we constantly update.
+🥳 🚀 **With the principles of openness, transparency, and cooperation, we encourage community members to join in our projects and explore the edges of AI. Our Playground project is the perfect place to collect exciting and cutting-edge applications related to OpenMMLab, which we constantly update.**
 
-Join the playground now and unleash your creativity in the world of AI!
+🥳 🚀 **Join the playground now and unleash your creativity in the world of AI!**
 
 The overview diagram is shown below.
 
@@ -29,7 +29,7 @@ Currently, the following applications are included:
 
 The following is a detailed description.
 
-## mmdet_sam
+## ✨ mmdet_sam
 
 <div align=center>
 <img src="https://user-images.githubusercontent.com/27466624/231659917-e3069822-2193-4261-b216-5f53baa64b53.PNG"/>
@@ -44,7 +44,7 @@ We provide a set of applications based on mmdet and sam. The features include:
 
 Please see [README](mmdet_sam/README.md) for more information.
 
-## mmrotate_sam
+## ✨ mmrotate_sam
 
 <div align=center>
 <img src="https://user-images.githubusercontent.com/27466624/231659969-adf7dd4d-fcec-4677-9105-aa72b2ced00f.PNG"/>
@@ -57,7 +57,7 @@ We provide a set of applications based on mmrotate and sam. The features include
 
 Please see [README](mmrotate_sam/README.md) for more information.
 
-## mmpose_open_detection
+## ✨ mmpose_open_detection
 
 <div align=center>
 <img src="https://user-images.githubusercontent.com/27466624/231660029-03166059-e8cf-4b17-8aa5-b42f3a52f12a.PNG"/>
@@ -70,7 +70,7 @@ We provide a set of applications based on mmpose and open detection. The feature
 
 Please see [README](mmpose_open_detection/README.md) for more information.
 
-## mmtracking_open_detection
+## ✨ mmtracking_open_detection
 
 <div align=center>
 <img src="https://user-images.githubusercontent.com/27466624/231666666-4f4c5696-df73-45cd-af04-758ea3806a82.png"/>
