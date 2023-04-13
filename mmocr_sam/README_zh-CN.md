@@ -79,7 +79,7 @@ pip install pytorch-lightning==2.0.1.post0
   ```
 
 <div align=center>
-<img src="https://user-images.githubusercontent.com/65173622/231764540-a5403ad3-fab5-4dc8-9b82-f8a9643ab0f4.png"/>
+<img src="https://user-images.githubusercontent.com/65173622/231803460-495cf11f-8e2e-4c95-aa48-b163fc7fbbab.png"/>
 </div>
 
 
