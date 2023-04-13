@@ -1,16 +1,16 @@
-# 开发集目标检测联合 MMPose
+# 开放集目标检测联合 MMPose
 
 <div align=center>
-<img src="https://user-images.githubusercontent.com/17425982/231637220-bebcea80-afad-4039-92c0-5c9cb2c82cad.png"/>
+<img src="https://user-images.githubusercontent.com/27466624/231660029-03166059-e8cf-4b17-8aa5-b42f3a52f12a.PNG"/>
 </div>
 
-本工程将 MMPose 联合开发集目标检测实现开发集姿态识别。
+本工程将 MMPose 联合开放集目标检测实现开放集姿态识别。
 
 ## 参数说明
 
 下面对每个脚本功能进行说明：
 
-1. `mmpose_open_demo.py` 用于单张图片或者文件夹的开发集检测和姿态估计模型推理
+1. `mmpose_open_demo.py` 用于单张图片或者文件夹的开放集检测和姿态估计模型推理
 
 (1) mmpose_open_demo.py
 
