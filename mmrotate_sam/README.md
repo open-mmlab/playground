@@ -2,6 +2,10 @@
 
 [中文文档](README_CN.md)
 
+<div align=center>
+<img src="https://user-images.githubusercontent.com/79644233/231636420-8b7f81f3-51d2-439c-87cc-6f7eebd32193.png"/>
+</div>
+
 The project folder holds codes related to MMRotate and SAM.
 
 Script Descriptions:
