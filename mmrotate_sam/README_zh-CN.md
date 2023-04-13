@@ -34,10 +34,10 @@ pip install opencv-python pycocotools matplotlib onnxruntime onnx
 
 ```shell
 python demo_zero-shot-oriented-detection.py \
-  data/split_ss_dota/test/images/P0006__1024__0___0.png \
-  configs/rotated_fcos/rotated-fcos-hbox-le90_r50_fpn_1x_dota.py \
-  rotated_fcos_sep_angle_r50_fpn_1x_dota_le90-0be71a0c.pth \
-  --sam-type "vit_b" --sam-weight sam_vit_b_01ec64.pth --out-path output.png
+    data/split_ss_dota/test/images/P0006__1024__0___0.png \
+    configs/rotated_fcos/rotated-fcos-hbox-le90_r50_fpn_1x_dota.py \
+    rotated_fcos_sep_angle_r50_fpn_1x_dota_le90-0be71a0c.pth \
+    --sam-type "vit_b" --sam-weight sam_vit_b_01ec64.pth --out-path output.png
 ```
 
 <div align=center>
@@ -48,7 +48,7 @@ python demo_zero-shot-oriented-detection.py \
 
 ```shell
 python eval_zero-shot-oriented-detection_dota.py \
-  configs/rotated_fcos/rotated-fcos-hbox-le90_r50_fpn_1x_dota.py \
-  rotated_fcos_sep_angle_r50_fpn_1x_dota_le90-0be71a0c.pth \
-  --sam-type "vit_b" --sam-weight sam_vit_b_01ec64.pth
+    configs/rotated_fcos/rotated-fcos-hbox-le90_r50_fpn_1x_dota.py \
+    rotated_fcos_sep_angle_r50_fpn_1x_dota_le90-0be71a0c.pth \
+    --sam-type "vit_b" --sam-weight sam_vit_b_01ec64.pth
 ```

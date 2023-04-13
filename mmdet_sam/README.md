@@ -7,7 +7,7 @@
 目前通用目标检测研究方向朝着多模态大模型发展。除了图片输入外，目前新的研究大部分都会加入文本模态来提升性能。一旦加入文本模态后，通用检测算法就会出现一些非常好的性质，典型的如
 
 1. 可以充分利用大量容易获取的文本数据来联合训练
-2. 容易实现开放集目标检测，进而通向真正的通用检测
+2. 容易实现开放词汇目标检测，进而通向真正的通用检测
 3. 可以和 NLP 中已经发布的超强模型联合使用，从而做到一些很有趣且实用的功能
 
 最近 Meta AI 提出了 [Segment Anything](https://github.com/facebookresearch/segment-anything) 模型，号称可以对任意物体进行分割，基于此国内外也出现了不少下应用，MMDet 中集成了大量性能强且易用的检测模型，因此也可以基于 MMDet 模型和 Segment Anything 联合尝试做一些有趣的事情。
@@ -87,10 +87,10 @@ wget -P ../models/ https://dl.fbaipublicfiles.com/segment_anything/sam_vit_h_4b8
 
 # 单张图片输入
 python detector_sam_demo.py ../images/cat_remote.jpg \
-        configs/Detic_LI21k_CLIP_SwinB_896b32_4x_ft4x_max-size.py \
-        ../models/detic_centernet2_swin-b_fpn_4x_lvis-coco-in21k_20230120-0d301978.pth \
-        -t cat \
-        --sam-device cpu
+    configs/Detic_LI21k_CLIP_SwinB_896b32_4x_ft4x_max-size.py \
+    ../models/detic_centernet2_swin-b_fpn_4x_lvis-coco-in21k_20230120-0d301978.pth \
+    -t cat \
+    --sam-device cpu
 ```
 
 会在当前路径生成 `outputs/cat_remote.jpg`，效果如下所示：
@@ -104,10 +104,10 @@ python detector_sam_demo.py ../images/cat_remote.jpg \
 ```shell
 # 单张图片输入
 python detector_sam_demo.py ../images/cat_remote.jpg \
-        configs/Detic_LI21k_CLIP_SwinB_896b32_4x_ft4x_max-size.py \
-        ../models/detic_centernet2_swin-b_fpn_4x_lvis-coco-in21k_20230120-0d301978.pth \
-        -t "cat . remote" \
-        --sam-device cpu
+    configs/Detic_LI21k_CLIP_SwinB_896b32_4x_ft4x_max-size.py \
+    ../models/detic_centernet2_swin-b_fpn_4x_lvis-coco-in21k_20230120-0d301978.pth \
+    -t "cat . remote" \
+    --sam-device cpu
 ```
 
 会在当前路径生成 `outputs/cat_remote.jpg`，效果如下所示：
@@ -121,10 +121,10 @@ python detector_sam_demo.py ../images/cat_remote.jpg \
 ```shell
 # 文件夹输入
 python detector_sam_demo.py ../images \
-        configs/Detic_LI21k_CLIP_SwinB_896b32_4x_ft4x_max-size.py \
-        ../models/detic_centernet2_swin-b_fpn_4x_lvis-coco-in21k_20230120-0d301978.pth \
-        -t "cat . remote" \
-        --sam-device cpu
+    configs/Detic_LI21k_CLIP_SwinB_896b32_4x_ft4x_max-size.py \
+    ../models/detic_centernet2_swin-b_fpn_4x_lvis-coco-in21k_20230120-0d301978.pth \
+    -t "cat . remote" \
+    --sam-device cpu
 ```
 
 会在当前路径生成 `outputs` 文件夹里面存放了两种图片。
@@ -134,10 +134,10 @@ python detector_sam_demo.py ../images \
 ```shell
 # 文件夹输入
 python detector_sam_demo.py ../images \
-        configs/Detic_LI21k_CLIP_SwinB_896b32_4x_ft4x_max-size.py \
-        ../models/detic_centernet2_swin-b_fpn_4x_lvis-coco-in21k_20230120-0d301978.pth \
-        -t "cat . remote" \
-        --cpu-off-load
+    configs/Detic_LI21k_CLIP_SwinB_896b32_4x_ft4x_max-size.py \
+    ../models/detic_centernet2_swin-b_fpn_4x_lvis-coco-in21k_20230120-0d301978.pth \
+    -t "cat . remote" \
+    --cpu-off-load
 ```
 
 目前也支持 CPU 推理，你可以设置 `--det-device cpu --sam-device cpu`。
@@ -147,11 +147,11 @@ python detector_sam_demo.py ../images \
 ```shell
 # 文件夹输入
 python detector_sam_demo.py ../images \
-        configs/Detic_LI21k_CLIP_SwinB_896b32_4x_ft4x_max-size.py \
-        ../models/detic_centernet2_swin-b_fpn_4x_lvis-coco-in21k_20230120-0d301978.pth \
-        -t "cat . remote" \
-        --det-device cpu \
-        --use-detic-mask
+    configs/Detic_LI21k_CLIP_SwinB_896b32_4x_ft4x_max-size.py \
+    ../models/detic_centernet2_swin-b_fpn_4x_lvis-coco-in21k_20230120-0d301978.pth \
+    -t "cat . remote" \
+    --det-device cpu \
+    --use-detic-mask
 ```
 
 如果你只想可视化检测结果，则可以指定 `--only-det` 则也不会运行 sam 模型。
@@ -159,10 +159,10 @@ python detector_sam_demo.py ../images \
 ```shell
 # 单张图片输入
 python detector_sam_demo.py ../images/cat_remote.jpg \
-        configs/Detic_LI21k_CLIP_SwinB_896b32_4x_ft4x_max-size.py \
-        ../models/detic_centernet2_swin-b_fpn_4x_lvis-coco-in21k_20230120-0d301978.pth \
-        -t "cat" \
-        --only-det
+    configs/Detic_LI21k_CLIP_SwinB_896b32_4x_ft4x_max-size.py \
+    ../models/detic_centernet2_swin-b_fpn_4x_lvis-coco-in21k_20230120-0d301978.pth \
+    -t "cat" \
+    --only-det
 ```
 
 会在当前路径生成 `outputs/cat_remote.jpg`，效果如下所示：
@@ -200,9 +200,9 @@ wget -P ../models/ https://download.openmmlab.com/mmdetection/v2.0/faster_rcnn/f
 
 # 单张图片评估
 python detector_sam_demo.py ../images/cat_remote.jpg \
-        ../mmdetection/configs/faster_rcnn/faster-rcnn_r50_fpn_2x_coco.py \
-        ../models/faster_rcnn_r50_fpn_2x_coco_bbox_mAP-0.384_20200504_210434-a5d8aa15.pth \
-        --sam-device cpu
+    ../mmdetection/configs/faster_rcnn/faster-rcnn_r50_fpn_2x_coco.py \
+    ../models/faster_rcnn_r50_fpn_2x_coco_bbox_mAP-0.384_20200504_210434-a5d8aa15.pth \
+    --sam-device cpu
 ```
 
 2 `DINO` 模型
@@ -214,9 +214,9 @@ mkdir ../models
 wget -P ../models/ https://download.openmmlab.com/mmdetection/v3.0/dino/dino-5scale_swin-l_8xb2-12e_coco/dino-5scale_swin-l_8xb2-12e_coco_20230228_072924-a654145f.pth
 
 python detector_sam_demo.py ../images/cat_remote.jpg \
-        ../mmdetection/configs/dino/dino-5scale_swin-l_8xb2-12e_coco.py \
-        dino-5scale_swin-l_8xb2-12e_coco_20230228_072924-a654145f.pth  \
-        --sam-device cpu
+    ../mmdetection/configs/dino/dino-5scale_swin-l_8xb2-12e_coco.py \
+    dino-5scale_swin-l_8xb2-12e_coco_20230228_072924-a654145f.pth  \
+    --sam-device cpu
 ```
 
 ### 3 Grounding 模型 + SAM
@@ -255,10 +255,10 @@ wget -P ../models/ https://github.com/IDEA-Research/GroundingDINO/releases/downl
 
 # 单张图片输入
 python detector_sam_demo.py ../images/cat_remote.jpg \
-        configs/GroundingDINO_SwinT_OGC.py \
-        ../models/groundingdino_swint_ogc.pth \
-        -t "cat . remote" \
-        --sam-device cpu
+    configs/GroundingDINO_SwinT_OGC.py \
+    ../models/groundingdino_swint_ogc.pth \
+    -t "cat . remote" \
+    --sam-device cpu
 ```
 
 会在当前路径生成 `outputs/cat_remote.jpg`，效果如下所示：
@@ -275,10 +275,10 @@ wget -P ../models/ https://penzhanwu2bbs.blob.core.windows.net/data/GLIPv1_Open/
 
 # 单张图片输入
 python detector_sam_demo.py ../images/cat_remote.jpg \
-        configs/glip_A_Swin_T_O365.yaml \
-        ../models/glip_a_tiny_o365.pth \
-        -t "cat . remote" \
-        --sam-device cpu
+    configs/glip_A_Swin_T_O365.yaml \
+    ../models/glip_a_tiny_o365.pth \
+    -t "cat . remote" \
+    --sam-device cpu
 ```
 
 ### 4 COCO JSON 评估
@@ -299,15 +299,15 @@ cd mmdet_sam
 
 # 非分布式评估
 python coco_style_eval.py ${COCO_DATA_ROOT} \
-        configs/Detic_LI21k_CLIP_SwinB_896b32_4x_ft4x_max-size.py \
-        ../models/detic_centernet2_swin-b_fpn_4x_lvis-coco-in21k_20230120-0d301978.pth \
-        -t coco_cls_name.txt
+    configs/Detic_LI21k_CLIP_SwinB_896b32_4x_ft4x_max-size.py \
+    ../models/detic_centernet2_swin-b_fpn_4x_lvis-coco-in21k_20230120-0d301978.pth \
+    -t coco_cls_name.txt
 
 # 分布式单机 8 卡评估
 bash ./dist_coco_style_eval.sh 8 ${COCO_DATA_ROOT} \
-        configs/Detic_LI21k_CLIP_SwinB_896b32_4x_ft4x_max-size.py \
-        ../models/detic_centernet2_swin-b_fpn_4x_lvis-coco-in21k_20230120-0d301978.pth \
-        -t coco_cls_name.txt
+    configs/Detic_LI21k_CLIP_SwinB_896b32_4x_ft4x_max-size.py \
+    ../models/detic_centernet2_swin-b_fpn_4x_lvis-coco-in21k_20230120-0d301978.pth \
+    -t coco_cls_name.txt
 ```
 
 输出结果如下所示：
