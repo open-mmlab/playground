@@ -80,9 +80,9 @@ pip install git+https://github.com/facebookresearch/segment-anything.git
 ```shell
 cd mmtracking_open_detection
 
-python tracking_demo.py "../tracking_demo/mot_challenge_track.mp4" "../GroundingDINO/groundingdino/config/GroundingDINO_SwinB.cfg.py" "../models/groundingdino_swinb_cogcoor.pth"  --text_prompt "person . rider . car . truck . bus . train . motorcycle . bicycle ." --out-dir "outputs/mot_challenge"
+python tracking_demo.py "../tracking_demo/mot_challenge_track.mp4" "configs/GroundingDINO_SwinB.cfg.py" "../models/groundingdino_swinb_cogcoor.pth"  --text_prompt "person . rider . car . truck . bus . train . motorcycle . bicycle ." --out-dir "outputs/mot_challenge"
 
-python tracking_demo.py "../tracking_demo/bdd_val_track" "../GroundingDINO/groundingdino/config/GroundingDINO_SwinB.cfg.py" "../models/groundingdino_swinb_cogcoor.pth"  --text_prompt "person . rider . car . truck . bus . train . motorcycle . bicycle ." --out-dir "outputs/bdd100k" --fps 30
+python tracking_demo.py "../tracking_demo/bdd_val_track" "configs/GroundingDINO_SwinB.cfg.py" "../models/groundingdino_swinb_cogcoor.pth"  --text_prompt "person . rider . car . truck . bus . train . motorcycle . bicycle ." --out-dir "outputs/bdd100k" --fps 30
 ```
 
 ### 多目标跟踪和分割
@@ -90,5 +90,5 @@ python tracking_demo.py "../tracking_demo/bdd_val_track" "../GroundingDINO/groun
 ```shell
 cd mmtracking_open_detection
 
-python tracking_demo.py "../tracking_demo/bdd_val_track" "../GroundingDINO/groundingdino/config/GroundingDINO_SwinB.cfg.py" "../models/groundingdino_swinb_cogcoor.pth"  --text_prompt "person . rider . car . truck . bus . train . motorcycle . bicycle ." --out-dir "outputs/bdd100k" --fps 30 --mots
+python tracking_demo.py "../tracking_demo/bdd_val_track" "configs/GroundingDINO_SwinB.cfg.py" "../models/groundingdino_swinb_cogcoor.pth"  --text_prompt "person . rider . car . truck . bus . train . motorcycle . bicycle ." --out-dir "outputs/bdd100k" --fps 30 --mots --sam-device cpu
 ```
