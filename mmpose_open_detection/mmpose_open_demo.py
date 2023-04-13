@@ -107,7 +107,7 @@ def parse_args():
 
 
 def __reset_cls_layer_weight(model, weight):
-    if isinstance(str, weight):
+    if isinstance(weight, str):
         print(f'Resetting cls_layer_weight from file: {weight}')
         zs_weight = torch.tensor(
             np.load(weight),
@@ -140,7 +140,7 @@ def __build_glip_model(args):
     try:
         from maskrcnn_benchmark.config import cfg
     except ImportError:
-        assert "'maskrcnn_benchmark' does not exist"
+        assert False, "'maskrcnn_benchmark' does not exist"
     cfg.merge_from_file(args.det_config)
     cfg.merge_from_list(['MODEL.WEIGHT', args.det_weight])
     cfg.merge_from_list(['MODEL.DEVICE', 'cpu'])
