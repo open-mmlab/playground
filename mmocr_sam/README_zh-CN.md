@@ -29,6 +29,33 @@ pip install diffusers
 pip install pytorch-lightning==2.0.1.post0
 ```
 
+## 下载权重
+
+
+我们使用 SwinV2-B 作为骨干网络，在一系列数据集上联合训练了一个 DBNet++ 作为通用检测器，**下载地址 [Google Drive (1G)](https://drive.google.com/file/d/1r3B1xhkyKYcQ9SR7o9hw9zhNJinRiHD-/view?usp=share_link)**.  
+
+创建路径
+```bash
+mkdir checkpoints
+mkdir checkpoints/mmocr
+mkdir checkpoints/sam
+mkdir checkpoints/ldm
+mv db_swin_mix_pretrain.pth checkpoints/mmocr
+```
+
+下载权重
+```bash
+
+# mmocr recognizer ckpt
+wget -O checkpoints/mmocr/abinet_20e_st-an_mj_20221005_012617-ead8c139.pth https://download.openmmlab.com/mmocr/textrecog/abinet/abinet_20e_st-an_mj/abinet_20e_st-an_mj_20221005_012617-ead8c139.pth
+
+# sam ckpt, more details: https://github.com/facebookresearch/segment-anything#model-checkpoints
+wget -O checkpoints/sam/sam_vit_h_4b8939.pth https://dl.fbaipublicfiles.com/segment_anything/sam_vit_h_4b8939.pth
+
+# ldm ckpt
+wget -O checkpoints/ldm/last.ckpt https://heibox.uni-heidelberg.de/f/4d9ac7ea40c64582b7c9/?dl=1
+```
+
 ## 使用说明
 
 ### SAM + MMOCR

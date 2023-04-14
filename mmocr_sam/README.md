@@ -32,6 +32,32 @@ pip install diffusers
 pip install pytorch-lightning==2.0.1.post0
 ```
 
+## Download checkpoints
+
+We retrain DBNet++ with Swin Transformer V2 as the backbone on a combination of multiple scene text datsets (e.g. HierText, TextOCR). **Checkpoint for DBNet++ on [Google Drive (1G)](https://drive.google.com/file/d/1r3B1xhkyKYcQ9SR7o9hw9zhNJinRiHD-/view?usp=share_link)**.  
+
+And you should make dir following:  
+```bash
+mkdir checkpoints
+mkdir checkpoints/mmocr
+mkdir checkpoints/sam
+mkdir checkpoints/ldm
+mv db_swin_mix_pretrain.pth checkpoints/mmocr
+```
+
+Download the rest of checkpints to the related path (If you've done, ignore the following):
+```bash
+
+# mmocr recognizer ckpt
+wget -O checkpoints/mmocr/abinet_20e_st-an_mj_20221005_012617-ead8c139.pth https://download.openmmlab.com/mmocr/textrecog/abinet/abinet_20e_st-an_mj/abinet_20e_st-an_mj_20221005_012617-ead8c139.pth
+
+# sam ckpt, more details: https://github.com/facebookresearch/segment-anything#model-checkpoints
+wget -O checkpoints/sam/sam_vit_h_4b8939.pth https://dl.fbaipublicfiles.com/segment_anything/sam_vit_h_4b8939.pth
+
+# ldm ckpt
+wget -O checkpoints/ldm/last.ckpt https://heibox.uni-heidelberg.de/f/4d9ac7ea40c64582b7c9/?dl=1
+```
+
 ## Usage
 
 ### SAM for Text

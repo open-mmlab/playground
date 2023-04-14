@@ -30,6 +30,7 @@ mmocr_inferencer = MMOCRInferencer(
     det_config, det_weight, rec_config, rec_weight, device=device)
 # Build SAM
 sam = sam_model_registry[sam_type](checkpoint=sam_checkpoint)
+sam = sam.to(device)
 sam_predictor = SamPredictor(sam)
 
 
@@ -80,8 +81,9 @@ def run_mmocr_sam(img: np.ndarray, ):
     result = mmocr_inferencer(img)['predictions'][0]
     rec_texts = result['rec_texts']
     det_polygons = result['det_polygons']
-    det_bboxes = torch.tensor([poly2bbox(poly) for poly in det_polygons],
-                              device=sam_predictor.device)
+    det_bboxes = torch.tensor(
+        np.array([poly2bbox(poly) for poly in det_polygons]),
+        device=sam_predictor.device)
     transformed_boxes = sam_predictor.transform.apply_boxes_torch(
         det_bboxes, img.shape[:2])
     # SAM inference
@@ -103,7 +105,7 @@ def run_mmocr_sam(img: np.ndarray, ):
     output_str = ''
     for idx, (mask, rec_text, polygon, bbox) in enumerate(
             zip(masks, rec_texts, det_polygons, det_bboxes)):
-        show_mask(mask, plt.gca(), random_color=True)
+        show_mask(mask.cpu(), plt.gca(), random_color=True)
         polygon = np.array(polygon).reshape(-1, 2)
         # convert polygon to closed polygon
         polygon = np.concatenate([polygon, polygon[:1]], axis=0)
@@ -183,8 +185,7 @@ def run_erase(img: np.ndarray, mask_results, indexs: str, diffusion_type: str,
         result_img = result_img.resize(ori_img_size)
 
     elif diffusion_type == 'Latent Diffusion':
-        config = OmegaConf.load(
-            "latent_diffusion/inpainting_big/config.yaml")
+        config = OmegaConf.load("latent_diffusion/inpainting_big/config.yaml")
         model = instantiate_from_config(config.model)
         model.load_state_dict(
             torch.load("checkpoints/ldm/last.ckpt")["state_dict"],

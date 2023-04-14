@@ -62,7 +62,7 @@ def parse_args():
     parser.add_argument(
         "--sam_checkpoint",
         type=str,
-        required=True,
+        # required=True,
         default='checkpoints/sam/sam_vit_h_4b8939.pth',
         help="path to checkpoint file")
     parser.add_argument(
@@ -97,6 +97,7 @@ if __name__ == '__main__':
         device=args.device)
     # Build SAM
     sam = sam_model_registry[args.sam_type](checkpoint=args.sam_checkpoint)
+    sam.to(device=args.device)
     sam_predictor = SamPredictor(sam)
     # Run
     if not os.path.exists(args.outdir):
@@ -110,7 +111,7 @@ if __name__ == '__main__':
             img, save_vis=True, out_dir=args.outdir)['predictions'][0]
         rec_texts = result['rec_texts']
         det_polygons = result['det_polygons']
-        det_bboxes = torch.tensor([poly2bbox(poly) for poly in det_polygons],
+        det_bboxes = torch.tensor(np.array([poly2bbox(poly) for poly in det_polygons]),
                                   device=sam_predictor.device)
         transformed_boxes = sam_predictor.transform.apply_boxes_torch(
             det_bboxes, img.shape[:2])
@@ -128,7 +129,7 @@ if __name__ == '__main__':
         img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
         plt.imshow(img)
         for mask, rec_text, polygon in zip(masks, rec_texts, det_polygons):
-            show_mask(mask, plt.gca(), random_color=True)
+            show_mask(mask.cpu(), plt.gca(), random_color=True)
             polygon = np.array(polygon).reshape(-1, 2)
             # convert polygon to closed polygon
             polygon = np.concatenate([polygon, polygon[:1]], axis=0)

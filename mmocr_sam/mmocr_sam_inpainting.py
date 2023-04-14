@@ -2,6 +2,7 @@ import cv2
 from argparse import ArgumentParser
 import PIL.Image as Image
 import torch
+import numpy as np
 # MMOCR
 from mmocr.apis.inferencers import MMOCRInferencer
 from mmocr.utils import poly2bbox
@@ -90,6 +91,7 @@ if __name__ == '__main__':
         device=args.device)
     # SAM
     sam = sam_model_registry[args.sam_type](checkpoint=args.sam_checkpoint)
+    sam = sam.to(args.device)
     sam_predictor = SamPredictor(sam)
     # Diffuser
     pipe = StableDiffusionInpaintPipeline.from_pretrained(
@@ -99,8 +101,9 @@ if __name__ == '__main__':
     result = mmocr_inferencer(img)['predictions'][0]
     rec_texts = result['rec_texts']
     det_polygons = result['det_polygons']
-    det_bboxes = torch.tensor([poly2bbox(poly) for poly in det_polygons],
-                              device=sam_predictor.device)
+    det_bboxes = torch.tensor(
+        np.array([poly2bbox(poly) for poly in det_polygons]),
+        device=sam_predictor.device)
     transformed_boxes = sam_predictor.transform.apply_boxes_torch(
         det_bboxes, img.shape[:2])
     # SAM inference
