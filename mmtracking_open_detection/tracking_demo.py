@@ -8,6 +8,7 @@ import numpy as np
 import torch
 from PIL import Image
 
+# groudingdino
 try:
     import groundingdino
     import groundingdino.datasets.transforms as T
@@ -22,14 +23,7 @@ try:
 except ImportError:
     groundingdino = None
 
-# GLIP inflect
-try:
-    import maskrcnn_benchmark
-    from maskrcnn_benchmark.config import cfg
-    from maskrcnn_benchmark.engine.predictor_glip import GLIPDemo
-except ImportError:
-    maskrcnn_benchmark = None
-
+# mmdet
 try:
     import mmcv
     import mmdet
@@ -38,7 +32,6 @@ try:
     from mmdet.structures import DetDataSample
     from mmdet.visualization.local_visualizer import TrackLocalVisualizer
     from mmengine.config import Config
-    from mmengine.logging import print_log
     from mmengine.structures import InstanceData
 except ImportError:
     mmdet = None
@@ -48,6 +41,18 @@ try:
     from segment_anything import SamPredictor, sam_model_registry
 except ImportError:
     segment_anything = None
+
+import sys
+
+sys.path.append('../')
+
+# GLIP inflect
+try:
+    import maskrcnn_benchmark
+
+    from mmtracking_open_detection.predictor_glip.py import GLIPDemo
+except ImportError:
+    maskrcnn_benchmark = None
 
 IMG_EXTENSIONS = ('.jpg', '.jpeg', '.png')
 
@@ -130,13 +135,15 @@ def __build_grounding_dino_model(args):
 
 
 def __build_glip_model(args):
+    assert maskrcnn_benchmark is not None
+    from maskrcnn_benchmark.config import cfg
     cfg.merge_from_file(args.det_config)
     cfg.merge_from_list(['MODEL.WEIGHT', args.det_weight])
     cfg.merge_from_list(['MODEL.DEVICE', 'cpu'])
     model = GLIPDemo(
         cfg,
         min_image_size=800,
-        confidence_threshold=0.7,
+        confidence_threshold=args.box_thr,
         show_mask_heatmaps=False)
     return model
 
@@ -255,21 +262,8 @@ def run_detector(model, image_new, args, label_name=None):
         pred_instances.scores = scores
 
     elif 'GLIP' in args.det_config:
-        predictions = model.compute_prediction(image_new, args.text_prompt)
-
-        # glip will remove some unknown class, like pedestrian
-        custom_vocabulary = args.text_prompt[:-1].split('.')
-        label_name = [c.strip() for c in custom_vocabulary]
-        if len(label_name) != len(model.entities):
-            for label in label_name:
-                if label not in model.entities:
-                    print_log(f'GLIP remove unknown class name: {label}, and \
-                            don \'t visualize this class.')
-
-        # filter bbox
-        scores = predictions.get_field('scores')
-        keep = torch.nonzero(scores > args.box_thr).squeeze(1)
-        top_predictions = predictions[keep]
+        top_predictions = model.inference(
+            image, args.text_prompt, use_other_text=False)
 
         pred_instances = InstanceData()
         pred_instances.bboxes = top_predictions.bbox
@@ -288,7 +282,7 @@ def run_detector(model, image_new, args, label_name=None):
         else:
             model = model.to('cpu')
 
-    return model, pred_instances
+    return pred_instances
 
 
 def main():
@@ -412,11 +406,7 @@ def main():
             else:
                 image_new = img
 
-        model, pred_instances = run_detector(det_model, image_new, args,
-                                             label_name)
-
-        if 'GLIP' in args.det_config:
-            visualizer.dataset_meta = {'classes': model.entities}
+        pred_instances = run_detector(det_model, image_new, args, label_name)
 
         # track input
         img_data_sample = DetDataSample()
