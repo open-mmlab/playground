@@ -57,7 +57,7 @@ from segment_anything import SamPredictor, sam_model_registry
 from torch.utils.data import DataLoader, Dataset
 
 sys.path.append('../')
-from mmdet_sam.utils import get_file_list  # noqa
+from mmdet_sam.utils import apply_exif_orientation, get_file_list  # noqa
 
 
 def parse_args():
@@ -247,6 +247,7 @@ def run_detector(model, image_path, args):
 
     if 'GroundingDINO' in args.det_config:
         image_pil = Image.open(image_path).convert('RGB')  # load image
+        image_pil = apply_exif_orientation(image_pil)
         image, _ = grounding_dino_transform(image_pil, None)  # 3, h, w
 
         if get_rank() == 0:
@@ -567,8 +568,8 @@ def main():
 
     if get_rank() == 0:
         new_json_data = {
-            'info': coco.dataset['info'],
-            'licenses': coco.dataset['licenses'],
+            'info': coco.dataset.get('info', []),
+            'licenses': coco.dataset.get('licenses', []),
             'categories': coco.dataset['categories'],
             'images':
             [json_results['image'] for json_results in all_json_results]

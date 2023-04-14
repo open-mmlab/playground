@@ -48,7 +48,7 @@ from PIL import Image
 from segment_anything import SamPredictor, sam_model_registry
 
 sys.path.append('../')
-from mmdet_sam.utils import get_file_list  # noqa
+from mmdet_sam.utils import apply_exif_orientation, get_file_list  # noqa
 
 
 def parse_args():
@@ -216,6 +216,7 @@ def run_detector(model, image_path, args):
 
     if 'GroundingDINO' in args.det_config:
         image_pil = Image.open(image_path).convert('RGB')  # load image
+        image_pil = apply_exif_orientation(image_pil)
         image, _ = grounding_dino_transform(image_pil, None)  # 3, h, w
 
         text_prompt = args.text_prompt
