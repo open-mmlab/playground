@@ -25,6 +25,7 @@ try:
     import groundingdino
     import groundingdino.datasets.transforms as T
     from groundingdino.models import build_model
+    from groundingdino.util import get_tokenlizer
     from groundingdino.util.utils import (clean_state_dict,
                                           get_phrases_from_posmap)
     grounding_dino_transform = T.Compose([
@@ -56,7 +57,7 @@ from segment_anything import SamPredictor, sam_model_registry
 from torch.utils.data import DataLoader, Dataset
 
 sys.path.append('../')
-from mmdet_sam.utils import get_file_list  # noqa
+from mmdet_sam.utils import apply_exif_orientation, get_file_list  # noqa
 
 
 def parse_args():
@@ -100,6 +101,10 @@ def parse_args():
     parser.add_argument('--text-prompt', '-t', type=str, help='cls path')
     parser.add_argument(
         '--text-thr', type=float, default=0.25, help='text threshold')
+    parser.add_argument(
+        '--apply-original-groudingdino',
+        action='store_true',
+        help='use original groudingdino label predict')
 
     # dist param
     parser.add_argument(
@@ -188,6 +193,48 @@ def build_detector(args):
     return detecter
 
 
+def create_positive_dict(tokenized, tokens_positive, labels):
+    """construct a dictionary such that positive_map[i] = j,
+    if token i is mapped to j label"""
+
+    positive_map_label_to_token = {}
+
+    for j, tok_list in enumerate(tokens_positive):
+        for (beg, end) in tok_list:
+            beg_pos = tokenized.char_to_token(beg)
+            end_pos = tokenized.char_to_token(end - 1)
+
+            assert beg_pos is not None and end_pos is not None
+            positive_map_label_to_token[labels[j]] = []
+            for i in range(beg_pos, end_pos + 1):
+                positive_map_label_to_token[labels[j]].append(i)
+
+    return positive_map_label_to_token
+
+
+def convert_grounding_to_od_logits(logits,
+                                   num_classes,
+                                   positive_map,
+                                   score_agg='MEAN'):
+    """
+    logits: (num_query, max_seq_len)
+    num_classes: 80 for COCO
+    """
+    assert logits.ndim == 2
+    assert positive_map is not None
+    scores = torch.zeros(logits.shape[0], num_classes).to(logits.device)
+    # 256 -> 80, average for each class
+    # score aggregation method
+    if score_agg == 'MEAN':  # True
+        for label_j in positive_map:
+            scores[:, label_j] = logits[:,
+                                        torch.LongTensor(positive_map[label_j]
+                                                         )].mean(-1)
+    else:
+        raise NotImplementedError
+    return scores
+
+
 def run_detector(model, image_path, args):
     pred_dict = {}
 
@@ -200,6 +247,7 @@ def run_detector(model, image_path, args):
 
     if 'GroundingDINO' in args.det_config:
         image_pil = Image.open(image_path).convert('RGB')  # load image
+        image_pil = apply_exif_orientation(image_pil)
         image, _ = grounding_dino_transform(image_pil, None)  # 3, h, w
 
         if get_rank() == 0:
@@ -210,6 +258,29 @@ def run_detector(model, image_path, args):
         if not text_prompt.endswith('.'):
             text_prompt = text_prompt + '.'
 
+        # Original GroundingDINO use text-thr to get class name,
+        # the result will always result in categories that we don't want,
+        # so we provide a category-restricted approach to address this
+        # use this approach can improve coco map from 40.5 to 41.9
+        # (set box-thr = 0.3)
+        if not args.apply_original_groudingdino:
+            # custom label name
+            custom_vocabulary = text_prompt[:-1].split('.')
+            label_name = [c.strip() for c in custom_vocabulary]
+            tokens_positive = []
+            start_i = 0
+            separation_tokens = ' . '
+            for _index, label in enumerate(label_name):
+                end_i = start_i + len(label)
+                tokens_positive.append([(start_i, end_i)])
+                if _index != len(label_name) - 1:
+                    start_i = end_i + len(separation_tokens)
+            tokenizer = get_tokenlizer.get_tokenlizer('bert-base-uncased')
+            tokenized = tokenizer(
+                args.text_prompt, padding='longest', return_tensors='pt')
+            positive_map_label_to_token = create_positive_dict(
+                tokenized, tokens_positive, list(range(len(label_name))))
+
         image = image.to(next(model.parameters()).device)
 
         with torch.no_grad():
@@ -218,6 +289,11 @@ def run_detector(model, image_path, args):
         logits = outputs['pred_logits'].cpu().sigmoid()[0]  # (nq, 256)
         boxes = outputs['pred_boxes'].cpu()[0]  # (nq, 4)
 
+        if not args.apply_original_groudingdino:
+            logits = convert_grounding_to_od_logits(
+                logits, len(label_name),
+                positive_map_label_to_token)  # [N, num_classes]
+
         # filter output
         logits_filt = logits.clone()
         boxes_filt = boxes.clone()
@@ -225,18 +301,26 @@ def run_detector(model, image_path, args):
         logits_filt = logits_filt[filt_mask]  # num_filt, 256
         boxes_filt = boxes_filt[filt_mask]  # num_filt, 4
 
-        # get phrase
-        tokenlizer = model.tokenizer
-        tokenized = tokenlizer(text_prompt)
-
-        # build pred
-        pred_labels = []
-        pred_scores = []
-        for logit, box in zip(logits_filt, boxes_filt):
-            pred_phrase = get_phrases_from_posmap(logit > args.text_thr,
-                                                  tokenized, tokenlizer)
-            pred_labels.append(pred_phrase)
-            pred_scores.append(str(logit.max().item())[:4])
+        if args.apply_original_groudingdino:
+            # get phrase
+            tokenlizer = model.tokenizer
+            tokenized = tokenlizer(text_prompt)
+            # build pred
+            pred_labels = []
+            pred_scores = []
+            for logit, box in zip(logits_filt, boxes_filt):
+                pred_phrase = get_phrases_from_posmap(logit > args.text_thr,
+                                                      tokenized, tokenlizer)
+                pred_labels.append(pred_phrase)
+                pred_scores.append(str(logit.max().item())[:4])
+        else:
+            scores, pred_phrase_idxs = logits_filt.max(1)
+            # build pred
+            pred_labels = []
+            pred_scores = []
+            for score, pred_phrase_idx in zip(scores, pred_phrase_idxs):
+                pred_labels.append(label_name[pred_phrase_idx])
+                pred_scores.append(str(score.item())[:4])
 
         pred_dict['labels'] = pred_labels
         pred_dict['scores'] = pred_scores
@@ -484,8 +568,8 @@ def main():
 
     if get_rank() == 0:
         new_json_data = {
-            'info': coco.dataset['info'],
-            'licenses': coco.dataset['licenses'],
+            'info': coco.dataset.get('info', []),
+            'licenses': coco.dataset.get('licenses', []),
             'categories': coco.dataset['categories'],
             'images':
             [json_results['image'] for json_results in all_json_results]

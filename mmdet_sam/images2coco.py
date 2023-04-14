@@ -36,8 +36,8 @@ def collect_image_infos(path, exclude_extensions=None):
         if exclude_extensions is None or (
                 exclude_extensions is not None
                 and not image_path.lower().endswith(exclude_extensions)):
-            image_path = os.path.join(path, image_path)
-            img_pillow = Image.open(image_path)
+            full_image_path = os.path.join(path, image_path)
+            img_pillow = Image.open(full_image_path)
             img_info = {
                 'filename': image_path,
                 'width': img_pillow.width,
@@ -54,6 +54,8 @@ def cvt_to_coco_json(img_infos, classes):
     coco['type'] = 'instance'
     coco['categories'] = []
     coco['annotations'] = []
+    coco['info'] = []
+    coco['licenses'] = []
     image_set = set()
 
     for category_id, name in enumerate(classes):

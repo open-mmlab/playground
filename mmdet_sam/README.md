@@ -311,73 +311,55 @@ bash ./dist_coco_style_eval.sh 8 ${COCO_DATA_ROOT} \
     -t coco_cls_name.txt
 ```
 
-The result will be similar to this:
+### 5 COCO evaluation results
 
-```text
-Evaluate annotation type *bbox*
+|                                Method                                | bbox thresh |   Test set   | Box AP | Seg AP |
+| :------------------------------------------------------------------: | :---------: | :----------: | :----: | :----: |
+| [Detic](./configs/Detic_LI21k_CLIP_SwinB_896b32_4x_ft4x_max-size.py) |     0.2     | COCO2017 Val | 0.465  | 0.388  |
+| [Detic](./configs/Detic_LI21k_CLIP_SwinB_896b32_4x_ft4x_max-size.py) |    0.001    | COCO2017 Val | 0.481  | 0.403  |
+|        [GroundingDino](./configs/GroundingDINO_SwinT_OGC.pyy)        |     0.3     | COCO2017 Val | 0.419  |        |
+|       [GroundingDino\*](./configs/GroundingDINO_SwinT_OGC.pyy)       |     0.3     | COCO2017 Val | 0.404  |        |
 
-DONE (t=6.85s).
- Average Precision  (AP) @[ IoU=0.50:0.95 | area=   all | maxDets=100 ] = 0.465
- Average Precision  (AP) @[ IoU=0.50      | area=   all | maxDets=100 ] = 0.640
- Average Precision  (AP) @[ IoU=0.75      | area=   all | maxDets=100 ] = 0.511
- Average Precision  (AP) @[ IoU=0.50:0.95 | area= small | maxDets=100 ] = 0.303
- Average Precision  (AP) @[ IoU=0.50:0.95 | area=medium | maxDets=100 ] = 0.515
- Average Precision  (AP) @[ IoU=0.50:0.95 | area= large | maxDets=100 ] = 0.614
- Average Recall     (AR) @[ IoU=0.50:0.95 | area=   all | maxDets=  1 ] = 0.362
- Average Recall     (AR) @[ IoU=0.50:0.95 | area=   all | maxDets= 10 ] = 0.560
- Average Recall     (AR) @[ IoU=0.50:0.95 | area=   all | maxDets=100 ] = 0.583
- Average Recall     (AR) @[ IoU=0.50:0.95 | area= small | maxDets=100 ] = 0.404
- Average Recall     (AR) @[ IoU=0.50:0.95 | area=medium | maxDets=100 ] = 0.630
- Average Recall     (AR) @[ IoU=0.50:0.95 | area= large | maxDets=100 ] = 0.746
+**Note**:
+\*means use original GroundingDINO approach to test
 
-Evaluate annotation type *segm*
+### 6 Custom dataset
 
- Average Precision  (AP) @[ IoU=0.50:0.95 | area=   all | maxDets=100 ] = 0.388
- Average Precision  (AP) @[ IoU=0.50      | area=   all | maxDets=100 ] = 0.601
- Average Precision  (AP) @[ IoU=0.75      | area=   all | maxDets=100 ] = 0.420
- Average Precision  (AP) @[ IoU=0.50:0.95 | area= small | maxDets=100 ] = 0.269
- Average Precision  (AP) @[ IoU=0.50:0.95 | area=medium | maxDets=100 ] = 0.441
- Average Precision  (AP) @[ IoU=0.50:0.95 | area= large | maxDets=100 ] = 0.503
- Average Recall     (AR) @[ IoU=0.50:0.95 | area=   all | maxDets=  1 ] = 0.315
- Average Recall     (AR) @[ IoU=0.50:0.95 | area=   all | maxDets= 10 ] = 0.490
- Average Recall     (AR) @[ IoU=0.50:0.95 | area=   all | maxDets=100 ] = 0.511
- Average Recall     (AR) @[ IoU=0.50:0.95 | area= small | maxDets=100 ] = 0.371
- Average Recall     (AR) @[ IoU=0.50:0.95 | area=medium | maxDets=100 ] = 0.558
- Average Recall     (AR) @[ IoU=0.50:0.95 | area= large | maxDets=100 ] = 0.639
+We use a example to illustrate how a custom dataset can be used to obtain an annotation file using GroundingDINO and SAM.
+
+#### Data prepare
+
+Use the following command to download the cat dataset:
+
+```shell
+cd playground
+
+wget https://download.openmmlab.com/mmyolo/data/cat_dataset.zip
+mkdir data
+unzip cat_dataset.zip -d data/cat
+rm cat_dataset.zip
 ```
 
-You can lower the `--box-thr` to 0.001 to improve the performance. By default, we set the threshold to 0.2.
+**Note**:，Need to replace `1 cat` with `cat` in `cat/class_with_id.txt`
 
-```text
-Evaluate annotation type *bbox*
+Use the `images2coco.py` script to generate the unlabeled json file:
 
- Average Precision  (AP) @[ IoU=0.50:0.95 | area=   all | maxDets=100 ] = 0.481
- Average Precision  (AP) @[ IoU=0.50      | area=   all | maxDets=100 ] = 0.670
- Average Precision  (AP) @[ IoU=0.75      | area=   all | maxDets=100 ] = 0.527
- Average Precision  (AP) @[ IoU=0.50:0.95 | area= small | maxDets=100 ] = 0.318
- Average Precision  (AP) @[ IoU=0.50:0.95 | area=medium | maxDets=100 ] = 0.531
- Average Precision  (AP) @[ IoU=0.50:0.95 | area= large | maxDets=100 ] = 0.631
- Average Recall     (AR) @[ IoU=0.50:0.95 | area=   all | maxDets=  1 ] = 0.377
- Average Recall     (AR) @[ IoU=0.50:0.95 | area=   all | maxDets= 10 ] = 0.601
- Average Recall     (AR) @[ IoU=0.50:0.95 | area=   all | maxDets=100 ] = 0.632
- Average Recall     (AR) @[ IoU=0.50:0.95 | area= small | maxDets=100 ] = 0.461
- Average Recall     (AR) @[ IoU=0.50:0.95 | area=medium | maxDets=100 ] = 0.680
- Average Recall     (AR) @[ IoU=0.50:0.95 | area= large | maxDets=100 ] = 0.788
-
-Evaluate annotation type *segm*
-
- Average Precision  (AP) @[ IoU=0.50:0.95 | area=   all | maxDets=100 ] = 0.403
- Average Precision  (AP) @[ IoU=0.50      | area=   all | maxDets=100 ] = 0.628
- Average Precision  (AP) @[ IoU=0.75      | area=   all | maxDets=100 ] = 0.435
- Average Precision  (AP) @[ IoU=0.50:0.95 | area= small | maxDets=100 ] = 0.283
- Average Precision  (AP) @[ IoU=0.50:0.95 | area=medium | maxDets=100 ] = 0.455
- Average Precision  (AP) @[ IoU=0.50:0.95 | area= large | maxDets=100 ] = 0.517
- Average Recall     (AR) @[ IoU=0.50:0.95 | area=   all | maxDets=  1 ] = 0.329
- Average Recall     (AR) @[ IoU=0.50:0.95 | area=   all | maxDets= 10 ] = 0.527
- Average Recall     (AR) @[ IoU=0.50:0.95 | area=   all | maxDets=100 ] = 0.556
- Average Recall     (AR) @[ IoU=0.50:0.95 | area= small | maxDets=100 ] = 0.425
- Average Recall     (AR) @[ IoU=0.50:0.95 | area=medium | maxDets=100 ] = 0.605
- Average Recall     (AR) @[ IoU=0.50:0.95 | area= large | maxDets=100 ] = 0.674
+```shell
+cd mmdet_sam
+python images2coco.py ../data/cat/images ../data/cat/class_with_id.txt cat_coco.json
 ```
 
-We can see that the performance improves quite significantly.
+#### Inference
+
+Here we use GroundingDINO and SAM model as an example for inference, and get the prediction json file:
+
+```shell
+python coco_style_eval.py ../data/cat/ \
+      configs/GroundingDINO_SwinT_OGC.py \
+      ../models/groundingdino_swint_ogc.pth \
+      -t ../data/cat/class_with_id.txt \
+      --data-prefix images \
+      --ann-file annotations/cat_coco.json \
+      --out-dir ../cat_pred \
+      --sam-device cpu
+```

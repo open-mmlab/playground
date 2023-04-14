@@ -2,6 +2,7 @@
 import argparse
 import os
 import os.path as osp
+import sys
 
 import cv2
 import numpy as np
@@ -49,6 +50,9 @@ try:
 except ImportError:
     segment_anything = None
 
+sys.path.append('../')
+from mmtracking_open_detection.utils import apply_exif_orientation  # noqa
+
 IMG_EXTENSIONS = ('.jpg', '.jpeg', '.png')
 
 
@@ -60,13 +64,13 @@ def parse_args():
     parser.add_argument(
         '--sam-type',
         type=str,
-        default='vit_l',
+        default='vit_h',
         choices=['vit_h', 'vit_l', 'vit_b'],
         help='sam type')
     parser.add_argument(
         '--sam-weight',
         type=str,
-        default='../models/sam_vit_l_0b3195.pth',
+        default='../models/sam_vit_h_4b8939.pth',
         help='path to checkpoint file')
     parser.add_argument('--text_prompt', '-t', type=str, help='text prompt')
     parser.add_argument('--show', action='store_true')
@@ -403,12 +407,14 @@ def main():
             image_path = osp.join(args.inputs, img)
             if 'GroundingDINO' in args.det_config:
                 image_new = Image.open(image_path).convert('RGB')
+                image_new = apply_exif_orientation(image_new)
             else:
                 image_new = cv2.imread(image_path)
         else:
             if 'GroundingDINO' in args.det_config:
                 image_new = Image.fromarray(
                     cv2.cvtColor(img, cv2.COLOR_BGR2RGB))
+                image_new = apply_exif_orientation(image_new)
             else:
                 image_new = img
 
