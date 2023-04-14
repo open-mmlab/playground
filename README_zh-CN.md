@@ -107,7 +107,7 @@
 1. 支持端到端的文字检测识别，并可以将每一个文本字符都进行分割。
 2. 提供基于 diffusion 模型以及 Gradio 的 Web UI，可以探索有趣的 OCR 下游任务，包括文本擦除、文本编辑等。
 
-详情见 [README](mmocr_sam/README.md)。
+详情见 [README](mmocr_sam/README_zh-CN.md)。
 
 
 
