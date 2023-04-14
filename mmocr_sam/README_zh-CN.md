@@ -1,7 +1,7 @@
 # MMOCR-SAM
 
 <div align=center>
-<img src="https://user-images.githubusercontent.com/65173622/231761073-86e0ed23-a313-4aa1-a136-bcfc45b70faf.png"/>
+<img src="https://user-images.githubusercontent.com/65173622/231803460-495cf11f-8e2e-4c95-aa48-b163fc7fbbab.png"/>
 </div>
 
 该仓库搬运自 [OCR-SAM](https://github.com/yeungchenwa/OCR-SAM)
@@ -79,7 +79,7 @@ pip install pytorch-lightning==2.0.1.post0
   ```
 
 <div align=center>
-<img src="https://user-images.githubusercontent.com/65173622/231803460-495cf11f-8e2e-4c95-aa48-b163fc7fbbab.png"/>
+<img src="https://user-images.githubusercontent.com/65173622/231764540-a5403ad3-fab5-4dc8-9b82-f8a9643ab0f4.png"/>
 </div>
 
 
