@@ -133,7 +133,7 @@ def show_sam_result(img, masks, rec_texts, det_polygons, args):
     img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
     plt.imshow(img)
     for mask, rec_text, polygon in zip(masks, rec_texts, det_polygons):
-        show_mask(mask, plt.gca(), random_color=True)
+        show_mask(mask.cpu(), plt.gca(), random_color=True)
         polygon = np.array(polygon).reshape(-1, 2)
         # convert polygon to closed polygon
         polygon = np.concatenate([polygon, polygon[:1]], axis=0)
@@ -182,6 +182,7 @@ if __name__ == '__main__':
     # Build SAM
     if args.use_sam:
         sam = sam_model_registry[args.sam_type](checkpoint=args.sam_checkpoint)
+        sam = sam.to(args.device)
         sam_predictor = SamPredictor(sam)
 
     if args.diffusion_model == "stable-diffusion":
@@ -194,8 +195,7 @@ if __name__ == '__main__':
             sd_ckpt, torch_dtype=torch.float16)
         pipe = pipe.to(args.device)
     else:
-        config = OmegaConf.load(
-            "latent_diffusion/inpainting_big/config.yaml")
+        config = OmegaConf.load("latent_diffusion/inpainting_big/config.yaml")
         model = instantiate_from_config(config.model)
         model.load_state_dict(
             torch.load("checkpoints/ldm/last.ckpt")["state_dict"],
@@ -225,7 +225,7 @@ if __name__ == '__main__':
         if args.use_sam:
             # Transform the bbox
             det_bboxes = torch.tensor(
-                [poly2bbox(poly) for poly in det_polygons],
+                np.array([poly2bbox(poly) for poly in det_polygons]),
                 device=sam_predictor.device)
             transformed_boxes = sam_predictor.transform.apply_boxes_torch(
                 det_bboxes, img.shape[:2])
