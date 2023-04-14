@@ -63,7 +63,7 @@ We provide a set of applications based on MMDet and SAM. The features include:
 3. Support Grounding Object Detection models, such as Grounding DINO and GLIP, by using SAM for automatic detection and instance segmentation annotation.
 4. All models support distributed detection and segmentation evaluation, and automatic COCO JSON export, making it easy for users to evaluate custom data.
 
-Please see [README](mmdet_sam/) for more information.
+Please see [README](mmdet_sam/README.md) for more information.
 
 ______________________________________________________________________
 
@@ -78,7 +78,7 @@ We provide a set of applications based on MMRotate and SAM. The features include
 1. Support Zero-shot Oriented Object Detection with SAM.
 2. Perform SAM-based Zero-shot Oriented Object Detection inference on a single image.
 
-Please see [README](mmrotate_sam/) for more information.
+Please see [README](mmrotate_sam/README.md) for more information.
 
 ## ✨ Open-Pose-Detection
 
@@ -91,7 +91,7 @@ We provide a set of applications based on MMPose and open detection. The feature
 1. Support open detection and pose estimation model inference for a single image or a folder of images.
 2. Will soon support inputting different text prompts to achieve pose detection for different object categories in an image.
 
-Please see [README](mmpose_open_detection/) for more information.
+Please see [README](mmpose_open_detection/README.md) for more information.
 
 ## ✨ Open-Tracking
 
@@ -101,7 +101,7 @@ Please see [README](mmpose_open_detection/) for more information.
 
 We provide an approach based on open object detection and utilizing motion information (Kalman filter) for multi-object tracking.
 
-Please see [README](mmtracking_open_detection/) for more information.
+Please see [README](mmtracking_open_detection/README.md) for more information.
 
 ## ✨ MMOCR-SAM
 
@@ -114,4 +114,4 @@ The project is migrated from [OCR-SAM](https://github.com/yeungchenwa/OCR-SAM), 
 1. Support End-to-End Text Detection and Recognition, with the ability to segment every text character.
 2. Striking text removal and text inpainting WebUI demos driven by diffusion models and Gradio.
 
-Please see [README](mmocr_sam/) for more information.
+Please see [README](mmocr_sam/README.md) for more information.
