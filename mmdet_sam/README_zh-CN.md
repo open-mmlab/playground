@@ -318,10 +318,59 @@ bash ./dist_coco_style_eval.sh 8 ${COCO_DATA_ROOT} \
 | :------------------------------------------------------------------: | :---------: | :----------: | :----: | :----: |
 | [Detic](./configs/Detic_LI21k_CLIP_SwinB_896b32_4x_ft4x_max-size.py) |     0.2     | COCO2017 Val | 0.465  | 0.388  |
 | [Detic](./configs/Detic_LI21k_CLIP_SwinB_896b32_4x_ft4x_max-size.py) |    0.001    | COCO2017 Val | 0.481  | 0.403  |
+|                         \<\<\<\<\<\<\< HEAD                          |             |              |        |        |
 |        [GroundingDino](./configs/GroundingDINO_SwinT_OGC.py)         |     0.3     | COCO2017 Val | 0.419  |        |
 |        [GroundingDino](./configs/GroundingDINO_SwinT_OGC.py)         |     0.0     | COCO2017 Val | 0.469  |        |
 |       [GroundingDino\*](./configs/GroundingDINO_SwinT_OGC.py)        |     0.3     | COCO2017 Val | 0.404  |        |
 |              [GLIP](./configs/glip_A_Swin_T_O365.yaml)               |     0.0     | COCO2017 Val | 0.429  |        |
 
+# **Note**: \*意思是使用原始GroundingDino的方式进行评估
+
+|        [GroundingDino](./configs/GroundingDINO_SwinT_OGC.pyy)        |     0.3     | COCO2017 Val | 0.419  |        |
+|       [GroundingDino\*](./configs/GroundingDINO_SwinT_OGC.pyy)       |     0.3     | COCO2017 Val | 0.404  |        |
+
 **Note**:
 \*意思是使用原始GroundingDino的方式进行评估
+
+### 6 自定义数据集
+
+以下将使用一个具体例子来说明自定义的数据集如何得到模型推理的标注文件
+
+#### 数据准备
+
+使用以下命令下载 cat 数据集
+
+```shell
+cd playground
+
+wget https://download.openmmlab.com/mmyolo/data/cat_dataset.zip
+mkdir data
+unzip cat_dataset.zip -d data/cat
+rm cat_dataset.zip
+```
+
+**注意**:，需要将`cat/class_with_id.txt`里面的`1 cat`换成 `cat`
+
+使用 `images2coco.py` 脚本生成没有标注的 json 文件
+
+```shell
+cd mmdet_sam
+python images2coco.py ../data/cat/images ../data/cat/class_with_id.txt cat_coco.json
+```
+
+#### 模型推理
+
+这里使用 GroundingDINO 串联 SAM 模型为例进行推理，得到预测结果的 json 文件
+
+```shell
+python coco_style_eval.py ../data/cat/ \
+      configs/GroundingDINO_SwinT_OGC.py \
+      ../models/groundingdino_swint_ogc.pth \
+      -t ../data/cat/class_with_id.txt \
+      --data-prefix images \
+      --ann-file annotations/cat_coco.json \
+      --out-dir ../cat_pred \
+      --sam-device cpu
+```
+
+> > > > > > > 66b04473a559958151d264741544e19c91d04001

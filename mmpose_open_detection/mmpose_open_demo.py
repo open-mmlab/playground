@@ -50,6 +50,7 @@ except ImportError:
 import sys
 
 sys.path.append('../')
+from mmpose_open_detection.utils import apply_exif_orientation  # noqa
 from mmpose_open_detection.utils import get_file_list  # noqa
 
 
@@ -112,7 +113,7 @@ def parse_args():
 
 
 def __reset_cls_layer_weight(model, weight):
-    if type(weight) == str:
+    if isinstance(weight, str):
         print(f'Resetting cls_layer_weight from file: {weight}')
         zs_weight = torch.tensor(
             np.load(weight),
@@ -142,8 +143,10 @@ def __build_grounding_dino_model(args):
 
 
 def __build_glip_model(args):
-    assert maskrcnn_benchmark is not None
-    from maskrcnn_benchmark.config import cfg
+    try:
+        from maskrcnn_benchmark.config import cfg
+    except ImportError:
+        assert False, "'maskrcnn_benchmark' does not exist"
     cfg.merge_from_file(args.det_config)
     cfg.merge_from_list(['MODEL.WEIGHT', args.det_weight])
     cfg.merge_from_list(['MODEL.DEVICE', 'cpu'])
@@ -218,6 +221,7 @@ def run_detector(model, image_path, args):
 
     if 'GroundingDINO' in args.det_config:
         image_pil = Image.open(image_path).convert('RGB')  # load image
+        image_pil = apply_exif_orientation(image_pil)
         image, _ = grounding_dino_transform(image_pil, None)  # 3, h, w
 
         text_prompt = args.text_prompt

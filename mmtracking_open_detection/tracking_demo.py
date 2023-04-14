@@ -46,6 +46,8 @@ import sys
 
 sys.path.append('../')
 
+from mmtracking_open_detection.utils import apply_exif_orientation  # noqa
+
 # GLIP inflect
 try:
     import maskrcnn_benchmark
@@ -73,7 +75,7 @@ def parse_args():
         type=str,
         default='../models/sam_vit_h_4b8939.pth',
         help='path to checkpoint file')
-    parser.add_argument('--text_prompt', '-t', type=str, help='text prompt')
+    parser.add_argument('--text-prompt', '-t', type=str, help='text prompt')
     parser.add_argument('--show', action='store_true')
     parser.add_argument(
         '--out-dir',
@@ -397,12 +399,14 @@ def main():
             image_path = osp.join(args.inputs, img)
             if 'GroundingDINO' in args.det_config:
                 image_new = Image.open(image_path).convert('RGB')
+                image_new = apply_exif_orientation(image_new)
             else:
                 image_new = cv2.imread(image_path)
         else:
             if 'GroundingDINO' in args.det_config:
                 image_new = Image.fromarray(
                     cv2.cvtColor(img, cv2.COLOR_BGR2RGB))
+                image_new = apply_exif_orientation(image_new)
             else:
                 image_new = img
 
