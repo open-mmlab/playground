@@ -65,8 +65,6 @@ We provide a set of applications based on MMDet and SAM. The features include:
 
 Please see [README](mmdet_sam/README.md) for more information.
 
-______________________________________________________________________
-
 ## ✨ MMRotate-SAM
 
 <div align=center>
