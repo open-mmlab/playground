@@ -373,4 +373,3 @@ python coco_style_eval.py ../data/cat/ \
       --sam-device cpu
 ```
 
-> > > > > > > 66b04473a559958151d264741544e19c91d04001

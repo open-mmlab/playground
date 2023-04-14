@@ -346,7 +346,6 @@ def run_detector(model, image_path, args):
 
         top_predictions = model.inference(
             image, args.text_prompt, use_other_text=False)
-        # top_predictions = top_predictions.convert("xywh")
         scores = top_predictions.get_field('scores').tolist()
         labels = top_predictions.get_field('labels').tolist()
 

@@ -324,3 +324,43 @@ bash ./dist_coco_style_eval.sh 8 ${COCO_DATA_ROOT} \
 
 **Note**:
 \*means use original GroundingDINO approach to test
+
+### 6 Custom dataset
+
+We use a example to illustrate how a custom dataset can be used to obtain an annotation file using GroundingDINO and SAM.
+
+#### Data prepare
+
+Use the following command to download the cat dataset:
+
+```shell
+cd playground
+wget https://download.openmmlab.com/mmyolo/data/cat_dataset.zip
+mkdir data
+unzip cat_dataset.zip -d data/cat
+rm cat_dataset.zip
+```
+
+**Note**:，Need to replace `1 cat` with `cat` in `cat/class_with_id.txt`
+
+Use the `images2coco.py` script to generate the unlabeled json file:
+
+```shell
+cd mmdet_sam
+python images2coco.py ../data/cat/images ../data/cat/class_with_id.txt cat_coco.json
+```
+
+#### Inference
+
+Here we use GroundingDINO and SAM model as an example for inference, and get the prediction json file:
+
+```shell
+python coco_style_eval.py ../data/cat/ \
+      configs/GroundingDINO_SwinT_OGC.py \
+      ../models/groundingdino_swint_ogc.pth \
+      -t ../data/cat/class_with_id.txt \
+      --data-prefix images \
+      --ann-file annotations/cat_coco.json \
+      --out-dir ../cat_pred \
+      --sam-device cpu
+```
