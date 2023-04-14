@@ -331,23 +331,35 @@ We use a example to illustrate how a custom dataset can be used to obtain an ann
 
 Use the following command to download the cat dataset:
 
-```
+```shell
 cd playground
-python tools/misc/download_dataset.py --dataset-name cat --save-dir ./data/cat --unzip --delete
+
+wget https://download.openmmlab.com/mmyolo/data/cat_dataset.zip
+mkdir data
+unzip cat_dataset.zip -d data/cat
+rm cat_dataset.zip
 ```
 
 **Note**:，Need to replace `1 cat` with `cat` in `cat/class_with_id.txt`
 
 Use the `images2coco.py` script to generate the unlabeled json file:
 
-```
-python images2coco.py ../cat/images/ ../cat/class_with_id.txt "cat_coco.json"
+```shell
+cd mmdet_sam
+python images2coco.py ../data/cat/images ../data/cat/class_with_id.txt cat_coco.json
 ```
 
 #### Inference
 
 Here we use GroundingDINO and SAM model as an example for inference, and get the prediction json file:
 
-```
-python coco_style_eval.py '../cat' configs/GroundingDINO_SwinT_OGC.py ../models/groundingdino_swint_ogc.pth -t '../cat/class_with_id.txt' --data-prefix 'images' --ann-file 'annotations/cat_coco.json' --out-dir '../cat'
+```shell
+python coco_style_eval.py ../data/cat/ \
+      configs/GroundingDINO_SwinT_OGC.py \
+      ../models/groundingdino_swint_ogc.pth \
+      -t ../data/cat/class_with_id.txt \
+      --data-prefix images \
+      --ann-file annotations/cat_coco.json \
+      --out-dir ../cat_pred \
+      --sam-device cpu
 ```
