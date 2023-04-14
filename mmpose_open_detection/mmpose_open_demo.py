@@ -11,12 +11,11 @@ import torch.nn.functional as F
 from mmengine import Registry
 from mmengine.config import Config
 from mmengine.utils import ProgressBar
-from PIL import Image
-
 from mmpose.apis import inference_topdown
 from mmpose.apis import init_model as init_pose_estimator
 from mmpose.registry import VISUALIZERS
 from mmpose.structures import merge_data_samples
+from PIL import Image
 
 # Grounding DINO
 try:
@@ -51,6 +50,7 @@ except ImportError:
 import sys
 
 sys.path.append('../')
+from mmpose_open_detection.utils import apply_exif_orientation  # noqa
 from mmpose_open_detection.utils import get_file_list  # noqa
 
 
@@ -221,6 +221,7 @@ def run_detector(model, image_path, args):
 
     if 'GroundingDINO' in args.det_config:
         image_pil = Image.open(image_path).convert('RGB')  # load image
+        image_pil = apply_exif_orientation(image_pil)
         image, _ = grounding_dino_transform(image_pil, None)  # 3, h, w
 
         text_prompt = args.text_prompt

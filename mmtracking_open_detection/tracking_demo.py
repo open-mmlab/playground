@@ -2,6 +2,7 @@
 import argparse
 import os
 import os.path as osp
+import sys
 
 import cv2
 import numpy as np
@@ -48,6 +49,9 @@ try:
     from segment_anything import SamPredictor, sam_model_registry
 except ImportError:
     segment_anything = None
+
+sys.path.append('../')
+from mmtracking_open_detection.utils import apply_exif_orientation  # noqa
 
 IMG_EXTENSIONS = ('.jpg', '.jpeg', '.png')
 
@@ -403,12 +407,14 @@ def main():
             image_path = osp.join(args.inputs, img)
             if 'GroundingDINO' in args.det_config:
                 image_new = Image.open(image_path).convert('RGB')
+                image_new = apply_exif_orientation(image_new)
             else:
                 image_new = cv2.imread(image_path)
         else:
             if 'GroundingDINO' in args.det_config:
                 image_new = Image.fromarray(
                     cv2.cvtColor(img, cv2.COLOR_BGR2RGB))
+                image_new = apply_exif_orientation(image_new)
             else:
                 image_new = img
 
