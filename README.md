@@ -42,6 +42,7 @@ Currently, the following applications are included:
 |              [mmrotate_sam](mmrotate_sam/README.md)              | <img src="https://user-images.githubusercontent.com/79644233/231568599-58694ec9-a3b1-44a4-833f-74cfb4d4ca45.png" width="70%" height="20%"/> |       Rotated object detection + SAM. Let's join SAM and weakly supervised horizontal box detection to achieve rotated box detection, and say goodbye to the tedious task of annotating rotated boxes from now on!        |
 |     [mmpose_open_detection](mmpose_open_detection/README.md)     | <img src="https://user-images.githubusercontent.com/8425513/231439110-c0e7d6f8-5692-4bcb-b6cf-c3c243a990a5.jpg" width="70%" height="20%"/>  | Open object detection + mmpose. Let's explore the combination of open object detection and various pose estimation algorithms to achieve "Pose All Things" - the ability to estimate the pose of anything and everything! |
 | [mmtracking_open_detection](mmtracking_open_detection/README.md) |                      <img src="https://github.com/zwhus/pictures/raw/main/demo%2B(1).gif" width="70%" height="20%" />                       |                               Open object detection + tracking. Let's combine open object detection with video tasks to easily achieve video tracking and segmentation for open categories!                               |
+| [mmocr_sam](mmocr_sam/README.md) |                      <img src="https://user-images.githubusercontent.com/65173622/231919274-a7ebc63f-8665-4324-89bf-f685e3b5161c.jpg" width="70%" height="20%" />                       |                               Text Detection/Recognition + SAM. Let's combine text detection with SAM to segment every  text chararcter, with striking text removal and text inpainting demos driven by diffusion models and Gradio!                             |
 
 The following is a detailed description.
 
@@ -95,3 +96,16 @@ Please see [README](mmpose_open_detection/README.md) for more information.
 We provide an approach based on open object detection and utilizing motion information (Kalman filter) for multi-object tracking.
 
 Please see [README](mmtracking_open_detection/README.md) for more information.
+
+## ✨ mmocr_sam
+
+<div align=center>
+<img src="https://user-images.githubusercontent.com/65173622/231803460-495cf11f-8e2e-4c95-aa48-b163fc7fbbab.png"/>
+</div>
+
+The project is migrated from [OCR-SAM](https://github.com/yeungchenwa/OCR-SAM), which combines MMOCR with Segment Anything. We provide a set of applications based on MMOCR and SAM. The features include:
+
+1. Support End-to-End Text Detection and Recognition, with the ability to segment every text character.
+2. Striking text removal and text inpainting WebUI demos driven by diffusion models and Gradio.
+
+Please see [README](mmocr_sam/README.md) for more information.

@@ -41,6 +41,7 @@
 |              [mmrotate_sam](mmrotate_sam/README_zh-CN.md)              | <img src="https://user-images.githubusercontent.com/79644233/231568599-58694ec9-a3b1-44a4-833f-74cfb4d4ca45.png" width="70%" height="20%"/> |       旋转框检测相关模型 + SAM。 将 SAM 和弱监督即水平框检测联合实现旋转框检测，从此省掉累人的旋转框标注       |
 |     [mmpose_open_detection](mmpose_open_detection/README_zh-CN.md)     | <img src="https://user-images.githubusercontent.com/8425513/231439110-c0e7d6f8-5692-4bcb-b6cf-c3c243a990a5.jpg" width="70%" height="20%"/>  |                开放目标检测 + mmpose。探索开放目标检测和各类姿态估计算法结合实现万物皆可摆 Pose                |
 | [mmtracking_open_detection](mmtracking_open_detection/README_zh-CN.md) |                      <img src="https://github.com/zwhus/pictures/raw/main/demo%2B(1).gif" width="70%" height="20%" />                       |          开放目标检测 + tracking。探索开放目标检测和视频任务相结合，轻松实现开放类别的视频跟踪和分割           |
+| [mmocr_sam](mmocr_sam/README.md) |                      <img src="https://user-images.githubusercontent.com/65173622/231919274-a7ebc63f-8665-4324-89bf-f685e3b5161c.jpg" width="70%" height="20%" />                       | 端到端文字检测识别 + SAM，将每一个字符都进行分割。使用基于 Gradio 的 Web UI 探索有趣的 OCR 下游任务，包括文本擦除、文本编辑                             |
 
 下面详细说明。
 
@@ -94,6 +95,22 @@
 提供了基于开放目标检测，并利用运动信息（卡尔曼滤波器）来进行多目标跟踪。
 
 详情见 [README](mmtracking_open_detection/README_zh-CN.md)
+
+## ✨ mmocr_sam
+
+<div align=center>
+<img src="https://user-images.githubusercontent.com/65173622/231803460-495cf11f-8e2e-4c95-aa48-b163fc7fbbab.png"/>
+</div>
+
+该仓库搬运自 [OCR-SAM](https://github.com/yeungchenwa/OCR-SAM)。我们将 MMOCR 与 SAM 结合，并提供了以下功能。
+
+1. 支持端到端的文字检测识别，并可以将每一个文本字符都进行分割。
+2. 提供基于 diffusion 模型以及 Gradio 的 Web UI，可以探索有趣的 OCR 下游任务，包括文本擦除、文本编辑等。
+
+详情见 [README](mmocr_sam/README.md)。
+
+
+
 
 ## ❤️ 欢迎加入 OpenMMLab 社区
 
