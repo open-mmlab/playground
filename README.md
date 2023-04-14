@@ -8,10 +8,9 @@ English | [简体中文](README_zh-CN.md)
 
 </div>
 
-
 🥳 🚀 **Welcome to <span style="color: blue"> *OpenMMLab Playground* </span>, an open-source initiative dedicated to gathering and showcasing amazing projects built with OpenMMLab. Our goal is to provide a central hub for the community to share their innovative solutions and explore the edge of AI technologies.**
 
-🥳 🚀 **[OpenMMLab](https://github.com/open-mmlab) builds the most influential open-source computer vision algorithm system in the deep learning era, which provides high-performance and out-of-the-box algorithms for detection, segmentation, classification, pose estimation, video understanding and AIGC. We believe that equiped with OpenMMLab, everyone can build exciting AI-empowered applications and push the limits of what's possible. All you need is a touch of creativity and a willingness to take action.**
+🥳 🚀 **[OpenMMLab](https://github.com/open-mmlab) builds the most influential open-source computer vision algorithm system in the deep learning era, which provides high-performance and out-of-the-box algorithms for detection, segmentation, classification, pose estimation, video understanding, and AIGC. We believe that equipped with OpenMMLab, everyone can build exciting AI-empowered applications and push the limits of what's possible. All you need is a touch of creativity and a willingness to take action.**
 
 🥳 🚀 **Join the <span style="color: blue"> *OpenMMLab Playground* </span> now and enjoy the power of AI!**
 
@@ -37,18 +36,17 @@ English | [简体中文](README_zh-CN.md)
 </div>
 <br>
 
----
+______________________________________________________________________
+
 # Project List
 
-|                                                                  |                                                                    Demo                                                                     |                                                                                                        Description                                                                                                        |
-| :--------------------------------------------------------------: | :-----------------------------------------------------------------------------------------------------------------------------------------: | :-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------: |
-|                 [MMDet-SAM](#✨-mmdet-sam)                 | <img src="https://user-images.githubusercontent.com/17425982/231419108-bc5ef1ed-cb0b-496a-a19e-9b3b55479426.png" width="70%" height="20%"/> |   Explore a new way of instance segmentation by combining SAM (Segment Anything Model) with Closed-Set Object Detection, Open-Vocabulary Object Detection, Grounding Object Detection   |
-|              [MMRotate-SAM](#✨-mmrotate-sam)              | <img src="https://user-images.githubusercontent.com/79644233/231568599-58694ec9-a3b1-44a4-833f-74cfb4d4ca45.png" width="70%" height="20%"/> |       Join SAM and weakly supervised horizontal box detection to achieve rotated box detection, and say goodbye to the tedious task of annotating rotated boxes from now on!        |
-|     [Open-Pose-Detection](#✨-open-pose-detection)     | <img src="https://user-images.githubusercontent.com/8425513/231439110-c0e7d6f8-5692-4bcb-b6cf-c3c243a990a5.jpg" width="70%" height="20%"/>  | Integrate open object detection and various pose estimation algorithms to achieve "Pose All Things" - the ability to estimate the pose of anything and everything! |
-| [Open-Tracking](#✨-open-tracking) |                      <img src="https://github.com/zwhus/pictures/raw/main/demo%2B(1).gif" width="70%" height="20%" />                       |                               Track and segment open categories in videos by marrying open object dtection and MOT.                               |
-| [mmocr_sam](mmocr_sam/README.md) |                      <img src="https://user-images.githubusercontent.com/65173622/231919274-a7ebc63f-8665-4324-89bf-f685e3b5161c.jpg" width="70%" height="20%" />                       |                               Text Detection/Recognition + SAM. Let's combine text detection with SAM to segment every  text chararcter, with striking text removal and text inpainting demos driven by diffusion models and Gradio!                             |
-
-
+|                                                |                                                                     Demo                                                                     |                                                                                     Description                                                                                     |
+| :--------------------------------------------: | :------------------------------------------------------------------------------------------------------------------------------------------: | :---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------: |
+|           [MMDet-SAM](#✨-mmdet-sam)           | <img src="https://user-images.githubusercontent.com/17425982/231419108-bc5ef1ed-cb0b-496a-a19e-9b3b55479426.png" width="70%" height="20%"/>  | Explore a new way of instance segmentation by combining SAM (Segment Anything Model) with Closed-Set Object Detection, Open-Vocabulary Object Detection, Grounding Object Detection |
+|        [MMRotate-SAM](#✨-mmrotate-sam)        | <img src="https://user-images.githubusercontent.com/79644233/231568599-58694ec9-a3b1-44a4-833f-74cfb4d4ca45.png" width="70%" height="20%"/>  |       Join SAM and weakly supervised horizontal box detection to achieve rotated box detection, and say goodbye to the tedious task of annotating rotated boxes from now on!        |
+| [Open-Pose-Detection](#✨-open-pose-detection) |  <img src="https://user-images.githubusercontent.com/8425513/231439110-c0e7d6f8-5692-4bcb-b6cf-c3c243a990a5.jpg" width="70%" height="20%"/>  |         Integrate open object detection and various pose estimation algorithms to achieve "Pose All Things" - the ability to estimate the pose of anything and everything!          |
+|       [Open-Tracking](#✨-open-tracking)       |                       <img src="https://github.com/zwhus/pictures/raw/main/demo%2B(1).gif" width="70%" height="20%" />                       |                                                Track and segment open categories in videos by marrying open object dtection and MOT.                                                |
+|           [MMOCR-SAM](#✨-mmocr-sam)           | <img src="https://user-images.githubusercontent.com/65173622/231919274-a7ebc63f-8665-4324-89bf-f685e3b5161c.jpg" width="70%" height="20%" /> |   A solution of Text Detection/Recognition + SAM that segments every text character, with striking text removal and text inpainting demos driven by diffusion models and Gradio!    |
 
 # Gallery
 
@@ -67,7 +65,7 @@ We provide a set of applications based on MMDet and SAM. The features include:
 
 Please see [README](mmdet_sam/) for more information.
 
----
+______________________________________________________________________
 
 ## ✨ MMRotate-SAM
 
@@ -105,7 +103,7 @@ We provide an approach based on open object detection and utilizing motion infor
 
 Please see [README](mmtracking_open_detection/) for more information.
 
-## ✨ mmocr_sam
+## ✨ MMOCR-SAM
 
 <div align=center>
 <img src="https://user-images.githubusercontent.com/65173622/231803460-495cf11f-8e2e-4c95-aa48-b163fc7fbbab.png"/>
@@ -116,4 +114,4 @@ The project is migrated from [OCR-SAM](https://github.com/yeungchenwa/OCR-SAM), 
 1. Support End-to-End Text Detection and Recognition, with the ability to segment every text character.
 2. Striking text removal and text inpainting WebUI demos driven by diffusion models and Gradio.
 
-Please see [README](mmocr_sam/README.md) for more information.
+Please see [README](mmocr_sam/) for more information.
