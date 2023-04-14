@@ -11,11 +11,12 @@ import torch.nn.functional as F
 from mmengine import Registry
 from mmengine.config import Config
 from mmengine.utils import ProgressBar
+from PIL import Image
+
 from mmpose.apis import inference_topdown
 from mmpose.apis import init_model as init_pose_estimator
 from mmpose.registry import VISUALIZERS
 from mmpose.structures import merge_data_samples
-from PIL import Image
 
 # Grounding DINO
 try:
