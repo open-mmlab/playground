@@ -100,8 +100,8 @@ def parse_args():
 
     # track params
     # you can modify tracker score to fit your task
-    # use grouding dino, in demo: mot challenge use init
-    # init_track_thr 0.35 and obj_score_thrs_high 0.3
+    # use glip, in bdd demo: use init
+    # init_track_thr 0.65 and obj_score_thrs_high 0.6
     parser.add_argument(
         '--init_track_thr', type=float, default=0.45, help='init track')
     parser.add_argument(
@@ -153,7 +153,7 @@ def __build_glip_model(args):
 def build_detecter(args):
     if 'GroundingDINO' in args.det_config:
         detecter = __build_grounding_dino_model(args)
-    elif 'GLIP' in args.det_config:
+    elif 'glip' in args.det_config:
         detecter = __build_glip_model(args)
     else:
         config = Config.fromfile(args.det_config)
@@ -209,7 +209,7 @@ def convert_grounding_to_od_logits(logits,
 def run_detector(model, image_new, args, label_name=None):
 
     if args.cpu_off_load:
-        if 'GLIP' in args.det_config:
+        if 'glip' in args.det_config:
             model.model = model.model.to(args.det_device)
             model.device = args.det_device
         else:
@@ -263,9 +263,9 @@ def run_detector(model, image_new, args, label_name=None):
         pred_instances.labels = pred_phrase_idx
         pred_instances.scores = scores
 
-    elif 'GLIP' in args.det_config:
+    elif 'glip' in args.det_config:
         top_predictions = model.inference(
-            image, args.text_prompt, use_other_text=False)
+            image_new, args.text_prompt, use_other_text=False)
 
         pred_instances = InstanceData()
         pred_instances.bboxes = top_predictions.bbox
@@ -278,7 +278,7 @@ def run_detector(model, image_new, args, label_name=None):
             result.pred_instances.scores > args.box_thr]
 
     if args.cpu_off_load:
-        if 'GLIP' in args.det_config:
+        if 'glip' in args.det_config:
             model.model = model.model.to('cpu')
             model.device = 'cpu'
         else:
@@ -293,7 +293,7 @@ def main():
                  please install it follow README')
     args = parse_args()
 
-    if 'GLIP' in args.det_config:
+    if 'glip' in args.det_config:
         if maskrcnn_benchmark is None:
             raise RuntimeError('GLIP model is not installed,\
                  please install it follow README')
@@ -312,7 +312,7 @@ def main():
                 'args.cpu_off_load is an invalid parameter due to '
                 'detection and mask model IS on the cpu.')
 
-    if 'GroundingDINO' in args.det_config or 'GLIP' in args.det_config or \
+    if 'GroundingDINO' in args.det_config or 'glip' in args.det_config or \
        'Detic' in args.det_config:
         assert args.text_prompt
 
@@ -383,7 +383,7 @@ def main():
         num_frames_retain=args.num_frames_retain)
 
     if not args.cpu_off_load:
-        if 'GLIP' in args.det_config:
+        if 'glip' in args.det_config:
             det_model.model = det_model.model.to(args.det_device)
             det_model.device = args.det_device
         else:
