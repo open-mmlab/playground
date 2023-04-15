@@ -335,6 +335,7 @@ Use the following command to download the cat dataset:
 
 ```shell
 cd playground
+
 wget https://download.openmmlab.com/mmyolo/data/cat_dataset.zip
 mkdir data
 unzip cat_dataset.zip -d data/cat

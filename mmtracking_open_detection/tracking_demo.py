@@ -52,7 +52,7 @@ from mmtracking_open_detection.utils import apply_exif_orientation  # noqa
 try:
     import maskrcnn_benchmark
 
-    from mmtracking_open_detection.predictor_glip.py import GLIPDemo
+    from mmtracking_open_detection.predictor_glip import GLIPDemo
 except ImportError:
     maskrcnn_benchmark = None
 
@@ -288,18 +288,22 @@ def run_detector(model, image_new, args, label_name=None):
 
 
 def main():
-    if groundingdino is None and mmdet is None:
-        raise RuntimeError('detection model is not installed,\
+    if mmdet is None:
+        raise RuntimeError('mmdet is not installed,\
                  please install it follow README')
     args = parse_args()
 
     if 'GLIP' in args.det_config:
         if maskrcnn_benchmark is None:
-            raise RuntimeError('detection model is not installed,\
+            raise RuntimeError('GLIP model is not installed,\
+                 please install it follow README')
+    elif 'GroundingDINO' in args.det_config:
+        if groundingdino is None:
+            raise RuntimeError('GroundingDINO model is not installed,\
                  please install it follow README')
     elif args.mots:
         if segment_anything is None:
-            raise RuntimeError('mask model is not installed,\
+            raise RuntimeError('SAM model is not installed,\
                  please install it follow README')
 
     if args.cpu_off_load is True:

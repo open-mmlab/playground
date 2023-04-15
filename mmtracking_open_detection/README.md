@@ -19,8 +19,6 @@ Due to time constraints, currently only GroundingDINO, GLIP, and Detic combined 
 
 This project referenced [GroundingDINO](https://github.com/IDEA-Research/GroundingDINO). Thanks!
 
-````
-
 ## Base Development Environment Setup
 
 ```shell
@@ -40,6 +38,7 @@ mim install "mmcv>=2.0.0"
 cd playground
 git clone -b tracking https://github.com/open-mmlab/mmdetection.git
 cd mmdetection; pip install -e .; cd ..
+pip install lap seaborn
 ```
 
 ### Grounding Dino Dependencies Installation

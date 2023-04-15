@@ -318,16 +318,10 @@ bash ./dist_coco_style_eval.sh 8 ${COCO_DATA_ROOT} \
 | :------------------------------------------------------------------: | :---------: | :----------: | :----: | :----: |
 | [Detic](./configs/Detic_LI21k_CLIP_SwinB_896b32_4x_ft4x_max-size.py) |     0.2     | COCO2017 Val | 0.465  | 0.388  |
 | [Detic](./configs/Detic_LI21k_CLIP_SwinB_896b32_4x_ft4x_max-size.py) |    0.001    | COCO2017 Val | 0.481  | 0.403  |
-|                         \<\<\<\<\<\<\< HEAD                          |             |              |        |        |
 |        [GroundingDino](./configs/GroundingDINO_SwinT_OGC.py)         |     0.3     | COCO2017 Val | 0.419  |        |
 |        [GroundingDino](./configs/GroundingDINO_SwinT_OGC.py)         |     0.0     | COCO2017 Val | 0.469  |        |
 |       [GroundingDino\*](./configs/GroundingDINO_SwinT_OGC.py)        |     0.3     | COCO2017 Val | 0.404  |        |
 |              [GLIP](./configs/glip_A_Swin_T_O365.yaml)               |     0.0     | COCO2017 Val | 0.429  |        |
-
-# **Note**: \*意思是使用原始GroundingDino的方式进行评估
-
-|        [GroundingDino](./configs/GroundingDINO_SwinT_OGC.pyy)        |     0.3     | COCO2017 Val | 0.419  |        |
-|       [GroundingDino\*](./configs/GroundingDINO_SwinT_OGC.pyy)       |     0.3     | COCO2017 Val | 0.404  |        |
 
 **Note**:
 \*意思是使用原始GroundingDino的方式进行评估
@@ -372,4 +366,3 @@ python coco_style_eval.py ../data/cat/ \
       --out-dir ../cat_pred \
       --sam-device cpu
 ```
-

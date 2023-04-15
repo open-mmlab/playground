@@ -39,13 +39,13 @@ mim install "mmcv>=2.0.0"
 cd playground
 git clone -b tracking https://github.com/open-mmlab/mmdetection.git
 cd mmdetection; pip install -e .; cd ..
+pip install lap seaborn
 ```
 
 ### Grounding Dino 环境安装
 
 ```shell
 cd playground
-pip install git+https://github.com/facebookresearch/segment-anything.git
 pip install git+https://github.com/IDEA-Research/GroundingDINO.git
 ```
 
