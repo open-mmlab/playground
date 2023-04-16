@@ -25,13 +25,6 @@ try:
 except ImportError:
     groundingdino = None
 
-# GLIP
-try:
-    import maskrcnn_benchmark
-    from maskrcnn_benchmark.engine.predictor_glip import GLIPDemo
-except ImportError:
-    maskrcnn_benchmark = None
-
 # mmdet
 try:
     import mmdet
@@ -49,6 +42,14 @@ from segment_anything import SamPredictor, sam_model_registry
 
 sys.path.append('../')
 from mmdet_sam.utils import apply_exif_orientation, get_file_list  # noqa
+
+# GLIP
+try:
+    import maskrcnn_benchmark
+
+    from mmdet_sam.predictor_glip import GLIPDemo
+except ImportError:
+    maskrcnn_benchmark = None
 
 
 def parse_args():
@@ -99,6 +100,12 @@ def parse_args():
         '--apply-original-groudingdino',
         action='store_true',
         help='use original groudingdino label predict')
+
+    # GLIP param
+    parser.add_argument(
+        '--apply-other-text',
+        action='store_true',
+        help='means use text prompt only conclude label name')
     return parser.parse_args()
 
 
@@ -300,23 +307,39 @@ def run_detector(model, image_path, args):
         pred_dict['boxes'] = boxes_filt
     elif 'glip' in args.det_config:
         image = cv2.imread(image_path)
+        # caption
         text_prompt = args.text_prompt
         text_prompt = text_prompt.lower()
         text_prompt = text_prompt.strip()
-        if not text_prompt.endswith('.'):
+        if not text_prompt.endswith('.') and not args.apply_other_text:
             text_prompt = text_prompt + '.'
-        top_predictions = model.inference(image, text_prompt)
+
+        custom_vocabulary = text_prompt[:-1].split('.')
+        label_name = [c.strip() for c in custom_vocabulary]
+
+        # top_predictions = model.inference(image, label_name)
+        if args.apply_other_text:
+            top_predictions = model.inference(
+                image, args.text_prompt, use_other_text=True)
+        else:
+            top_predictions = model.inference(
+                image, args.text_prompt, use_other_text=False)
         scores = top_predictions.get_field('scores').tolist()
         labels = top_predictions.get_field('labels').tolist()
-        new_labels = []
-        if model.entities and model.plus:
-            for i in labels:
-                if i <= len(model.entities):
-                    new_labels.append(model.entities[i - model.plus])
-                else:
-                    new_labels.append('object')
+
+        if args.apply_other_text:
+            new_labels = []
+            if model.entities and model.plus:
+                for i in labels:
+                    if i <= len(model.entities):
+                        new_labels.append(model.entities[i - model.plus])
+                    else:
+                        new_labels.append('object')
+            else:
+                new_labels = ['object' for i in labels]
         else:
-            new_labels = ['object' for i in labels]
+            new_labels = [label_name[i] for i in labels]
+
         pred_dict['labels'] = new_labels
         pred_dict['scores'] = scores
         pred_dict['boxes'] = top_predictions.bbox

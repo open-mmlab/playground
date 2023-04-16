@@ -19,8 +19,6 @@ Due to time constraints, currently only GroundingDINO, GLIP, and Detic combined 
 
 This project referenced [GroundingDINO](https://github.com/IDEA-Research/GroundingDINO). Thanks!
 
-````
-
 ## Base Development Environment Setup
 
 ```shell
@@ -40,13 +38,13 @@ mim install "mmcv>=2.0.0"
 cd playground
 git clone -b tracking https://github.com/open-mmlab/mmdetection.git
 cd mmdetection; pip install -e .; cd ..
+pip install lap seaborn
 ```
 
 ### Grounding Dino Dependencies Installation
 
 ```shell
 cd playground
-pip install git+https://github.com/facebookresearch/segment-anything.git
 pip install git+https://github.com/IDEA-Research/GroundingDINO.git
 ```
 
@@ -94,10 +92,10 @@ Using GroundingDINO as an example only.
 cd mmtracking_open_detection
 
 # input a video
-python tracking_demo.py "../tracking_demo/mot_challenge_track.mp4" "configs/GroundingDINO_SwinB.cfg.py" "../models/groundingdino_swinb_cogcoor.pth"  --text_prompt "person . rider . car . truck . bus . train . motorcycle . bicycle ." --out-dir "outputs/mot_challenge"
+python tracking_demo.py "../tracking_demo/mot_challenge_track.mp4" "configs/GroundingDINO_SwinB.cfg.py" "../models/groundingdino_swinb_cogcoor.pth"  --text-prompt "person . rider . car . truck . bus . train . motorcycle . bicycle ." --out-dir "outputs/mot_challenge" --init_track_thr 0.35 --obj_score_thrs_high 0.3
 
 # input a images folder
-python tracking_demo.py "../tracking_demo/bdd_val_track" "configs/GroundingDINO_SwinB.cfg.py" "../models/groundingdino_swinb_cogcoor.pth"  --text_prompt "person . rider . car . truck . bus . train . motorcycle . bicycle ." --out-dir "outputs/bdd100k" --fps 30
+python tracking_demo.py "../tracking_demo/bdd_val_track" "configs/GroundingDINO_SwinB.cfg.py" "../models/groundingdino_swinb_cogcoor.pth"  --text-prompt "person . rider . car . truck . bus . train . motorcycle . bicycle ." --out-dir "outputs/bdd100k" --fps 30
 ```
 
 ### MOTS
@@ -105,6 +103,6 @@ python tracking_demo.py "../tracking_demo/bdd_val_track" "configs/GroundingDINO_
 ```shell
 cd mmtracking_open_detection
 
-# input a video
-python tracking_demo.py "../tracking_demo/bdd_val_track" "configs/GroundingDINO_SwinB.cfg.py" "../models/groundingdino_swinb_cogcoor.pth"  --text_prompt "person . rider . car . truck . bus . train . motorcycle . bicycle ." --out-dir "outputs/bdd100k" --fps 30 --mots
+# input a images folder
+python tracking_demo.py "../tracking_demo/bdd_val_track" "configs/GroundingDINO_SwinB.cfg.py" "../models/groundingdino_swinb_cogcoor.pth"  --text-prompt "person . rider . car . truck . bus . train . motorcycle . bicycle ." --out-dir "outputs/bdd100k" --fps 30 --mots
 ```
