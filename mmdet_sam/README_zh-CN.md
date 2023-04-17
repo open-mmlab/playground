@@ -15,12 +15,12 @@
 从目前来看，通用目标检测可以分成两大类：
 
 1. 封闭集目标检测 Closed-Set Object Detection，即只能检测训练集出现的固定类别数的物体
-2. 开发集目标检测 Open-Set Object Detection，即可以检测训练集外的类别的物体
+2. 开放集目标检测 Open-Set Object Detection，即可以检测训练集外的类别的物体
 
 随着多模态算法的流行，开放类别的目标检测已经成为了新的研究方向，在这其中有 3 个比较热门的研究方向：
 
 1. Zero-Shot Object Detection，即零样本目标检测，其强调的是测试集类别不在训练集中
-2. Open-Vocabulary Object Detection，即开发词汇目标检测，给定图片和类别词汇表，检测所有物体
+2. Open-Vocabulary Object Detection，即开放词汇目标检测，给定图片和类别词汇表，检测所有物体
 3. Grounding Object Detection，即给定图片和文本描述，预测文本中所提到的在图片中的物体位置
 
 实际上三个方向没法完全区分，只是通俗说法不同而已。基于上述描述，结合 Segment Anything，我们提供了多个模型串联的推理和评估脚本。具体包括如下功能：
@@ -318,8 +318,10 @@ bash ./dist_coco_style_eval.sh 8 ${COCO_DATA_ROOT} \
 | :------------------------------------------------------------------: | :---------: | :----------: | :----: | :----: |
 | [Detic](./configs/Detic_LI21k_CLIP_SwinB_896b32_4x_ft4x_max-size.py) |     0.2     | COCO2017 Val | 0.465  | 0.388  |
 | [Detic](./configs/Detic_LI21k_CLIP_SwinB_896b32_4x_ft4x_max-size.py) |    0.001    | COCO2017 Val | 0.481  | 0.403  |
-|        [GroundingDino](./configs/GroundingDINO_SwinT_OGC.pyy)        |     0.3     | COCO2017 Val | 0.419  |        |
-|       [GroundingDino\*](./configs/GroundingDINO_SwinT_OGC.pyy)       |     0.3     | COCO2017 Val | 0.404  |        |
+|        [GroundingDino](./configs/GroundingDINO_SwinT_OGC.py)         |     0.3     | COCO2017 Val | 0.419  |        |
+|        [GroundingDino](./configs/GroundingDINO_SwinT_OGC.py)         |     0.0     | COCO2017 Val | 0.469  |        |
+|       [GroundingDino\*](./configs/GroundingDINO_SwinT_OGC.py)        |     0.3     | COCO2017 Val | 0.404  |        |
+|              [GLIP](./configs/glip_A_Swin_T_O365.yaml)               |     0.0     | COCO2017 Val | 0.429  |        |
 
 **Note**:
 \*意思是使用原始GroundingDino的方式进行评估

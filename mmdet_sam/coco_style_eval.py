@@ -36,13 +36,6 @@ try:
 except ImportError:
     groundingdino = None
 
-# GLIP
-try:
-    import maskrcnn_benchmark
-    from maskrcnn_benchmark.engine.predictor_glip import GLIPDemo
-except ImportError:
-    maskrcnn_benchmark = None
-
 # mmdet
 try:
     import mmdet
@@ -57,7 +50,15 @@ from segment_anything import SamPredictor, sam_model_registry
 from torch.utils.data import DataLoader, Dataset
 
 sys.path.append('../')
-from mmdet_sam.utils import apply_exif_orientation, get_file_list  # noqa
+from mmdet_sam.utils import apply_exif_orientation  # noqa
+
+# GLIP
+try:
+    import maskrcnn_benchmark
+
+    from mmdet_sam.predictor_glip import GLIPDemo
+except ImportError:
+    maskrcnn_benchmark = None
 
 
 def parse_args():
@@ -334,24 +335,21 @@ def run_detector(model, image_path, args):
         pred_dict['boxes'] = boxes_filt
     elif 'glip' in args.det_config:
         image = cv2.imread(image_path)
+        # caption
         text_prompt = args.text_prompt
         text_prompt = text_prompt.lower()
         text_prompt = text_prompt.strip()
         if not text_prompt.endswith('.'):
             text_prompt = text_prompt + '.'
-        top_predictions = model.inference(image, text_prompt)
+        custom_vocabulary = text_prompt[:-1].split('.')
+        label_name = [c.strip() for c in custom_vocabulary]
+
+        top_predictions = model.inference(
+            image, args.text_prompt, use_other_text=False)
         scores = top_predictions.get_field('scores').tolist()
         labels = top_predictions.get_field('labels').tolist()
-        new_labels = []
-        if model.entities and model.plus:
-            for i in labels:
-                if i <= len(model.entities):
-                    new_labels.append(model.entities[i - model.plus])
-                else:
-                    new_labels.append('object')
-        else:
-            new_labels = ['object' for i in labels]
-        pred_dict['labels'] = new_labels
+
+        pred_dict['labels'] = [label_name[i - 1] for i in labels]
         pred_dict['scores'] = scores
         pred_dict['boxes'] = top_predictions.bbox
     else:
@@ -521,19 +519,26 @@ def main():
             if cpu_off_load:
                 sam_model.model = sam_model.model.to('cpu')
 
-        pred_dict['boxes'] = pred_dict['boxes'].int().cpu().numpy().tolist()
-
+        pred_dict['boxes'] = pred_dict['boxes'].cpu().numpy().tolist()
         for i in range(len(pred_dict['boxes'])):
             label = pred_dict['labels'][i]
             score = pred_dict['scores'][i]
             bbox = pred_dict['boxes'][i]
 
-            coco_bbox = [
-                bbox[0],
-                bbox[1],
-                bbox[2] - bbox[0],
-                bbox[3] - bbox[1],
-            ]
+            if 'glip' in args.det_config:
+                coco_bbox = [
+                    bbox[0],
+                    bbox[1],
+                    bbox[2] - bbox[0] + 1,
+                    bbox[3] - bbox[1] + 1,
+                ]
+            else:
+                coco_bbox = [
+                    bbox[0],
+                    bbox[1],
+                    bbox[2] - bbox[0],
+                    bbox[3] - bbox[1],
+                ]
 
             if label not in name2id:
                 warnings.warn(f'not match predicted label of {label}')
