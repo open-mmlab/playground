@@ -1,5 +1,9 @@
 # MMEditing-SAM
 
+<div align=center>
+<img src="https://user-images.githubusercontent.com/12782558/232700025-a7bfe119-9eb5-46d2-b57c-ba7dc8c40d83.png"/>
+</div>
+
 这个文件夹下包含了将MMEditing和SAM一起使用的有趣玩法
 
 ## 📄 目录

@@ -1,5 +1,9 @@
 # MMEditing-SAM
 
+<div align=center>
+<img src="https://user-images.githubusercontent.com/12782558/232700025-a7bfe119-9eb5-46d2-b57c-ba7dc8c40d83.png"/>
+</div>
+
 This folder contains interesting usages of using MMEditing and SAM together.
 
 ## 📄 Table of Contents
