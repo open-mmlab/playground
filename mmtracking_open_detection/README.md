@@ -47,6 +47,12 @@ pip install lap seaborn
 cd playground
 pip install git+https://github.com/IDEA-Research/GroundingDINO.git
 ```
+If you can't use pip to download due to network reasons, you can choose the following method instead.
+```
+git clone git+https://github.com/IDEA-Research/GroundingDINO.git
+cd GroundingDINO
+python setup.py install
+```
 
 ### GLIP Dependencies Installation
 
@@ -62,6 +68,12 @@ cd GLIP; python setup.py build develop --user; cd ..
 
 ```shell
 pip install git+https://github.com/facebookresearch/segment-anything.git
+```
+If you can't use pip to download due to network reasons, you can choose the following method instead.
+```
+git clone git+https://github.com/facebookresearch/segment-anything.git
+cd segment-anything
+python setup.py install
 ```
 
 ## Obtaining the demo video and images
