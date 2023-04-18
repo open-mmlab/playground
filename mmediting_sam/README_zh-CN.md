@@ -4,7 +4,7 @@
 <img src="https://user-images.githubusercontent.com/12782558/232700025-a7bfe119-9eb5-46d2-b57c-ba7dc8c40d83.png"/>
 </div>
 
-这个文件夹下包含了将MMEditing和SAM一起使用的有趣玩法
+这个文件夹下包含了将 MMEditing 和 SAM 一起使用的有趣玩法
 
 ## 📄 目录
 
@@ -14,7 +14,7 @@
 
 ## 安装
 
-首先创建一个conda环境，然后把MMEditing和SAM安装到里面。
+首先创建一个 conda 环境，然后把 MMEditing 和 SAM 安装到里面。
 
 ```shell
 # create env and install torch
@@ -37,7 +37,7 @@ sudo apt install ffmpeg
 
 ## 下载
 
-下载SAM的模型。
+下载 SAM 的模型。
 
 ```shell
 mkdir -p checkpoints/sam
@@ -47,7 +47,7 @@ wget -O checkpoints/sam/sam_vit_h_4b8939.pth https://dl.fbaipublicfiles.com/segm
 
 ## 玩法
 
-### 结合SAM一起玩controlnet动画
+### 结合 SAM 一起玩 controlnet 动画
 
 ***使用方法***
 
@@ -84,10 +84,10 @@ ffmpeg -r 10 -i results/final_frames/%04d.jpg -b:v 30M -vf fps=10 results/final_
 
 1. 将输入视频拆成帧
 
-2. 通过MMEditing的前向接口调用controlnet animation模型对每帧视频进行修改，使其变为AI动画
+2. 通过 MMEditing 的前向接口调用 controlnet animation 模型对每帧视频进行修改，使其变为 AI 动画
 
-3. 使用MMEditing内的stable diffusion生成一张和动画内容语意贴合的背景图片
+3. 使用 MMEditing 内的 stable diffusion 生成一张和动画内容语意贴合的背景图片
 
-4. 用SAM预测动画中人物的mask
+4. 用 SAM 预测动画中人物的 mask
 
 5. 将动画中的背景替换为我们生成的背景图片
