@@ -48,6 +48,12 @@ pip install lap seaborn
 cd playground
 pip install git+https://github.com/IDEA-Research/GroundingDINO.git
 ```
+如果由于网络原因无法使用pip方法进行下载，可以采取以下方法。
+```
+git clone git+https://github.com/IDEA-Research/GroundingDINO.git
+cd GroundingDINO
+python setup.py install
+```
 
 ### GLIP 环境安装
 
@@ -64,7 +70,12 @@ cd GLIP; python setup.py build develop --user; cd ..
 ```shell
 pip install git+https://github.com/facebookresearch/segment-anything.git
 ```
-
+如果由于网络原因无法使用pip方法进行下载，可以采取以下方法。
+```
+git clone git+https://github.com/facebookresearch/segment-anything.git
+cd segment-anything
+python setup.py install
+```
 ## demo 视频和文件的获取
 
 ```shell
