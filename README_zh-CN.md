@@ -45,7 +45,7 @@
 | [Open-Pose-Detection](#-open-pose-detection) |  <img src="https://user-images.githubusercontent.com/8425513/231439110-c0e7d6f8-5692-4bcb-b6cf-c3c243a990a5.jpg" width="70%" height="20%"/>  |                      开放目标检测 + mmpose。探索开放目标检测和各类姿态估计算法结合实现万物皆可摆 Pose                       |
 |       [Open-Tracking](#-open-tracking)       |                       <img src="https://github.com/zwhus/pictures/raw/main/demo%2B(1).gif" width="70%" height="20%" />                       |                 开放目标检测 + tracking。探索开放目标检测和视频任务相结合，轻松实现开放类别的视频跟踪和分割                 |
 |           [MMOCR-SAM](#-mmocr-sam)           | <img src="https://user-images.githubusercontent.com/65173622/231919274-a7ebc63f-8665-4324-89bf-f685e3b5161c.jpg" width="70%" height="20%" /> | 端到端文字检测识别 + SAM，将每一个字符都进行分割。使用基于 Gradio 的 Web UI 探索有趣的 OCR 下游任务，包括文本擦除、文本编辑 |
-|      [MMEditing-SAM](#✨-mmediting-sam)      | <img src="https://user-images.githubusercontent.com/12782558/232716961-54b7e634-8f89-4a38-9353-4c962f9ce0cf.gif" width="70%" height="20%" /> |                                   将SAM和图像生成结合起来从而对图像进行任意位置的编辑修改                                   |
+|      [MMEditing-SAM](#-mmediting-sam)      | <img src="https://user-images.githubusercontent.com/12782558/232716961-54b7e634-8f89-4a38-9353-4c962f9ce0cf.gif" width="70%" height="20%" /> |                                   将SAM和图像生成结合起来从而对图像进行任意位置的编辑修改                                   |
 
 下面详细说明。
 
