@@ -24,7 +24,7 @@ This project referenced [GroundingDINO](https://github.com/IDEA-Research/Groundi
 ```shell
 conda create -n mmtracking-sam python=3.8 -y
 conda activate mmtracking-sam
-pip install torch==1.8.0+cu111 torchvision==0.9.0+cu111 torchaudio==0.8.0 -f https://download.pytorch.org/whl/torch_stable.html
+pip install torch==1.9.1+cu111 torchvision==0.10.1+cu111 -f https://download.pytorch.org/whl/torch_stable.html
 git clone https://github.com/open-mmlab/playground.git
 ````
 
@@ -45,12 +45,13 @@ pip install lap seaborn
 
 ```shell
 cd playground
-
-
+pip install git+https://github.com/IDEA-Research/GroundingDINO.git
+```
+If you can't use pip to download due to network reasons, you can choose the following method instead.
+```
 git clone git+https://github.com/IDEA-Research/GroundingDINO.git
 cd GroundingDINO
 python setup.py install
-
 ```
 
 ### GLIP Dependencies Installation
@@ -66,6 +67,10 @@ cd GLIP; python setup.py build develop --user; cd ..
 ### SAM Dependencies Installation
 
 ```shell
+pip install git+https://github.com/facebookresearch/segment-anything.git
+```
+If you can't use pip to download due to network reasons, you can choose the following method instead.
+```
 git clone git+https://github.com/facebookresearch/segment-anything.git
 cd segment-anything
 python setup.py install
