@@ -1,16 +1,16 @@
 # MMEditing-SAM
 
-This folder contains interesting usages of using MMEditing and SAM together.
+这个文件夹下包含了将MMEditing和SAM一起使用的有趣玩法
 
-## 📄 Table of Contents
+## 📄 目录
 
-- [🛠️ Installation](#installation)
-- [⬇️ Download](#download)
-- [🚀 Play](#play)
+- [🛠️ 安装](#安装)
+- [⬇️ 下载](#下载)
+- [🚀 玩法](#玩法)
 
-## Installation
+## 安装
 
-We first create a conda env, and then install MMEditing and SAM in it.
+首先创建一个conda环境，然后把MMEditing和SAM安装到里面。
 
 ```shell
 # create env and install torch
@@ -31,9 +31,9 @@ pip install git+https://github.com/facebookresearch/segment-anything.git
 sudo apt install ffmpeg
 ```
 
-## Download
+## 下载
 
-Download SAM checkpoints.
+下载SAM的模型。
 
 ```shell
 mkdir -p checkpoints/sam
@@ -41,30 +41,30 @@ wget -O checkpoints/sam/sam_vit_h_4b8939.pth https://dl.fbaipublicfiles.com/segm
 
 ```
 
-## Play
+## 玩法
 
-### Play controlnet animation with SAM
+### 结合SAM一起玩controlnet动画
 
-Find a video clip that you want to edit with and get frames.
+找一个视频拆出视频帧。
 
 ```shell
 mkdir -p inputs/demo_video
 ffmpeg -i your_video.mp4 inputs/demo_video/%04d.jpg
 ```
 
-Run the script.
+运行脚本。
 
 ```shell
 python play_controlnet_animation_sam.py
 ```
 
-Make video with output frames.
+用输出的视频帧组合成视频。
 
 ```shell
 ffmpeg -r 10 -i results/final_frames/%04d.jpg -b:v 30M -vf fps=10 results/final_frames.mp4
 ```
 
-Below is a video input and output result for example. Try to make your new videos!
+下面是我们一个视频的输入输出示例。试一下你自己的视频吧！
 
 <div align="center">
   <video src="https://user-images.githubusercontent.com/12782558/232666513-a735fadb-b92b-4807-ba32-8a38b1514622.mp4" width=1024/>

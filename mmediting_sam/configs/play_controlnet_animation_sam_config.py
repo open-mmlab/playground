@@ -1,5 +1,5 @@
 # config for input and output
-source_video_frame_path = '/nvme/liuwenran/datasets/playground/huangbo_fps10'
+source_video_frame_path = 'inputs/demo_video/'
 middle_video_frame_path = 'results/controlnet_animation_frames/'
 final_video_frame_path = 'results/final_frames/'
 width = 512
@@ -45,7 +45,6 @@ model = dict(
 bg_seed = 24
 bg_prompt = 'A party with crowded people, dancing'
 
-
 # config for sam
 point_coord = [[200, 160], [90, 370], [240, 370], [430, 370], [230, 450]]
-sam_checkpoint = '/nvme/liuwenran/branches/liuwenran/dev-sdi/mmediting/resources/sam_model/sam_vit_h_4b8939.pth'
+sam_checkpoint = 'checkpoints/sam/sam_vit_h_4b8939.pth'
