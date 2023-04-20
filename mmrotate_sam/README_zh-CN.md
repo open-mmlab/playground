@@ -28,16 +28,31 @@ pip install git+https://github.com/facebookresearch/segment-anything.git
 pip install opencv-python pycocotools matplotlib onnxruntime onnx
 ```
 
+注意：如果本地还没有 MMRotate 的 repo 代码，也可以使用以下方式源码安装 MMRotate：
+
+```shell
+git clone https://github.com/open-mmlab/mmrotate.git
+cd mmrotate; pip install -e .; cd ..
+```
+
 ## 使用方式
 
 1. 在单张图上推理检测器级联 SAM 的旋转检测结果，获得可视化结果图。
 
 ```shell
+# 下载权重
+cd mmrotate_sam
+
+mkdir ../models
+wget -P ../models https://dl.fbaipublicfiles.com/segment_anything/sam_vit_b_01ec64.pth
+wget -P ../models https://download.openmmlab.com/mmrotate/v0.1.0/rotated_fcos/rotated_fcos_sep_angle_r50_fpn_1x_dota_le90/rotated_fcos_sep_angle_r50_fpn_1x_dota_le90-0be71a0c.pth
+
+# demo
 python demo_zero-shot-oriented-detection.py \
-    data/split_ss_dota/test/images/P0006__1024__0___0.png \
-    configs/rotated_fcos/rotated-fcos-hbox-le90_r50_fpn_1x_dota.py \
-    rotated_fcos_sep_angle_r50_fpn_1x_dota_le90-0be71a0c.pth \
-    --sam-type "vit_b" --sam-weight sam_vit_b_01ec64.pth --out-path output.png
+    ../mmrotate/data/split_ss_dota/test/images/P0006__1024__0___0.png \
+    ../mmrotate/configs/rotated_fcos/rotated-fcos-hbox-le90_r50_fpn_1x_dota.py \
+    ../models/rotated_fcos_sep_angle_r50_fpn_1x_dota_le90-0be71a0c.pth \
+    --sam-type "vit_b" --sam-weight ../models/sam_vit_b_01ec64.pth --out-path output.png
 ```
 
 <div align=center>
@@ -48,7 +63,7 @@ python demo_zero-shot-oriented-detection.py \
 
 ```shell
 python eval_zero-shot-oriented-detection_dota.py \
-    configs/rotated_fcos/rotated-fcos-hbox-le90_r50_fpn_1x_dota.py \
-    rotated_fcos_sep_angle_r50_fpn_1x_dota_le90-0be71a0c.pth \
-    --sam-type "vit_b" --sam-weight sam_vit_b_01ec64.pth
+    ../mmrotate/configs/rotated_fcos/rotated-fcos-hbox-le90_r50_fpn_1x_dota.py \
+    ../models/rotated_fcos_sep_angle_r50_fpn_1x_dota_le90-0be71a0c.pth \
+    --sam-type "vit_b" --sam-weight ../models/sam_vit_b_01ec64.pth
 ```
