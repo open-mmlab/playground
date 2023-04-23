@@ -1,4 +1,4 @@
-# OpenMMLab PlayGround：Label-Studio X SAM 半自动化标注之 Point2Label
+# OpenMMLab PlayGround: Point2Label - Semi-Automated Annotation with Label-Studio and SAM
 
 This article will introduce a semi-automated annotation approach that combines Label-Studio and SAM (Segment Anything), allowing users to obtain object masks and bounding box annotations by simply clicking a point within the object's area. Community users can learn from this method to improve their data annotation efficiency.
 
@@ -14,11 +14,6 @@ This article will introduce a semi-automated annotation approach that combines L
 - [Label Studio](https://github.com/heartexlabs/label-studio) is an excellent annotation software, covering dataset annotation functions in areas such as image classification, object detection, and segmentation.
 
 This article will use images from the [Cat Dataset](https://download.openmmlab.com/mmyolo/data/cat_dataset.zip) for semi-automated annotation.
-
-
-
-
-
 
 ## Environment Setup
 
@@ -160,7 +155,7 @@ After that, go to Settings and click Add Model to add the OpenMMLabPlayGround ba
 
 ![image](https://user-images.githubusercontent.com/25839884/233836727-568d56e3-3b32-4599-b0a8-c20f18479a6a.png)
 
-看到如下 Connected 就说明后端推理服务添加成功。
+If you see "Connected" as shown below, it means that the backend inference service has been successfully added.
 
 ![image](https://user-images.githubusercontent.com/25839884/233832884-1b282d1f-1f43-474b-b41d-de41ad248476.png)
 
@@ -183,7 +178,7 @@ After submitting all the images, click on export to export the annotated dataset
 
 ![image](https://user-images.githubusercontent.com/25839884/233835852-b2f56cf1-1608-44c8-aa2d-d876f58e61f3.png)
 
-用 vscode 打开解压后的文件夹，可以看到标注好的数据集，包含了图片和 json 格式的标注文件。
+You can use VS Code to open the extracted folder and see the annotated dataset, which includes the images and the annotated JSON files.
 
 ![](https://cdn.vansin.top/picgo20230330140321.png)
 

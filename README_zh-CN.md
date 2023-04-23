@@ -128,6 +128,11 @@
 
 详情见 [README](mmediting_sam/README_zh-CN.md)。
 
+
+## ✨ Label-Studio-SAM
+
+
+
 # ❤️ 欢迎加入 OpenMMLab 社区
 
 扫描下方的二维码可关注 OpenMMLab 团队的 [知乎官方账号](https://www.zhihu.com/people/openmmlab)，加入 OpenMMLab 团队的 [官方交流 QQ 群](https://jq.qq.com/?_wv=1027&k=aCvMxdr3)
