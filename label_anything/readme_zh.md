@@ -82,13 +82,15 @@ pip install label-studio-ml==1.0.9
 ```shell
 cd path/to/playground/label_anything
 
-label-studio-ml start sam --with \
---port 8003 \
---device=cuda:0
+label-studio-ml start sam --port 8003 --with \
+sam_config=vit_b \
+sam_checkpoint_file=./sam_vit_b_01ec64.pth \
+device=cuda:0 \
 # device=cuda:0 为使用 GPU 推理，如果使用 cpu 推理，将 cuda:0 替换为 cpu
 ```
 
-![](https://cdn.vansin.top/picgo20230330131601.png)
+![image](https://user-images.githubusercontent.com/25839884/233821553-0030945a-8d83-4416-8edd-373ae9203a63.png)
+
 
 此时，RTMDet 后端推理服务已经启动，后续在 Label-Studio Web 系统中配置 http://localhost:8003 后端推理服务即可。
 
