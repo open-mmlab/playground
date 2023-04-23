@@ -170,6 +170,5 @@ device=cpu \
 # device=cpu 为使用 CPU 推理，如果使用 GPU 推理，将 cpu 替换为 cuda:0
 ```
 
-旋转目标检测和实例分割还在支持中，敬请期待。
-
+即将支持利用 RTMDet 生成水平边界框作为 SAM 的提示词，并使用 SAM 生成 Mask Demo。
 
