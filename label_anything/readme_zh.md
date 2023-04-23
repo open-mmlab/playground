@@ -85,8 +85,12 @@ cd path/to/playground/label_anything
 label-studio-ml start sam --port 8003 --with \
 sam_config=vit_b \
 sam_checkpoint_file=./sam_vit_b_01ec64.pth \
+out_mask=True \
+out_bbox=True \
 device=cuda:0 \
 # device=cuda:0 为使用 GPU 推理，如果使用 cpu 推理，将 cuda:0 替换为 cpu
+# out_poly=True 返回外接多边形的标注
+
 ```
 
 ![image](https://user-images.githubusercontent.com/25839884/233821553-0030945a-8d83-4416-8edd-373ae9203a63.png)
