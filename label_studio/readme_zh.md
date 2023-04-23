@@ -97,7 +97,7 @@ label-studio start
 我们通过下面的方式下载好示例的喵喵图片，点击 Data Import 导入需要标注的猫图片。
 
 ```shell
-cd path/to/mmetection
+cd path/to/playground/label_anything
 mkdir data && cd data
 
 wget https://download.openmmlab.com/mmyolo/data/cat_dataset.zip && unzip cat_dataset.zip
