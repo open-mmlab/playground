@@ -5,7 +5,7 @@ OpenMMLab PlayGround：Label-Studio X SAM 半自动化标注是一个系列的�
 <br>
 
 <div align=center>
-    <img src="https://user-images.githubusercontent.com/25839884/233818746-542f2e07-47cb-46db-9638-5e09bc799d87.gif" width="80%">
+    <img src="https://user-images.githubusercontent.com/25839884/233835223-16abc0cb-09f0-407d-8be0-33e14cd86e1b.gif" width="80%">
 </div>
 
 <br>
@@ -134,13 +134,13 @@ wget https://download.openmmlab.com/mmyolo/data/cat_dataset.zip && unzip cat_dat
 
 在`Settings/Labeling Interface` 中配置 Label-Studio 关键点和 Mask 标注
 
-```shell
+```xml
 <View>
+  <Image name="image" value="$image" zoom="true"/>
   <KeyPointLabels name="KeyPointLabels" toName="image">
     <Label value="cat" smart="true" background="#e51515" showInline="true"/>
     <Label value="person" smart="true" background="#412cdd" showInline="true"/>
   </KeyPointLabels>
-  <Image name="image" value="$image" zoom="true"/>
   <BrushLabels name="BrushLabels" toName="image">
   	<Label value="cat" background="#FF0000"/>
   	<Label value="person" background="#0d14d3"/>
@@ -158,31 +158,33 @@ wget https://download.openmmlab.com/mmyolo/data/cat_dataset.zip && unzip cat_dat
 
 然后将上述类别复制添加到 Label-Studio，然后点击 Save。
 
-![image](https://user-images.githubusercontent.com/25839884/233820036-d895e723-0694-449e-b6f2-723bdbde28fb.png)
+![image](https://user-images.githubusercontent.com/25839884/233832662-02f856e5-48e7-4200-9011-17693fc2e916.png)
 
-然后在设置中点击 Add Model 添加 RTMDet 后端推理服务。
 
-![](https://cdn.vansin.top/picgo20230330134320.png)
+然后在设置中点击 Add Model 添加 OpenMMLabPlayGround 后端推理服务。
+
+![image](https://user-images.githubusercontent.com/25839884/233832856-6ed50996-511b-406c-a9b7-6528cae577b4.png)
 
 点击 Validate and Save，然后点击 Start Labeling。
 
-![](https://cdn.vansin.top/picgo20230330134424.png)
+![image](https://user-images.githubusercontent.com/25839884/233833037-5be3e409-e817-43b1-bafa-200c278d6d25.png)
+
 
 看到如下 Connected 就说明后端推理服务添加成功。
 
-![](https://cdn.vansin.top/picgo20230330134554.png)
+![image](https://user-images.githubusercontent.com/25839884/233832884-1b282d1f-1f43-474b-b41d-de41ad248476.png)
 
 ## 开始半自动化标注
 
 点击 Label 开始标注
 
-![](https://cdn.vansin.top/picgo20230330134804.png)
+![image](https://user-images.githubusercontent.com/25839884/233833125-fd372b0d-5f3b-49f4-bcf9-e89971639fd5.png)
 
-我们可以看到 RTMDet 后端推理服务已经成功返回了预测结果并显示在图片上，我们可以发现这个喵喵预测的框有点大。
+需要打开 `Auto-Annotation` 的开关，并建议勾选 `Auto accept annotation suggestions`
 
-![](https://cdn.vansin.top/picgo20230403104419.png)
+![image](https://user-images.githubusercontent.com/25839884/233833200-a44c9c5f-66a8-491a-b268-ecfb6acd5284.png)
 
-我们手工拖动框，修正一下框的位置，得到以下修正过后的标注，然后点击 Submit，本张图片就标注完毕了。
+选择右侧 Smart 工具
 
 ![](https://cdn.vansin.top/picgo/20230403105923.png)
 
