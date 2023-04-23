@@ -122,6 +122,9 @@ wget https://download.openmmlab.com/mmyolo/data/cat_dataset.zip && unzip cat_dat
 
 ![](https://cdn.vansin.top/picgo20230330133807.png)
 
+
+配置 Label-Studio 关键点和Mask标注
+
 ```shell
 <View>
   <Image name="image" value="$image" zoom="true"/>
@@ -130,15 +133,15 @@ wget https://download.openmmlab.com/mmyolo/data/cat_dataset.zip && unzip cat_dat
   	<Label value="person" background="#0d14d3"/>
   </BrushLabels>
   <KeyPointLabels name="KeyPointLabels" toName="image">
-    <Label value="cat" smart="true" background="#000000" showInline="true"/>
-    <Label value="person" smart="true" background="#000000" showInline="true"/>
+    <Label value="cat" smart="true" background="#e51515" showInline="true"/>
+    <Label value="person" smart="true" background="#412cdd" showInline="true"/>
   </KeyPointLabels>
 </View>
 ```
 
 然后将上述类别复制添加到 Label-Studio，然后点击 Save。
 
-![](https://cdn.vansin.top/picgo20230330134027.png)
+![image](https://user-images.githubusercontent.com/25839884/233820036-d895e723-0694-449e-b6f2-723bdbde28fb.png)
 
 然后在设置中点击 Add Model 添加 RTMDet 后端推理服务。
 
