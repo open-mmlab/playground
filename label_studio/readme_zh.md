@@ -1,5 +1,8 @@
 # OpenMMLab PlayGround：Label-Studio X SAM 半自动化标注（一）
 
+OpenMMLab Playground
+
+
 标注数据是一个费时费力的任务，，然后使用 Label-Studio 进行微调标注，社区用户可以参考此流程和方法，将其应用到其他领域。
 
 - SAM (Segment Anything) 是 Fackbook 推出的分割一切的模型。
