@@ -64,7 +64,7 @@ pip install label-studio-ml==1.0.9
 
 ## 启动服务
 
-启动 RTMDet 后端推理服务：
+启动 SAM 后端推理服务：
 
 ```shell
 cd path/to/mmetection
