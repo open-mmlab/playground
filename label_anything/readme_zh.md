@@ -17,8 +17,7 @@ OpenMMLab PlayGround：Label-Studio X SAM 半自动化标注是一个系列的�
 
 ## 环境配置
 
-首先需要创建一个虚拟环境，然后安装 PyTorch 和 SAM。![image](https://user-images.githubusercontent.com/25839884/233836710-25644150-a253-4969-aa44-f60d408512b5.png)
-
+首先需要创建一个虚拟环境，然后安装 PyTorch 和 SAM。
 创建虚拟环境：
 
 ```shell
@@ -156,14 +155,9 @@ wget https://download.openmmlab.com/mmyolo/data/cat_dataset.zip && unzip cat_dat
 ![image](https://user-images.githubusercontent.com/25839884/233832662-02f856e5-48e7-4200-9011-17693fc2e916.png)
 
 
-然后在设置中点击 Add Model 添加 OpenMMLabPlayGround 后端推理服务。
+然后在设置中点击 Add Model 添加 OpenMMLabPlayGround 后端推理服务,设置好 SAM 后端推理服务的 URL，并打开 `Use for interactive preannotations` 并点击 `Validate and Save`。
 
 ![image](https://user-images.githubusercontent.com/25839884/233836727-568d56e3-3b32-4599-b0a8-c20f18479a6a.png)
-
-点击 Validate and Save，然后点击 Start Labeling。
-
-![image](https://user-images.githubusercontent.com/25839884/233833037-5be3e409-e817-43b1-bafa-200c278d6d25.png)
-
 
 看到如下 Connected 就说明后端推理服务添加成功。
 
@@ -185,7 +179,7 @@ wget https://download.openmmlab.com/mmyolo/data/cat_dataset.zip && unzip cat_dat
 
 
 我们 submit 完毕所有图片后，点击 exprot 导出 COCO 格式的数据集，就能把标注好的数据集的压缩包导出来了。
-注意：此处导出的只有边界框的标注，如果想要导出实例分割的标注，需要在启动 SAM 后端服务时设置`out_poly=True`。
+注意：此处导出的只有边界框的标注，如果想要导出实例分割的标注，需要在启动 SAM 后端服务时设置 `out_poly=True`。
 
 ![image](https://user-images.githubusercontent.com/25839884/233835852-b2f56cf1-1608-44c8-aa2d-d876f58e61f3.png)
 
