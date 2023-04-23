@@ -162,7 +162,7 @@ def build_detecter(args):
         config = Config.fromfile(args.det_config)
         if 'init_cfg' in config.model.backbone:
             config.model.backbone.init_cfg = None
-        if not args.use_detic_mask:
+        if not args.use_detic_mask and 'detic' in args.det_config:
             config.model.roi_head.mask_head = None
         detecter = init_detector(
             config, args.det_weight, device='cpu', cfg_options={})
