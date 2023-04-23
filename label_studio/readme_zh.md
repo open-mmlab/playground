@@ -80,7 +80,8 @@ pip install label-studio-ml==1.0.9
 cd path/to/playground/label_anything
 
 label-studio-ml start sam --with \
---port 8003
+--port 8003 \
+--device=cuda:0
 # device=cuda:0 为使用 GPU 推理，如果使用 cpu 推理，将 cuda:0 替换为 cpu
 ```
 
