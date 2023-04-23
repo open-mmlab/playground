@@ -126,7 +126,7 @@ wget https://download.openmmlab.com/mmyolo/data/cat_dataset.zip && unzip cat_dat
 ![](https://cdn.vansin.top/picgo20230330133715.png)
 
 
-在`Settings/Labeling Interface` 中配置 Label-Studio 关键点和 Mask 标注
+在 `Settings/Labeling Interface` 中配置 Label-Studio 关键点和 Mask 标注。
 
 ```xml
 <View>
@@ -149,8 +149,9 @@ wget https://download.openmmlab.com/mmyolo/data/cat_dataset.zip && unzip cat_dat
   </RectangleLabels>
 </View>
 ```
+在上述 XML 中我们对标注进行了配置，其中 `KeyPointLabels` 为关键点标注，`BrushLabels` 为 Mask 标注，`PolygonLabels` 为外接多边形标注，`RectangleLabels` 为矩形标注。为了让 SAM 推理后端能够支持收到KeyPointLabels的动作回调，需要将 XML 中的 `KeyPointLabels` 的 `smart` 属性设置为 `true`。本实例使用 `cat`和`person`两个类别，如果社区用户想增加更多的类别需要分别在 `KeyPointLabels`、`BrushLabels`、`PolygonLabels`、`RectangleLabels` 中添加对应的类别。
 
-然后将上述类别复制添加到 Label-Studio，然后点击 Save。
+然后将上述 XML 复制添加到 Label-Studio，然后点击 Save。
 
 ![image](https://user-images.githubusercontent.com/25839884/233832662-02f856e5-48e7-4200-9011-17693fc2e916.png)
 
