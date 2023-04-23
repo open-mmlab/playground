@@ -77,9 +77,9 @@ pip install label-studio-ml==1.0.9
 启动 SAM 后端推理服务：
 
 ```shell
-cd path/to/playground
+cd path/to/playground/label_anything
 
-label-studio-ml start label_studio/sam --with \
+label-studio-ml start sam --with \
 --port 8003
 # device=cuda:0 为使用 GPU 推理，如果使用 cpu 推理，将 cuda:0 替换为 cpu
 ```
