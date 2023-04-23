@@ -96,7 +96,7 @@ device=cuda:0 \
 ![image](https://user-images.githubusercontent.com/25839884/233821553-0030945a-8d83-4416-8edd-373ae9203a63.png)
 
 
-此时，RTMDet 后端推理服务已经启动，后续在 Label-Studio Web 系统中配置 http://localhost:8003 后端推理服务即可。
+此时，SAM 后端推理服务已经启动，后续在 Label-Studio Web 系统中配置 http://localhost:8003 后端推理服务即可。
 
 现在启动 Label-Studio 网页服务：
 
@@ -190,8 +190,9 @@ wget https://download.openmmlab.com/mmyolo/data/cat_dataset.zip && unzip cat_dat
 
 
 我们 submit 完毕所有图片后，点击 exprot 导出 COCO 格式的数据集，就能把标注好的数据集的压缩包导出来了。
+注意：此处导出的只有边界框的标注，如果想要导出实例分割的标注，需要在启动 SAM 后端服务时设置`out_poly=True`。
 
-![](https://cdn.vansin.top/picgo20230330135921.png)
+![image](https://user-images.githubusercontent.com/25839884/233835852-b2f56cf1-1608-44c8-aa2d-d876f58e61f3.png)
 
 用 vscode 打开解压后的文件夹，可以看到标注好的数据集，包含了图片和 json 格式的标注文件。
 
