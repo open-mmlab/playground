@@ -1,5 +1,11 @@
 # OpenMMLab PlayGround：Label-Studio X SAM 半自动化标注之 Point2Mask（一）
 
+<div align=center>
+    <img src="https://user-images.githubusercontent.com/25839884/233818483-e0589ec3-1ed7-40a9-8b6e-035848beb919.gif" width="80%">
+</div>
+
+
+
 OpenMMLab PlayGround：Label-Studio X SAM 半自动化标注是一个系列的专题，本节介绍的是结合 Label-Studio 和 SAM (Segment Anything) 通过点击物体的一个点就得到物体整个标注。
 
 标注数据是一个费时费力的任务，，然后使用 Label-Studio 进行微调标注，社区用户可以参考此流程和方法，将其应用到其他领域。
