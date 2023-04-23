@@ -1,6 +1,16 @@
-# Label-Studio X SAM 半自动化标注
+# OpenMMLab PlayGround：Label-Studio X SAM 半自动化标注之 Point2Mask（一）
 
-标注数据是一个费时费力的任务，本文介绍了如何使用 MMDetection 中的 RTMDet 算法联合 Label-Studio 软件进行半自动化标注。具体来说，使用 RTMDet 预测图片生成标注，然后使用 Label-Studio 进行微调标注，社区用户可以参考此流程和方法，将其应用到其他领域。
+
+OpenMMLab PlayGround：Label-Studio X SAM 半自动化标注是一个系列的专题，本节介绍的是结合 Label-Studio 和 SAM (Segment Anything) 通过点击物体的一个点就得到物体整个标注。
+<br>
+
+<div align=center>
+    <img src="https://user-images.githubusercontent.com/25839884/233818746-542f2e07-47cb-46db-9638-5e09bc799d87.gif" width="80%">
+</div>
+
+<br>
+
+标注数据是一个费时费力的任务，然后使用 Label-Studio 进行微调标注，社区用户可以参考此流程和方法，将其应用到其他领域。
 
 - SAM (Segment Anything) 是 Fackbook 推出的分割一切的模型。
 - [Label Studio](https://github.com/heartexlabs/label-studio) 是一款优秀的标注软件，覆盖图像分类、目标检测、分割等领域数据集标注的功能。
@@ -18,8 +28,6 @@
 conda create -n rtmdet-sam python=3.9 -y
 conda activate rtmdet-sam
 ```
-
-
 
 克隆 OpenMMLab PlayGround
 
@@ -47,21 +55,33 @@ pip install torch==1.10.1 torchvision==0.11.2 torchaudio==0.10.1
 安装 SAM 并下载预训练模型
 
 ```shell
-cd path/to/playground
+cd path/to/playground/label_anything
 pip install opencv-python pycocotools matplotlib onnxruntime onnx
 pip install git+https://github.com/facebookresearch/segment-anything.git
 wget https://dl.fbaipublicfiles.com/segment_anything/sam_vit_h_4b8939.pth
 ```
 
-## 启动服务
 
-启动 RTMDet 后端推理服务：
+安装 Label-Studio 和 label-studio-ml-backend
 
 ```shell
-cd path/to/mmetection
+# sudo apt install libpq-dev python3-dev # Note：如果使用 Label Studio 1.7.2 版本需要安装 `libpq-dev` 和 `python3-dev` 依赖。
 
-label-studio-ml start label_studio/sam --with \
---port 8003
+# 安装 label-studio 需要一段时间,如果找不到版本请使用官方源
+pip install label-studio==1.7.3
+pip install label-studio-ml==1.0.9
+```
+
+## 启动服务
+
+启动 SAM 后端推理服务：
+
+```shell
+cd path/to/playground/label_anything
+
+label-studio-ml start sam --with \
+--port 8003 \
+--device=cuda:0
 # device=cuda:0 为使用 GPU 推理，如果使用 cpu 推理，将 cuda:0 替换为 cpu
 ```
 
@@ -88,7 +108,7 @@ label-studio start
 我们通过下面的方式下载好示例的喵喵图片，点击 Data Import 导入需要标注的猫图片。
 
 ```shell
-cd path/to/mmetection
+cd path/to/playground/label_anything
 mkdir data && cd data
 
 wget https://download.openmmlab.com/mmyolo/data/cat_dataset.zip && unzip cat_dataset.zip
@@ -102,6 +122,9 @@ wget https://download.openmmlab.com/mmyolo/data/cat_dataset.zip && unzip cat_dat
 
 ![](https://cdn.vansin.top/picgo20230330133807.png)
 
+
+在`Settings/Labeling Interface` 中配置 Label-Studio 关键点和 Mask 标注
+
 ```shell
 <View>
   <Image name="image" value="$image" zoom="true"/>
@@ -110,15 +133,15 @@ wget https://download.openmmlab.com/mmyolo/data/cat_dataset.zip && unzip cat_dat
   	<Label value="person" background="#0d14d3"/>
   </BrushLabels>
   <KeyPointLabels name="KeyPointLabels" toName="image">
-    <Label value="cat" smart="true" background="#000000" showInline="true"/>
-    <Label value="person" smart="true" background="#000000" showInline="true"/>
+    <Label value="cat" smart="true" background="#e51515" showInline="true"/>
+    <Label value="person" smart="true" background="#412cdd" showInline="true"/>
   </KeyPointLabels>
 </View>
 ```
 
 然后将上述类别复制添加到 Label-Studio，然后点击 Save。
 
-![](https://cdn.vansin.top/picgo20230330134027.png)
+![image](https://user-images.githubusercontent.com/25839884/233820036-d895e723-0694-449e-b6f2-723bdbde28fb.png)
 
 然后在设置中点击 Add Model 添加 RTMDet 后端推理服务。
 
@@ -156,20 +179,7 @@ wget https://download.openmmlab.com/mmyolo/data/cat_dataset.zip && unzip cat_dat
 
 到此半自动化标注就完成了，我们可以用这个数据集在 MMDetection 训练精度更高的模型了，训练出更好的模型，然后再用这个模型继续半自动化标注新采集的图片，这样就可以不断迭代，扩充高质量数据集，提高模型的精度。
 
-## 使用 MMYOLO 作为后端推理服务
-
-如果想在 MMYOLO 中使用 Label-Studio，可以参考在启动后端推理服务时，将 config_file 和 checkpoint_file 替换为 MMYOLO 的配置文件和权重文件即可。
-
-```shell
-cd path/to/mmetection
-
-label-studio-ml start projects/LabelStudio/backend_template --with \
-config_file= path/to/mmyolo_config.py \
-checkpoint_file= path/to/mmyolo_weights.pth \
-device=cpu \
---port 8003
-# device=cpu 为使用 CPU 推理，如果使用 GPU 推理，将 cpu 替换为 cuda:0
-```
+## 结论
 
 即将支持利用 RTMDet 生成水平边界框作为 SAM 的提示词，并使用 SAM 生成 Mask Demo。
 
