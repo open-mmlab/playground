@@ -21,8 +21,6 @@ conda create -n rtmdet-sam python=3.9 -y
 conda activate rtmdet-sam
 ```
 
-
-
 克隆 OpenMMLab PlayGround
 
 ```shell
@@ -53,6 +51,15 @@ cd path/to/playground
 pip install opencv-python pycocotools matplotlib onnxruntime onnx
 pip install git+https://github.com/facebookresearch/segment-anything.git
 wget https://dl.fbaipublicfiles.com/segment_anything/sam_vit_h_4b8939.pth
+```
+
+
+安装 Label-Studio 和 label-studio-ml-backend
+
+```shell
+# 安装 label-studio 需要一段时间,如果找不到版本请使用官方源
+pip install label-studio==1.7.2
+pip install label-studio-ml==1.0.9
 ```
 
 ## 启动服务
