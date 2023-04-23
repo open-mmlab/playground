@@ -82,11 +82,11 @@ Start the SAM backend inference service:
 cd path/to/playground/label_anything
 
 label-studio-ml start sam --port 8003 --with \
-sam_config=vit_b \
-sam_checkpoint_file=./sam_vit_b_01ec64.pth \
-out_mask=True \
-out_bbox=True \
-device=cuda:0 \
+  sam_config=vit_b \
+  sam_checkpoint_file=./sam_vit_b_01ec64.pth \
+  out_mask=True \
+  out_bbox=True \
+  device=cuda:0
 # device=cuda:0 is for using GPU inference. If you want to use CPU inference, replace cuda:0 with cpu.
 # out_poly=True returns the annotation of the bounding polygon.
 ```
