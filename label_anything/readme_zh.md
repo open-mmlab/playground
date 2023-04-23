@@ -136,15 +136,23 @@ wget https://download.openmmlab.com/mmyolo/data/cat_dataset.zip && unzip cat_dat
 
 ```shell
 <View>
+  <KeyPointLabels name="KeyPointLabels" toName="image">
+    <Label value="cat" smart="true" background="#e51515" showInline="true"/>
+    <Label value="person" smart="true" background="#412cdd" showInline="true"/>
+  </KeyPointLabels>
   <Image name="image" value="$image" zoom="true"/>
   <BrushLabels name="BrushLabels" toName="image">
   	<Label value="cat" background="#FF0000"/>
   	<Label value="person" background="#0d14d3"/>
   </BrushLabels>
-  <KeyPointLabels name="KeyPointLabels" toName="image">
-    <Label value="cat" smart="true" background="#e51515" showInline="true"/>
-    <Label value="person" smart="true" background="#412cdd" showInline="true"/>
-  </KeyPointLabels>
+  <PolygonLabels name="PolygonLabels" toName="image">
+  	<Label value="cat" background="#FF0000"/>
+  	<Label value="person" background="#0d14d3"/>
+  </PolygonLabels>
+  <RectangleLabels name="RectangleLabels" toName="image">
+  	<Label value="cat" background="#FF0000"/>
+  	<Label value="person" background="#0d14d3"/>
+  </RectangleLabels>
 </View>
 ```
 
