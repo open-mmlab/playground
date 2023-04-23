@@ -222,12 +222,15 @@ class MMDetection(LabelStudioMLBase):
 
 
         # 计算外接矩形
-        x, y, w, h = cv2.boundingRect(contours[0])
-
-        print(x, y, w, h)
 
 
         if self.out_bbox:
+            new_contours = []
+            for contour in contours:
+                new_contours.extend(list(contour))
+            new_contours = np.array(new_contours)
+            x, y, w, h = cv2.boundingRect(new_contours)
+            print(x, y, w, h)
             results.append({
                 'from_name': self.from_name_RectangleLabels,
                 'to_name': self.to_name_RectangleLabels,
@@ -243,7 +246,7 @@ class MMDetection(LabelStudioMLBase):
             })
 
 
-        if self.out_polygon:
+        if self.out_poly:
 
             points_list = []
             for contour in contours:
