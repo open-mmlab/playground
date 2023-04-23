@@ -20,8 +20,7 @@ OpenMMLab PlayGround：Label-Studio X SAM 半自动化标注是一个系列的�
 
 ## 环境配置
 
-首先需要创建一个虚拟环境，然后安装 PyTorch 和 MMCV。在本文中，我们将指定 PyTorch 和 MMCV 的版本。接下来安装 MMDetection、Label-Studio 和 label-studio-ml-backend，具体步骤如下：
-
+首先需要创建一个虚拟环境，然后安装 PyTorch 和 SAM。
 创建虚拟环境：
 
 ```shell
