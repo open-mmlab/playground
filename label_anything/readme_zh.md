@@ -1,6 +1,6 @@
 # OpenMMLab PlayGround：Label-Studio X SAM 半自动化标注之 Point2Label
 
-OpenMMLab PlayGround：Label-Studio X SAM 半自动化标注是一个系列的专题，本节介绍的是结合 Label-Studio 和 SAM (Segment Anything) 通过点击物体的一个点就得到物体整个标注。
+OpenMMLab PlayGround：Label-Studio X SAM 半自动化标注是一个系列的专题，本节介绍的是结合 Label-Studio 和 SAM (Segment Anything) ，只需要在物体的区域内点一个点就能得到物体的掩码和边界框标注，社区的用户可以借鉴此方法，提高数据标注的效率。
 
 <br>
 
@@ -10,11 +10,8 @@ OpenMMLab PlayGround：Label-Studio X SAM 半自动化标注是一个系列的�
 
 <br>
 
-标注数据是一个费时费力的任务，然后使用 Label-Studio 进行微调标注，社区用户可以参考此流程和方法，将其应用到其他领域。
-
 - SAM (Segment Anything) 是 Fackbook 推出的分割一切的模型。
 - [Label Studio](https://github.com/heartexlabs/label-studio) 是一款优秀的标注软件，覆盖图像分类、目标检测、分割等领域数据集标注的功能。
-
 
 本文将使用[喵喵数据集](https://download.openmmlab.com/mmyolo/data/cat_dataset.zip)的图片，进行半自动化标注。
 
