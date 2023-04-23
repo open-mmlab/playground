@@ -18,6 +18,15 @@ conda create -n rtmdet-sam python=3.9 -y
 conda activate rtmdet-sam
 ```
 
+
+
+克隆 OpenMMLab PlayGround
+
+```shell
+git clone https://github.com/open-mmlab/playground
+```
+
+
 安装 PyTorch
 
 ```shell
@@ -32,32 +41,6 @@ pip install torch==1.10.1+cpu torchvision==0.11.2+cpu torchaudio==0.10.1 -f http
 # OSX
 pip install torch==1.10.1 torchvision==0.11.2 torchaudio==0.10.1
 
-
-```
-
-安装 MMCV
-
-```shell
-pip install -U openmim
-mim install "mmcv>=2.0.0"
-# 安装 mmcv 的过程中会自动安装 mmengine
-```
-
-安装 Label-Studio 和 label-studio-ml-backend
-
-```shell
-# 安装 label-studio 需要一段时间,如果找不到版本请使用官方源
-pip install label-studio==1.7.3
-pip install label-studio-ml==1.0.9
-```
-
-下载rtmdet权重
-
-```shell
-cd path/to/mmetection
-mkdir work_dirs
-cd work_dirs
-wget https://download.openmmlab.com/mmdetection/v3.0/rtmdet/rtmdet_m_8xb32-300e_coco/rtmdet_m_8xb32-300e_coco_20220719_112220-229f527c.pth
 ```
 
 安装 SAM 并下载预训练模型
@@ -188,3 +171,5 @@ device=cpu \
 ```
 
 旋转目标检测和实例分割还在支持中，敬请期待。
+
+
