@@ -23,17 +23,16 @@ import random
 import string
 logger = logging.getLogger(__name__)
 
-def load_my_model(device="cuda:0"):
+def load_my_model(device="cuda:0",sam_config="vit_b",sam_checkpoint_file="sam_vit_b_01ec64.pth"):
         """
         Loads the Segment Anything model on initializing Label studio, so if you call it outside MyModel it doesn't load every time you try to make a prediction
         Returns the predictor object. For more, look at Facebook's SAM docs
         """
         # if you're not using CUDA, use "cpu" instead
-        device = "cuda:0"
         # device = "cpu"
 
         # Note: YOU MUST HAVE THE MODEL SAVED IN THE SAME DIRECTORY AS YOUR BACKEND
-        sam = sam_model_registry["vit_b"](checkpoint="sam_vit_b_01ec64.pth")
+        sam = sam_model_registry[sam_config](checkpoint=sam_checkpoint_file)
 
         sam.to(device=device)
         predictor = SamPredictor(sam)
@@ -41,7 +40,6 @@ def load_my_model(device="cuda:0"):
         print("#######################################")
         return predictor
 
-PREDICTOR=load_my_model()
 
 
 class MMDetection(LabelStudioMLBase):
@@ -50,14 +48,28 @@ class MMDetection(LabelStudioMLBase):
     def __init__(self,
                  config_file=None,
                  checkpoint_file=None,
+                 sam_config='vit_b',
+                 sam_checkpoint_file=None,
                  image_dir=None,
                  labels_file=None,
+                 out_mask=True,
+                 out_bbox=False,
+                 out_poly=False,
                  score_threshold=0.5,
                  device='cpu',
                  **kwargs):
 
         super(MMDetection, self).__init__(**kwargs)
+
+        print("###################1111####################")
+
+
+        PREDICTOR=load_my_model(device,sam_config,sam_checkpoint_file)
         self.PREDICTOR = PREDICTOR
+
+        self.out_mask = out_mask
+        self.out_bbox = out_bbox
+        self.out_poly = out_poly
 
         # config_file = config_file or os.environ['config_file']
         # checkpoint_file = checkpoint_file or os.environ['checkpoint_file']
@@ -81,13 +93,13 @@ class MMDetection(LabelStudioMLBase):
                 label=self.parsed_label_config['KeyPointLabels']
             )
  
-        # if 'RectangleLabels' in self.parsed_label_config:
+        if 'RectangleLabels' in self.parsed_label_config and self.out_bbox:
 
-        #     self.parsed_label_config_RectangleLabels = {
-        #         'RectangleLabels':self.parsed_label_config['RectangleLabels']
-        #     }
-        #     self.from_name, self.to_name, self.value, self.labels_in_config = get_single_tag_keys(  # noqa E501
-        #         self.parsed_label_config_RectangleLabels, 'RectangleLabels', 'Image')
+            self.parsed_label_config_RectangleLabels = {
+                'RectangleLabels':self.parsed_label_config['RectangleLabels']
+            }
+            self.from_name_RectangleLabels, self.to_name_RectangleLabels, self.value_RectangleLabels, self.labels_in_config_RectangleLabels = get_single_tag_keys(  # noqa E501
+                self.parsed_label_config_RectangleLabels, 'RectangleLabels', 'Image')
 
         if 'BrushLabels' in self.parsed_label_config:
 
@@ -104,6 +116,15 @@ class MMDetection(LabelStudioMLBase):
             }
             self.from_name_BrushLabels, self.to_name_BrushLabels, self.value_BrushLabels, self.labels_in_config_BrushLabels = get_single_tag_keys(  # noqa E501
                 self.parsed_label_config_BrushLabels, 'BrushLabels', 'Image')
+
+        if 'PolygonLabels' in self.parsed_label_config and self.out_poly:
+
+            self.parsed_label_config_PolygonLabels = {
+                'PolygonLabels':self.parsed_label_config['PolygonLabels']
+            }
+            self.from_name_PolygonLabels, self.to_name_PolygonLabels, self.value_PolygonLabels, self.labels_in_config_PolygonLabels = get_single_tag_keys(  # noqa E501
+                self.parsed_label_config_PolygonLabels, 'PolygonLabels', 'Image')
+
 
 
         schema = list(self.parsed_label_config.values())[0]
@@ -145,10 +166,9 @@ class MMDetection(LabelStudioMLBase):
 
     def predict(self, tasks, **kwargs):
 
-        predictor = PREDICTOR
+        predictor = self.PREDICTOR
 
-        results=[]
-
+        results = []
         assert len(tasks) == 1
         task = tasks[0]
         image_url = self._get_image_url(task)
@@ -194,25 +214,83 @@ class MMDetection(LabelStudioMLBase):
         )
         mask = masks[0].astype(np.uint8) # each mask has shape [H, W]
         # converting the mask from the model to RLE format which is usable in Label Studio
-        mask = mask * 255
-        rle = brush.mask2rle(mask)
-        results.append({
-            "from_name": self.from_name_BrushLabels,
-            "to_name": self.to_name_BrushLabels,
-            # "original_width": width,
-            # "original_height": height,
-            # "image_rotation": 0,
-            "value": {
-                "format": "rle",
-                "rle": rle,
-                "brushlabels": [output_label],
-            },
-            "type": "brushlabels",
-            "id": ''.join(random.SystemRandom().choice(string.ascii_uppercase + string.ascii_lowercase + string.digits)), # creates a random ID for your label every time
-            "readonly": False,
-        })
+
+        # 找到轮廓
+        contours, hierarchy = cv2.findContours(mask, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
 
 
+
+
+        # 计算外接矩形
+        x, y, w, h = cv2.boundingRect(contours[0])
+
+        print(x, y, w, h)
+
+
+        if self.out_bbox:
+            results.append({
+                'from_name': self.from_name_RectangleLabels,
+                'to_name': self.to_name_RectangleLabels,
+                'type': 'rectanglelabels',
+                'value': {
+                    'rectanglelabels': [output_label],
+                    'x': float(x) / width * 100,
+                    'y': float(y) / height * 100,
+                    'width': float(w) / width * 100,
+                    'height': float(h) / height * 100,
+                },
+                "id": ''.join(random.SystemRandom().choice(string.ascii_uppercase + string.ascii_lowercase + string.digits)), # creates a random ID for your label every time
+            })
+
+
+        if self.out_polygon:
+
+            points_list = []
+            for contour in contours:
+                points = []
+                for point in contour:
+                    x, y = point[0]
+                    points.append([float(x)/width*100, float(y)/height * 100])
+                points_list.extend(points)
+
+            # interval = points_list.__len__()//128
+
+            # points_list = points_list[::points_list.__len__()//40]
+            results.append({
+                "from_name": self.from_name_PolygonLabels,
+                "to_name": self.to_name_PolygonLabels,
+                "original_width": width,
+                "original_height": height,
+                # "image_rotation": 0,
+                "value": {
+                    "points": points_list,
+                    "polygonlabels": [output_label],
+                },
+                "type": "polygonlabels",
+                "id": ''.join(random.SystemRandom().choice(string.ascii_uppercase + string.ascii_lowercase + string.digits)), # creates a random ID for your label every time
+                "readonly": False,
+            })
+
+
+        if self.out_mask:
+            mask = mask * 255
+            rle = brush.mask2rle(mask)
+
+            results.append({
+                "from_name": self.from_name_BrushLabels,
+                "to_name": self.to_name_BrushLabels,
+                # "original_width": width,
+                # "original_height": height,
+                # "image_rotation": 0,
+                "value": {
+                    "format": "rle",
+                    "rle": rle,
+                    "brushlabels": [output_label],
+                },
+                "type": "brushlabels",
+                "id": ''.join(random.SystemRandom().choice(string.ascii_uppercase + string.ascii_lowercase + string.digits)), # creates a random ID for your label every time
+                "readonly": False,
+            })
 
         return [{'result': results}]
 
