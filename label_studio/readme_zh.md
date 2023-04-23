@@ -123,7 +123,7 @@ wget https://download.openmmlab.com/mmyolo/data/cat_dataset.zip && unzip cat_dat
 ![](https://cdn.vansin.top/picgo20230330133807.png)
 
 
-配置 Label-Studio 关键点和Mask标注
+在`Settings/Labeling Interface` 中配置 Label-Studio 关键点和 Mask 标注
 
 ```shell
 <View>
