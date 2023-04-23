@@ -40,7 +40,7 @@ def get_kwargs_from_config(config_path=_DEFAULT_CONFIG_PATH):
     return config
 
 from label_studio_ml.api import init_app
-from projects.LabelStudio.sam.mmdetection import MMDetection
+from mmdetection import MMDetection
 
 if __name__ == '__main__':
 

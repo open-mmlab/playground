@@ -17,7 +17,7 @@ from label_studio_ml.utils import (DATA_UNDEFINED_NAME, get_image_size,
                                    get_single_tag_keys)
 from label_studio_tools.core.utils.io import get_data_dir
 
-from mmdet.apis import inference_detector, init_detector
+# from mmdet.apis import inference_detector, init_detector
 from segment_anything import SamPredictor, sam_model_registry, SamAutomaticMaskGenerator
 import random
 import string
@@ -30,9 +30,10 @@ def load_my_model(device="cuda:0"):
         """
         # if you're not using CUDA, use "cpu" instead
         device = "cuda:0"
+        # device = "cpu"
 
         # Note: YOU MUST HAVE THE MODEL SAVED IN THE SAME DIRECTORY AS YOUR BACKEND
-        sam = sam_model_registry["vit_h"](checkpoint="sam_vit_h_4b8939.pth")
+        sam = sam_model_registry["vit_b"](checkpoint="sam_vit_b_01ec64.pth")
 
         sam.to(device=device)
         predictor = SamPredictor(sam)
@@ -58,10 +59,10 @@ class MMDetection(LabelStudioMLBase):
         super(MMDetection, self).__init__(**kwargs)
         self.PREDICTOR = PREDICTOR
 
-        config_file = config_file or os.environ['config_file']
-        checkpoint_file = checkpoint_file or os.environ['checkpoint_file']
-        self.config_file = config_file
-        self.checkpoint_file = checkpoint_file
+        # config_file = config_file or os.environ['config_file']
+        # checkpoint_file = checkpoint_file or os.environ['checkpoint_file']
+        # self.config_file = config_file
+        # self.checkpoint_file = checkpoint_file
         self.labels_file = labels_file
         # default Label Studio image upload folder
         upload_dir = os.path.join(get_data_dir(), 'media', 'upload')
@@ -116,8 +117,8 @@ class MMDetection(LabelStudioMLBase):
                                                        '').split(','):
                     self.label_map[predicted_value] = label_name
 
-        print('Load new model from: ', config_file, checkpoint_file)
-        self.model = init_detector(config_file, checkpoint_file, device=device)
+        # print('Load new model from: ', config_file, checkpoint_file)
+        # self.model = init_detector(config_file, checkpoint_file, device=device)
         self.score_thresh = score_threshold
 
     def _get_image_url(self, task):
