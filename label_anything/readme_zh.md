@@ -1,6 +1,6 @@
 # OpenMMLab PlayGround：Label-Studio X SAM 半自动化标注之 Point2Label
 
-OpenMMLab PlayGround：Label-Studio X SAM 半自动化标注是一个系列的专题，本节介绍的是结合 Label-Studio 和 SAM (Segment Anything) ，只需要在物体的区域内点一个点就能得到物体的掩码和边界框标注，社区的用户可以借鉴此方法，提高数据标注的效率。
+本文将介绍结合 Label-Studio 和 SAM (Segment Anything) 半自动化标注方案，用户只需要在物体的区域内点一个点就能得到物体的掩码和边界框标注，社区的用户可以借鉴此方法，提高数据标注的效率。
 
 <br>
 
@@ -31,12 +31,9 @@ conda activate rtmdet-sam
 git clone https://github.com/open-mmlab/playground
 ```
 
-
-
 安装 PyTorch
 
 ```shell
-
 # Linux and Windows CUDA 11.3
 pip install torch==1.10.1+cu113 torchvision==0.11.2+cu113 torchaudio==0.10.1 -f https://download.pytorch.org/whl/cu113/torch_stable.html
 
@@ -108,7 +105,7 @@ label-studio start
 
 ![](https://cdn.vansin.top/picgo20230330133118.png)
 
-我们注册一个用户，然后创建一个 RTMDet-Semiautomatic-Label 项目。
+我们注册一个用户，然后创建一个 OpenMMLabPlayGround 项目。
 
 ![](https://cdn.vansin.top/picgo20230330133333.png)
 
@@ -149,7 +146,7 @@ wget https://download.openmmlab.com/mmyolo/data/cat_dataset.zip && unzip cat_dat
   </RectangleLabels>
 </View>
 ```
-在上述 XML 中我们对标注进行了配置，其中 `KeyPointLabels` 为关键点标注，`BrushLabels` 为 Mask 标注，`PolygonLabels` 为外接多边形标注，`RectangleLabels` 为矩形标注。为了让 SAM 推理后端能够支持收到KeyPointLabels的动作回调，需要将 XML 中的 `KeyPointLabels` 的 `smart` 属性设置为 `true`。本实例使用 `cat`和`person`两个类别，如果社区用户想增加更多的类别需要分别在 `KeyPointLabels`、`BrushLabels`、`PolygonLabels`、`RectangleLabels` 中添加对应的类别。
+在上述 XML 中我们对标注进行了配置，其中 `KeyPointLabels` 为关键点标注，`BrushLabels` 为 Mask 标注，`PolygonLabels` 为外接多边形标注，`RectangleLabels` 为矩形标注。为了让 SAM 推理后端能够支持收到KeyPointLabels的动作回调，需要将 XML 中的 `KeyPointLabels` 的 `smart` 属性设置为 `true`。本实例使用 `cat` 和 `person` 两个类别，如果社区用户想增加更多的类别需要分别在 `KeyPointLabels`、`BrushLabels`、`PolygonLabels`、`RectangleLabels` 中添加对应的类别。
 
 然后将上述 XML 复制添加到 Label-Studio，然后点击 Save。
 
@@ -179,7 +176,7 @@ wget https://download.openmmlab.com/mmyolo/data/cat_dataset.zip && unzip cat_dat
 ![SAM8](https://user-images.githubusercontent.com/25839884/233835410-29896554-963a-42c3-a523-3b1226de59b6.gif)
 
 
-我们 submit 完毕所有图片后，点击 exprot 导出 COCO 格式的数据集，就能把标注好的数据集的压缩包导出来了。
+我们 submit 完毕所有图片后，点击 `exprot` 导出 COCO 格式的数据集，就能把标注好的数据集的压缩包导出来了。
 注意：此处导出的只有边界框的标注，如果想要导出实例分割的标注，需要在启动 SAM 后端服务时设置 `out_poly=True`。
 
 ![image](https://user-images.githubusercontent.com/25839884/233835852-b2f56cf1-1608-44c8-aa2d-d876f58e61f3.png)
@@ -188,8 +185,4 @@ wget https://download.openmmlab.com/mmyolo/data/cat_dataset.zip && unzip cat_dat
 
 ![](https://cdn.vansin.top/picgo20230330140321.png)
 
-到此半自动化标注就完成了，我们可以用这个数据集在 MMDetection 训练精度更高的模型了，训练出更好的模型，然后再用这个模型继续半自动化标注新采集的图片，这样就可以不断迭代，扩充高质量数据集，提高模型的精度。
-
-# 感谢
-
-部分代码借鉴自 label-studio-ml-backend ID 为 253 的 Pull Request，感谢作者的贡献。
+到此半自动化标注就完成了, 通过 Label-Studio 的半自动化标注功能，可以让用户在标注过程中，通过点击一下鼠标，就可以完成目标的分割和检测，大大提高了标注效率。部分代码借鉴自 label-studio-ml-backend ID 为 253 的 Pull Request，感谢作者的贡献。
