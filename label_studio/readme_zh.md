@@ -65,6 +65,8 @@ wget https://dl.fbaipublicfiles.com/segment_anything/sam_vit_h_4b8939.pth
 安装 Label-Studio 和 label-studio-ml-backend
 
 ```shell
+# sudo apt install libpq-dev python3-dev # Note：如果使用 Label Studio 1.7.2 版本需要安装 `libpq-dev` 和 `python3-dev` 依赖。
+
 # 安装 label-studio 需要一段时间,如果找不到版本请使用官方源
 pip install label-studio==1.7.3
 pip install label-studio-ml==1.0.9
