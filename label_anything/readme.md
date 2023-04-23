@@ -10,7 +10,7 @@ This article will introduce a semi-automated annotation approach that combines L
 
 <br>
 
-- SAM (Segment Anything) is a segmentation model launched by Facebook, designed to segment everything.
+- SAM (Segment Anything) is a segmentation model launched by Meta AI, designed to segment everything.
 - [Label Studio](https://github.com/heartexlabs/label-studio) is an excellent annotation software, covering dataset annotation functions in areas such as image classification, object detection, and segmentation.
 
 This article will use images from the [Cat Dataset](https://download.openmmlab.com/mmyolo/data/cat_dataset.zip) for semi-automated annotation.
