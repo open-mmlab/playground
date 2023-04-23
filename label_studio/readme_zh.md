@@ -47,7 +47,7 @@ pip install torch==1.10.1 torchvision==0.11.2 torchaudio==0.10.1
 安装 SAM 并下载预训练模型
 
 ```shell
-cd path/to/playground
+cd path/to/playground/label_anything
 pip install opencv-python pycocotools matplotlib onnxruntime onnx
 pip install git+https://github.com/facebookresearch/segment-anything.git
 wget https://dl.fbaipublicfiles.com/segment_anything/sam_vit_h_4b8939.pth
