@@ -67,7 +67,7 @@ pip install label-studio-ml==1.0.9
 启动 SAM 后端推理服务：
 
 ```shell
-cd path/to/mmetection
+cd path/to/playground
 
 label-studio-ml start label_studio/sam --with \
 --port 8003
