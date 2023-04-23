@@ -58,7 +58,11 @@ pip install torch==1.10.1 torchvision==0.11.2 torchaudio==0.10.1
 cd path/to/playground/label_anything
 pip install opencv-python pycocotools matplotlib onnxruntime onnx
 pip install git+https://github.com/facebookresearch/segment-anything.git
-wget https://dl.fbaipublicfiles.com/segment_anything/sam_vit_h_4b8939.pth
+wget https://dl.fbaipublicfiles.com/segment_anything/sam_vit_b_01ec64.pth
+
+# 如果想要分割的效果好请使用 sam_vit_h_4b8939.pth 权重
+# wget https://dl.fbaipublicfiles.com/segment_anything/sam_vit_l_0b3195.pth
+# wget https://dl.fbaipublicfiles.com/segment_anything/sam_vit_h_4b8939.pth
 ```
 
 
