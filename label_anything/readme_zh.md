@@ -10,7 +10,7 @@
 
 <br>
 
-- SAM (Segment Anything) 是 Fackbook 推出的分割一切的模型。
+- SAM (Segment Anything) 是 Meta AI 推出的分割一切的模型。
 - [Label Studio](https://github.com/heartexlabs/label-studio) 是一款优秀的标注软件，覆盖图像分类、目标检测、分割等领域数据集标注的功能。
 
 本文将使用[喵喵数据集](https://download.openmmlab.com/mmyolo/data/cat_dataset.zip)的图片，进行半自动化标注。
