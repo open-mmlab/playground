@@ -17,7 +17,8 @@ OpenMMLab PlayGround：Label-Studio X SAM 半自动化标注是一个系列的�
 
 ## 环境配置
 
-首先需要创建一个虚拟环境，然后安装 PyTorch 和 SAM。
+首先需要创建一个虚拟环境，然后安装 PyTorch 和 SAM。![image](https://user-images.githubusercontent.com/25839884/233836710-25644150-a253-4969-aa44-f60d408512b5.png)
+
 创建虚拟环境：
 
 ```shell
@@ -157,7 +158,7 @@ wget https://download.openmmlab.com/mmyolo/data/cat_dataset.zip && unzip cat_dat
 
 然后在设置中点击 Add Model 添加 OpenMMLabPlayGround 后端推理服务。
 
-![image](https://user-images.githubusercontent.com/25839884/233832856-6ed50996-511b-406c-a9b7-6528cae577b4.png)
+![image](https://user-images.githubusercontent.com/25839884/233836727-568d56e3-3b32-4599-b0a8-c20f18479a6a.png)
 
 点击 Validate and Save，然后点击 Start Labeling。
 
