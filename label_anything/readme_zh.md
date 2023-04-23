@@ -125,10 +125,6 @@ wget https://download.openmmlab.com/mmyolo/data/cat_dataset.zip && unzip cat_dat
 
 ![](https://cdn.vansin.top/picgo20230330133715.png)
 
-然后选择 Object Detection With Bounding Boxes 模板
-
-![](https://cdn.vansin.top/picgo20230330133807.png)
-
 
 在`Settings/Labeling Interface` 中配置 Label-Studio 关键点和 Mask 标注
 
