@@ -90,6 +90,8 @@ def parse_args():
         default='cuda:0',
         help='Device used for inference')
     parser.add_argument('--cpu-off-load', '-c', action='store_true')
+
+    # Detic param
     parser.add_argument('--use-detic-mask', '-u', action='store_true')
 
     # GroundingDINO param
@@ -158,12 +160,14 @@ def build_detecter(args):
         detecter = __build_grounding_dino_model(args)
     elif 'glip' in args.det_config:
         detecter = __build_glip_model(args)
+    elif 'detic' in args.det_config:
+        config = Config.fromfile(args.det_config)
+        if not args.use_detic_mask:
+            config.model.roi_head.mask_head = None
     else:
         config = Config.fromfile(args.det_config)
         if 'init_cfg' in config.model.backbone:
             config.model.backbone.init_cfg = None
-        if not args.use_detic_mask and 'detic' in args.det_config:
-            config.model.roi_head.mask_head = None
         detecter = init_detector(
             config, args.det_weight, device='cpu', cfg_options={})
     return detecter
