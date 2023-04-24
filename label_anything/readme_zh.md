@@ -132,21 +132,23 @@ wget https://download.openmmlab.com/mmyolo/data/cat_dataset.zip && unzip cat_dat
     <Label value="cat" smart="true" background="#e51515" showInline="true"/>
     <Label value="person" smart="true" background="#412cdd" showInline="true"/>
   </KeyPointLabels>
-  <BrushLabels name="BrushLabels" toName="image">
-  	<Label value="cat" background="#FF0000"/>
-  	<Label value="person" background="#0d14d3"/>
-  </BrushLabels>
-  <PolygonLabels name="PolygonLabels" toName="image">
-  	<Label value="cat" background="#FF0000"/>
-  	<Label value="person" background="#0d14d3"/>
-  </PolygonLabels>
   <RectangleLabels name="RectangleLabels" toName="image">
   	<Label value="cat" background="#FF0000"/>
   	<Label value="person" background="#0d14d3"/>
   </RectangleLabels>
+  <PolygonLabels name="PolygonLabels" toName="image">
+  	<Label value="cat" background="#FF0000"/>
+  	<Label value="person" background="#0d14d3"/>
+  </PolygonLabels>
+  <BrushLabels name="BrushLabels" toName="image">
+  	<Label value="cat" background="#FF0000"/>
+  	<Label value="person" background="#0d14d3"/>
+  </BrushLabels>
 </View>
 ```
-在上述 XML 中我们对标注进行了配置，其中 `KeyPointLabels` 为关键点标注，`BrushLabels` 为 Mask 标注，`PolygonLabels` 为外接多边形标注，`RectangleLabels` 为矩形标注。为了让 SAM 推理后端能够支持收到KeyPointLabels的动作回调，需要将 XML 中的 `KeyPointLabels` 的 `smart` 属性设置为 `true`。本实例使用 `cat` 和 `person` 两个类别，如果社区用户想增加更多的类别需要分别在 `KeyPointLabels`、`BrushLabels`、`PolygonLabels`、`RectangleLabels` 中添加对应的类别。
+在上述 XML 中我们对标注进行了配置，其中 `KeyPointLabels` 为关键点标注，`BrushLabels` 为 Mask 标注，`PolygonLabels` 为外接多边形标注，`RectangleLabels` 为矩形标注。
+
+本实例使用 `cat` 和 `person` 两个类别，如果社区用户想增加更多的类别需要分别在 `KeyPointLabels`、`BrushLabels`、`PolygonLabels`、`RectangleLabels` 中添加对应的类别。
 
 然后将上述 XML 复制添加到 Label-Studio，然后点击 Save。
 

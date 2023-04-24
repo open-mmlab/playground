@@ -130,21 +130,23 @@ Configure Label-Studio keypoint, Mask, and other annotations in Settings/Labelin
     <Label value="cat" smart="true" background="#e51515" showInline="true"/>
     <Label value="person" smart="true" background="#412cdd" showInline="true"/>
   </KeyPointLabels>
-  <BrushLabels name="BrushLabels" toName="image">
-  	<Label value="cat" background="#FF0000"/>
-  	<Label value="person" background="#0d14d3"/>
-  </BrushLabels>
-  <PolygonLabels name="PolygonLabels" toName="image">
-  	<Label value="cat" background="#FF0000"/>
-  	<Label value="person" background="#0d14d3"/>
-  </PolygonLabels>
   <RectangleLabels name="RectangleLabels" toName="image">
   	<Label value="cat" background="#FF0000"/>
   	<Label value="person" background="#0d14d3"/>
   </RectangleLabels>
+  <PolygonLabels name="PolygonLabels" toName="image">
+  	<Label value="cat" background="#FF0000"/>
+  	<Label value="person" background="#0d14d3"/>
+  </PolygonLabels>
+  <BrushLabels name="BrushLabels" toName="image">
+  	<Label value="cat" background="#FF0000"/>
+  	<Label value="person" background="#0d14d3"/>
+  </BrushLabels>
 </View>
 ```
-In the above XML, we have configured the annotations, where KeyPointLabels are for keypoint annotations, BrushLabels are for Mask annotations, PolygonLabels are for bounding polygon annotations, and RectangleLabels are for rectangle annotations. In order to make the SAM inference backend support the action callback when receiving KeyPointLabels, the smart attribute of KeyPointLabels in the XML needs to be set to true. This example uses two categories, cat and person. If community users want to add more categories, they need to add the corresponding categories in KeyPointLabels, BrushLabels, PolygonLabels, and RectangleLabels respectively.
+In the above XML, we have configured the annotations, where KeyPointLabels are for keypoint annotations, BrushLabels are for Mask annotations, PolygonLabels are for bounding polygon annotations, and RectangleLabels are for rectangle annotations. 
+
+This example uses two categories, cat and person. If community users want to add more categories, they need to add the corresponding categories in KeyPointLabels, BrushLabels, PolygonLabels, and RectangleLabels respectively.
 
 Next, copy and add the above XML to Label-Studio, and then click Save.
 
