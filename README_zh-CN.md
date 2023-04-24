@@ -46,6 +46,16 @@
 |       [Open-Tracking](#-open-tracking)       |                       <img src="https://github.com/zwhus/pictures/raw/main/demo%2B(1).gif" width="70%" height="20%" />                       |                 开放目标检测 + tracking。探索开放目标检测和视频任务相结合，轻松实现开放类别的视频跟踪和分割                 |
 |           [MMOCR-SAM](#-mmocr-sam)           | <img src="https://user-images.githubusercontent.com/65173622/231919274-a7ebc63f-8665-4324-89bf-f685e3b5161c.jpg" width="70%" height="20%" /> | 端到端文字检测识别 + SAM，将每一个字符都进行分割。使用基于 Gradio 的 Web UI 探索有趣的 OCR 下游任务，包括文本擦除、文本编辑 |
 |       [MMEditing-SAM](#-mmediting-sam)       | <img src="https://user-images.githubusercontent.com/12782558/232716961-54b7e634-8f89-4a38-9353-4c962f9ce0cf.gif" width="70%" height="20%" /> |                                  将 SAM 和图像生成结合起来从而对图像进行任意位置的编辑修改                                  |
+|       [Label-Studio-SAM](#-label-studio-sam)       | <img src="https://user-images.githubusercontent.com/25839884/233835223-16abc0cb-09f0-407d-8be0-33e14cd86e1b.gif" width="70%" height="20%" /> |  将 Label-Studio 和 SAM 结合实现半自动化标注 |
+
+
+
+
+
+
+
+
+
 
 下面详细说明。
 
@@ -127,6 +137,18 @@
 2. 结合 SAM 生成的 mask 与 MMEditing 的图像编辑能力创造新的图片。
 
 详情见 [README](mmediting_sam/README_zh-CN.md)。
+
+
+## ✨ Label-Studio-SAM
+
+![](https://user-images.githubusercontent.com/25839884/233835223-16abc0cb-09f0-407d-8be0-33e14cd86e1b.gif)
+
+提供了和 Label Studio 相关的结合 SAM 的应用。具体特性包括：
+
+1. 支持在 Label-Studio 通过点击物体区域的一点来生成 SAM 的掩码和水平边界框标注生成。
+2. 支持 Label-Studio 对 SAM 生成的标注进行 Refine。 
+
+详情见 [README](./label_anything/readme_zh.md)。
 
 # ❤️ 欢迎加入 OpenMMLab 社区
 
