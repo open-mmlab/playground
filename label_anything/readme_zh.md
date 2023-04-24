@@ -1,6 +1,6 @@
 # OpenMMLab PlayGround：Label-Studio X SAM 半自动化标注之 Point2Label
 
-本文将介绍结合 Label-Studio 和 SAM (Segment Anything) 半自动化标注方案，用户只需要在物体的区域内点一个点就能得到物体的掩码和边界框标注，社区的用户可以借鉴此方法，提高数据标注的效率。
+本文将介绍结合 Label-Studio 和 SAM (Segment Anything) 半自动化标注方案，Point2Labl：用户只需要在物体的区域内点一个点就能得到物体的掩码和边界框标注，Bbox2Label：用户只需要标注物体的边界框就能生成物体的掩码，社区的用户可以借鉴此方法，提高数据标注的效率。
 
 <br>
 
@@ -9,6 +9,13 @@
 </div>
 
 <br>
+
+<div align=center>
+    <img src="https://user-images.githubusercontent.com/25839884/233969712-0d9d6f0a-70b0-4b3e-b054-13eda037fb20.gif" width="80%">
+</div>
+
+<br>
+
 
 - SAM (Segment Anything) 是 Meta AI 推出的分割一切的模型。
 - [Label Studio](https://github.com/heartexlabs/label-studio) 是一款优秀的标注软件，覆盖图像分类、目标检测、分割等领域数据集标注的功能。
@@ -171,13 +178,18 @@ wget https://download.openmmlab.com/mmyolo/data/cat_dataset.zip && unzip cat_dat
 
 ![image](https://user-images.githubusercontent.com/25839884/233833125-fd372b0d-5f3b-49f4-bcf9-e89971639fd5.png)
 
-需要打开 `Auto-Annotation` 的开关，并建议勾选 `Auto accept annotation suggestions`,并点击右侧 Smart 工具，切换到 Point 后，选择下方需要标注的物体标签，这里选择 cat。
+需要打开 `Auto-Annotation` 的开关，并建议勾选 `Auto accept annotation suggestions`,并点击右侧 Smart 工具，切换到 Point 后，选择下方需要标注的物体标签，这里选择 cat。如果是BBox提示词请将 Smart 工具切换到 Rectangle。
 
 ![image](https://user-images.githubusercontent.com/25839884/233833200-a44c9c5f-66a8-491a-b268-ecfb6acd5284.png)
 
-由下面的 gif 的动图可以看出，只需要在物体上点一个点，SAM 算法就能将整个物体分割和检测出来。
+Point2Label：由下面的 gif 的动图可以看出，只需要在物体上点一个点，SAM 算法就能将整个物体分割和检测出来。
 
 ![SAM8](https://user-images.githubusercontent.com/25839884/233835410-29896554-963a-42c3-a523-3b1226de59b6.gif)
+
+
+Bbox2Label: 由下面的 gif 的动图可以看出，只需要标注一个边界框，SAM 算法就能将整个物体分割和检测出来。
+
+![SAM10](https://user-images.githubusercontent.com/25839884/233969712-0d9d6f0a-70b0-4b3e-b054-13eda037fb20.gif)
 
 
 我们 submit 完毕所有图片后，点击 `exprot` 导出 COCO 格式的数据集，就能把标注好的数据集的压缩包导出来了。

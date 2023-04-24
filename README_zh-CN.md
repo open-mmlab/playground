@@ -145,8 +145,10 @@
 
 提供了和 Label Studio 相关的结合 SAM 的应用。具体特性包括：
 
-1. 支持在 Label-Studio 通过点击物体区域的一点来生成 SAM 的掩码和水平边界框标注生成。
-2. 支持 Label-Studio 对 SAM 生成的标注进行 Refine。 
+1. Point2Label：支持在 Label-Studio 通过点击物体区域的一点来触发 SAM 生成物体的掩码和水平边界框标注生成。
+2. Bbox2Label：支持在 Label-Studio 通过标注物体的边界框来触发 SAM 生成物体掩码和水平边界框标注生成。
+3. Refine: 支持在 Label-Studio 上对 SAM 生成的标注进行修正。
+
 
 详情见 [README](./label_anything/readme_zh.md)。
 
