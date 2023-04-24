@@ -96,6 +96,8 @@ def parse_args():
         '--sam-device', '-s', default='cuda', help='Device used for inference')
     parser.add_argument('--cpu-off-load', '-c', action='store_true')
     parser.add_argument('--num-worker', '-n', type=int, default=2)
+
+    # Detic param
     parser.add_argument('--use-detic-mask', '-u', action='store_true')
 
     # GroundingDINO param
@@ -187,7 +189,7 @@ def build_detector(args):
         config = Config.fromfile(args.det_config)
         if 'init_cfg' in config.model.backbone:
             config.model.backbone.init_cfg = None
-        if not args.use_detic_mask:
+        if 'detic' in args.det_config and not args.use_detic_mask:
             config.model.roi_head.mask_head = None
         detecter = init_detector(
             config, args.det_weight, device='cpu', cfg_options={})
