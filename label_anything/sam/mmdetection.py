@@ -61,8 +61,6 @@ class MMDetection(LabelStudioMLBase):
 
         super(MMDetection, self).__init__(**kwargs)
 
-        print("###################1111####################")
-
 
         PREDICTOR=load_my_model(device,sam_config,sam_checkpoint_file)
         self.PREDICTOR = PREDICTOR
@@ -71,10 +69,7 @@ class MMDetection(LabelStudioMLBase):
         self.out_bbox = out_bbox
         self.out_poly = out_poly
 
-        # config_file = config_file or os.environ['config_file']
-        # checkpoint_file = checkpoint_file or os.environ['checkpoint_file']
-        # self.config_file = config_file
-        # self.checkpoint_file = checkpoint_file
+
         self.labels_file = labels_file
         # default Label Studio image upload folder
         upload_dir = os.path.join(get_data_dir(), 'media', 'upload')
@@ -86,8 +81,7 @@ class MMDetection(LabelStudioMLBase):
         else:
             self.label_map = {}
 
-        # self.from_name, self.to_name, self.value, self.labels_in_config = get_single_tag_keys(  # noqa E501
-        #     self.parsed_label_config, 'RectangleLabels', 'Image')
+
 
         self.labels_in_config = dict(
                 label=self.parsed_label_config['KeyPointLabels']
@@ -195,15 +189,7 @@ class MMDetection(LabelStudioMLBase):
 
 
 
-        # transformed_boxes = predictor.transform.apply_boxes_torch(
-        #     bbox, image.shape[:2])
-        # transformed_boxes = transformed_boxes.to(predictor.model.device)
 
-        # masks, _, _ = sam_model.predict_torch(
-        #     point_coords=None,
-        #     point_labels=None,
-        #     boxes=transformed_boxes,
-        #     multimask_output=False)
 
 
         masks, scores, logits = predictor.predict(
@@ -213,16 +199,8 @@ class MMDetection(LabelStudioMLBase):
             multimask_output=False,
         )
         mask = masks[0].astype(np.uint8) # each mask has shape [H, W]
-        # converting the mask from the model to RLE format which is usable in Label Studio
 
-        # 找到轮廓
         contours, hierarchy = cv2.findContours(mask, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
-
-
-
-
-        # 计算外接矩形
-
 
         if self.out_bbox:
             new_contours = []
@@ -256,9 +234,7 @@ class MMDetection(LabelStudioMLBase):
                     points.append([float(x)/width*100, float(y)/height * 100])
                 points_list.extend(points)
 
-            # interval = points_list.__len__()//128
 
-            # points_list = points_list[::points_list.__len__()//40]
             results.append({
                 "from_name": self.from_name_PolygonLabels,
                 "to_name": self.to_name_PolygonLabels,
