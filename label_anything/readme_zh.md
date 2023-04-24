@@ -96,6 +96,8 @@ device=cuda:0 \
 现在启动 Label-Studio 网页服务：
 
 ```shell
+# 如果使用的推理后端是SAM的 vit-h, 由于模型加载时间长，需要设置以下环境变量。
+# export ML_TIMEOUT_SETUP=40
 label-studio start
 ```
 

@@ -94,6 +94,8 @@ At this point, the SAM backend inference service has started. Next, you can conf
 Now start the Label-Studio web service:
 
 ```shell
+# If the inference backend being used is SAM's vit-h, due to the long model loading time, the following environment variable needs to be set.
+# export ML_TIMEOUT_SETUP=40
 label-studio start
 ```
 
