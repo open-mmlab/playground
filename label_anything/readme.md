@@ -1,12 +1,17 @@
 # OpenMMLab PlayGround: Point2Label - Semi-Automated Annotation with Label-Studio and SAM
 
-This article will introduce a semi-automated annotation approach that combines Label-Studio and SAM (Segment Anything), allowing users to obtain object masks and bounding box annotations by simply clicking a point within the object's area. Community users can learn from this method to improve their data annotation efficiency.
+This article introduces a semi-automatic annotation solution combining Label-Studio and SAM (Segment Anything) with two methods: Point2Label and Bbox2Label. With Point2Label, users only need to click a point within the object's area to obtain the object's mask and bounding box annotations. With Bbox2Label, users simply annotate the object's bounding box to generate the object's mask. Community users can learn from these methods to improve the efficiency of data annotation.
 
 <br>
 
 <div align=center>
     <img src="https://user-images.githubusercontent.com/25839884/233835223-16abc0cb-09f0-407d-8be0-33e14cd86e1b.gif" width="80%">
 </div>
+<br>
+<div align=center>
+    <img src="https://user-images.githubusercontent.com/25839884/233969712-0d9d6f0a-70b0-4b3e-b054-13eda037fb20.gif" width="80%">
+</div>
+
 
 <br>
 
@@ -94,6 +99,8 @@ At this point, the SAM backend inference service has started. Next, you can conf
 Now start the Label-Studio web service:
 
 ```shell
+# If the inference backend being used is SAM's vit-h, due to the long model loading time, the following environment variable needs to be set.
+# export ML_TIMEOUT_SETUP=40
 label-studio start
 ```
 
@@ -130,21 +137,23 @@ Configure Label-Studio keypoint, Mask, and other annotations in Settings/Labelin
     <Label value="cat" smart="true" background="#e51515" showInline="true"/>
     <Label value="person" smart="true" background="#412cdd" showInline="true"/>
   </KeyPointLabels>
-  <BrushLabels name="BrushLabels" toName="image">
-  	<Label value="cat" background="#FF0000"/>
-  	<Label value="person" background="#0d14d3"/>
-  </BrushLabels>
-  <PolygonLabels name="PolygonLabels" toName="image">
-  	<Label value="cat" background="#FF0000"/>
-  	<Label value="person" background="#0d14d3"/>
-  </PolygonLabels>
   <RectangleLabels name="RectangleLabels" toName="image">
   	<Label value="cat" background="#FF0000"/>
   	<Label value="person" background="#0d14d3"/>
   </RectangleLabels>
+  <PolygonLabels name="PolygonLabels" toName="image">
+  	<Label value="cat" background="#FF0000"/>
+  	<Label value="person" background="#0d14d3"/>
+  </PolygonLabels>
+  <BrushLabels name="BrushLabels" toName="image">
+  	<Label value="cat" background="#FF0000"/>
+  	<Label value="person" background="#0d14d3"/>
+  </BrushLabels>
 </View>
 ```
-In the above XML, we have configured the annotations, where KeyPointLabels are for keypoint annotations, BrushLabels are for Mask annotations, PolygonLabels are for bounding polygon annotations, and RectangleLabels are for rectangle annotations. In order to make the SAM inference backend support the action callback when receiving KeyPointLabels, the smart attribute of KeyPointLabels in the XML needs to be set to true. This example uses two categories, cat and person. If community users want to add more categories, they need to add the corresponding categories in KeyPointLabels, BrushLabels, PolygonLabels, and RectangleLabels respectively.
+In the above XML, we have configured the annotations, where KeyPointLabels are for keypoint annotations, BrushLabels are for Mask annotations, PolygonLabels are for bounding polygon annotations, and RectangleLabels are for rectangle annotations. 
+
+This example uses two categories, cat and person. If community users want to add more categories, they need to add the corresponding categories in KeyPointLabels, BrushLabels, PolygonLabels, and RectangleLabels respectively.
 
 Next, copy and add the above XML to Label-Studio, and then click Save.
 
@@ -165,13 +174,19 @@ Click on Label to start annotating.
 
 ![image](https://user-images.githubusercontent.com/25839884/233833125-fd372b0d-5f3b-49f4-bcf9-e89971639fd5.png)
 
-You need to turn on the Auto-Annotation switch, and it is recommended to check Auto accept annotation suggestions. Then, click on the Smart tool on the right side, switch to Point, and select the object label that needs to be annotated below. Here, we select cat.
+To use this feature, enable the Auto-Annotation toggle and it is recommended to check the Auto accept annotation suggestions option. Then click the Smart tool on the right side, switch to Point mode, and select the object label you want to annotate from the options below, in this case, choose "cat." If using Bbox2Label, please switch the Smart tool to Rectangle mode instead.
 
 ![image](https://user-images.githubusercontent.com/25839884/233833200-a44c9c5f-66a8-491a-b268-ecfb6acd5284.png)
 
-As shown in the following gif animation, you only need to click a point on the object, and the SAM algorithm can segment and detect the entire object.
+
+Point2Label: As can be seen from the following gif animation, by simply clicking a point on the object, the SAM algorithm is able to segment and detect the entire object.
 
 ![SAM8](https://user-images.githubusercontent.com/25839884/233835410-29896554-963a-42c3-a523-3b1226de59b6.gif)
+
+
+Bbox2Label: As can be seen from the following gif animation, by simply annotating a bounding box, the SAM algorithm is able to segment and detect the entire object.
+
+![SAM10](https://user-images.githubusercontent.com/25839884/233969712-0d9d6f0a-70b0-4b3e-b054-13eda037fb20.gif)
 
 
 After submitting all the images, click on export to export the annotated dataset in COCO format, which will generate a compressed file of the annotated dataset. Note: only the bounding box annotations are exported here. If you want to export the instance segmentation annotations, you need to set out_poly=True when starting the SAM backend service.

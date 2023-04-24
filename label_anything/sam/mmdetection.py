@@ -28,16 +28,9 @@ def load_my_model(device="cuda:0",sam_config="vit_b",sam_checkpoint_file="sam_vi
         Loads the Segment Anything model on initializing Label studio, so if you call it outside MyModel it doesn't load every time you try to make a prediction
         Returns the predictor object. For more, look at Facebook's SAM docs
         """
-        # if you're not using CUDA, use "cpu" instead
-        # device = "cpu"
-
-        # Note: YOU MUST HAVE THE MODEL SAVED IN THE SAME DIRECTORY AS YOUR BACKEND
         sam = sam_model_registry[sam_config](checkpoint=sam_checkpoint_file)
-
         sam.to(device=device)
         predictor = SamPredictor(sam)
-        print(predictor)
-        print("#######################################")
         return predictor
 
 
@@ -60,9 +53,6 @@ class MMDetection(LabelStudioMLBase):
                  **kwargs):
 
         super(MMDetection, self).__init__(**kwargs)
-
-        print("###################1111####################")
-
 
         PREDICTOR=load_my_model(device,sam_config,sam_checkpoint_file)
         self.PREDICTOR = PREDICTOR
@@ -174,44 +164,52 @@ class MMDetection(LabelStudioMLBase):
         image_url = self._get_image_url(task)
         image_path = self.get_local_path(image_url)
 
-
-        # getting the height and width of the image that you are annotating real-time 
-        height = kwargs['context']['result'][0]['original_height']
-        width = kwargs['context']['result'][0]['original_width']
-
-        # getting x and y coordinates of the keypoint
-        x = kwargs['context']['result'][0]['value']['x'] * width / 100
-        y = kwargs['context']['result'][0]['value']['y'] * height / 100
-        output_label = kwargs['context']['result'][0]['value']['labels'][0]
-
-
-
+        if kwargs.get('context') is None:
+            return []
+        
         # image = cv2.imread(f"./{split}")
         image = cv2.imread(image_path)
         image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
-
-        # retriving predictions from SAM. For more info, look at Facebook's SAM docs
         predictor.set_image(image)
+        
+        prompt_type = kwargs['context']['result'][0]['type']
+        original_height = kwargs['context']['result'][0]['original_height']
+        original_width = kwargs['context']['result'][0]['original_width']
 
 
-
-        # transformed_boxes = predictor.transform.apply_boxes_torch(
-        #     bbox, image.shape[:2])
-        # transformed_boxes = transformed_boxes.to(predictor.model.device)
-
-        # masks, _, _ = sam_model.predict_torch(
-        #     point_coords=None,
-        #     point_labels=None,
-        #     boxes=transformed_boxes,
-        #     multimask_output=False)
+        if prompt_type == 'keypointlabels':
+            # getting x and y coordinates of the keypoint
+            x = kwargs['context']['result'][0]['value']['x'] * original_width / 100
+            y = kwargs['context']['result'][0]['value']['y'] * original_height / 100
+            output_label = kwargs['context']['result'][0]['value']['labels'][0]
 
 
-        masks, scores, logits = predictor.predict(
-            point_coords=np.array([[x, y]]),
-            # box=np.array([x.cpu() for x in bbox[:4]]),
-            point_labels=np.array([1]),
-            multimask_output=False,
-        )
+            masks, scores, logits = predictor.predict(
+                point_coords=np.array([[x, y]]),
+                # box=np.array([x.cpu() for x in bbox[:4]]),
+                point_labels=np.array([1]),
+                multimask_output=False,
+            )
+
+
+        if prompt_type == 'rectanglelabels':
+
+
+            x = kwargs['context']['result'][0]['value']['x'] * original_width / 100
+            y = kwargs['context']['result'][0]['value']['y'] * original_height / 100
+            w = kwargs['context']['result'][0]['value']['width'] * original_width / 100
+            h = kwargs['context']['result'][0]['value']['height'] * original_height / 100
+
+            output_label = kwargs['context']['result'][0]['value']['rectanglelabels'][0]
+
+            masks, scores, logits = predictor.predict(
+                # point_coords=np.array([[x, y]]),
+                box=np.array([x, y, x+w, y+h]),
+                point_labels=np.array([1]),
+                multimask_output=False,
+            )
+
+
         mask = masks[0].astype(np.uint8) # each mask has shape [H, W]
         # converting the mask from the model to RLE format which is usable in Label Studio
 
@@ -237,10 +235,10 @@ class MMDetection(LabelStudioMLBase):
                 'type': 'rectanglelabels',
                 'value': {
                     'rectanglelabels': [output_label],
-                    'x': float(x) / width * 100,
-                    'y': float(y) / height * 100,
-                    'width': float(w) / width * 100,
-                    'height': float(h) / height * 100,
+                    'x': float(x) / original_width * 100,
+                    'y': float(y) / original_height * 100,
+                    'width': float(w) / original_width * 100,
+                    'height': float(h) / original_height * 100,
                 },
                 "id": ''.join(random.SystemRandom().choice(string.ascii_uppercase + string.ascii_lowercase + string.digits)), # creates a random ID for your label every time
             })
@@ -253,7 +251,7 @@ class MMDetection(LabelStudioMLBase):
                 points = []
                 for point in contour:
                     x, y = point[0]
-                    points.append([float(x)/width*100, float(y)/height * 100])
+                    points.append([float(x)/original_width*100, float(y)/original_height * 100])
                 points_list.extend(points)
 
             # interval = points_list.__len__()//128
@@ -262,8 +260,8 @@ class MMDetection(LabelStudioMLBase):
             results.append({
                 "from_name": self.from_name_PolygonLabels,
                 "to_name": self.to_name_PolygonLabels,
-                "original_width": width,
-                "original_height": height,
+                "original_width": original_width,
+                "original_height": original_height,
                 # "image_rotation": 0,
                 "value": {
                     "points": points_list,
