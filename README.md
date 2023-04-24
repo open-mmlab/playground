@@ -138,10 +138,10 @@ Please see [README](mmediting_sam/README.md) for more information.
 
 ![](https://user-images.githubusercontent.com/25839884/233835223-16abc0cb-09f0-407d-8be0-33e14cd86e1b.gif)
 
-提供了和 Label Studio 相关的结合 SAM 的应用。具体特性包括：
+An application integrating SAM with Label Studio is provided. The specific features include:
 
-1. 支持在 Label-Studio 通过点击物体区域的一点来生成 SAM 的掩码和水平边界框标注生成。
-2. 支持 Label-Studio 对 SAM 生成的标注进行 Refine。
+1. Support for generating SAM masks and horizontal bounding box annotations by clicking on a point in the object region in Label-Studio.
+2. Support for refining SAM-generated annotations in Label-Studio.
 
-详情见 [README](./label_anything/readme.md)。
+For more information, please refer to the [README](./label_anything/readme.md).
 
