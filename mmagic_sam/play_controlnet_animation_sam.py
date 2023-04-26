@@ -3,7 +3,7 @@ import os
 
 import cv2
 import numpy as np
-from mmedit.edit import MMEdit
+from mmagic.apis import MMagicInferencer
 from mmengine import MODELS, Config
 from mmengine.registry import init_default_scope
 from segment_anything import SamPredictor, sam_model_registry
@@ -14,9 +14,9 @@ IMAGE_EXTENSIONS = ('.jpg', '.jpeg', '.png', '.JPG', '.JPEG', '.PNG')
 
 def generate_animation(video, save_path, prompt, negative_prompt, width,
                        height):
-    editor = MMEdit(model_name='controlnet_animation')
+    inferencer = MMagicInferencer(model_name='controlnet_animation')
 
-    editor.infer(
+    inferencer.infer(
         video=video,
         prompt=prompt,
         negative_prompt=negative_prompt,
@@ -100,11 +100,11 @@ if __name__ == '__main__':
     args = parse_args()
     config_path = args.config
 
-    # 0. load config and init mmediting
+    # 0. load config and init mmagic
     config = Config.fromfile(config_path).copy()
-    init_default_scope('mmedit')
+    init_default_scope('mmagic')
 
-    # 1. generate animation with mmediting controlnet animation
+    # 1. generate animation with mmagic controlnet animation
     generate_animation(
         video=config.source_video_frame_path,
         save_path=config.middle_video_frame_path,
@@ -113,7 +113,7 @@ if __name__ == '__main__':
         width=config.width,
         height=config.height)
 
-    # 2. generate background with mmediting stable diffusion
+    # 2. generate background with mmagic stable diffusion
     back_ground_image = generate_background(
         config, width=config.width, height=config.height)
 
