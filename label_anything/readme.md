@@ -169,12 +169,12 @@ This example uses two categories, cat and person. If community users want to add
 
 Next, copy and add the above XML to Label-Studio, and then click Save.
 
-⚠If you can't execute it successfully at this step, check that you are using vit-h and re-execute the part that you already skipped in step 2.
-
 ![image](https://user-images.githubusercontent.com/25839884/233832662-02f856e5-48e7-4200-9011-17693fc2e916.png)
 
 
 After that, go to Settings and click Add Model to add the OpenMMLabPlayGround backend inference service. Set the URL for the SAM backend inference service, enable Use for interactive preannotations, and click Validate and Save.
+
+⚠If you can't execute successfully at this step, please check if you are using vit-h and re-execute the part you already skipped in step 2 and restart the SAM backend service.
 
 ![image](https://user-images.githubusercontent.com/25839884/233836727-568d56e3-3b32-4599-b0a8-c20f18479a6a.png)
 
