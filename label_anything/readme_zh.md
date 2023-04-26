@@ -180,6 +180,8 @@ wget https://download.openmmlab.com/mmyolo/data/cat_dataset.zip && unzip cat_dat
 
 然后在设置中点击 Add Model 添加 OpenMMLabPlayGround 后端推理服务,设置好 SAM 后端推理服务的 URL，并打开 `Use for interactive preannotations` 并点击 `Validate and Save`。
 
+⚠如果你在这一步无法顺利执行，请检查你使用的是否为vit-h，并重新执行第二步中已经跳过的部分，重启SAM后端推理服务。
+
 ![image](https://user-images.githubusercontent.com/25839884/233836727-568d56e3-3b32-4599-b0a8-c20f18479a6a.png)
 
 看到如下 Connected 就说明后端推理服务添加成功。
