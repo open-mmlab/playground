@@ -75,8 +75,9 @@ pip install label-studio-ml==1.0.9
 ```
 
 ## Start the service:
+⚠label_anything requires the SAM backend to be enabled and then the web service to be started before the model can be loaded. (a total of two steps are required to start)
 
-Start the SAM backend inference service:
+1.Start the SAM backend inference service:
 
 ```shell
 cd path/to/playground/label_anything
@@ -95,12 +96,23 @@ label-studio-ml start sam --port 8003 --with \
 
 
 At this point, the SAM backend inference service has started. Next, you can configure the http://localhost:8003 backend inference service in the Label-Studio Web system.
+The above terminal window needs to be kept open.
 
-Now start the Label-Studio web service:
+2.Now start the Label-Studio web service:
+
+⚠(Please skip this step if you do not use SAM with vit-h) The inference backend used is SAM's **vit-h**, which requires the following environment variables to be set due to the long loading time of the model.
+
+The specific can be set according to the name of the downloaded SAM's weights, such as sam_vit_h_4b8939.pth for vit-h and sam_vit_b_01ec64.pth for vit-b.
 
 ```shell
-# If the inference backend being used is SAM's vit-h, due to the long model loading time, the following environment variable needs to be set.
-# export ML_TIMEOUT_SETUP=40
+# Linux requires the following commands
+export ML_TIMEOUT_SETUP=40
+# Windows requires the following commands
+set ML_TIMEOUT_SETUP=40
+```
+
+Start Label-Studio web service:
+```shell
 label-studio start
 ```
 
@@ -161,6 +173,8 @@ Next, copy and add the above XML to Label-Studio, and then click Save.
 
 
 After that, go to Settings and click Add Model to add the OpenMMLabPlayGround backend inference service. Set the URL for the SAM backend inference service, enable Use for interactive preannotations, and click Validate and Save.
+
+⚠If you can't execute successfully at this step, please check if you are using vit-h and re-execute the part you already skipped in step 2 and restart the SAM backend service.
 
 ![image](https://user-images.githubusercontent.com/25839884/233836727-568d56e3-3b32-4599-b0a8-c20f18479a6a.png)
 
