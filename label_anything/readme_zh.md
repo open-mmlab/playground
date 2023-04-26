@@ -79,7 +79,9 @@ pip install label-studio-ml==1.0.9
 
 ## 启动服务
 
-启动 SAM 后端推理服务：
+⚠label_anything 需要启用SAM后端推理后再启动网页服务才可配置模型（一共需要两步启动）
+
+1.启动 SAM 后端推理服务：
 
 ```shell
 cd path/to/playground/label_anything
@@ -99,12 +101,24 @@ device=cuda:0 \
 
 
 此时，SAM 后端推理服务已经启动，后续在 Label-Studio Web 系统中配置 http://localhost:8003 后端推理服务即可。
+以上的终端窗口需要保持打开状态。
 
-现在启动 Label-Studio 网页服务：
+2.现在启动 Label-Studio 网页服务：
+
+⚠(如不使用vit-h的SAM后端请跳过此步）使用的推理后端是SAM的 **vit-h**, 由于模型加载时间长，需要设置以下环境变量。
+
+具体可根据下载的SAM的权值名称判断，比如sam_vit_h_4b8939.pth 为 vit-h，sam_vit_b_01ec64.pth为 vit-b。
 
 ```shell
-# 如果使用的推理后端是SAM的 vit-h, 由于模型加载时间长，需要设置以下环境变量。
-# export ML_TIMEOUT_SETUP=40
+# Linux需要使用以下指令
+export ML_TIMEOUT_SETUP=40
+# Windows要使用以下指令
+set ML_TIMEOUT_SETUP=40
+```
+
+启动 Label-Studio 网页服务：
+
+```shell
 label-studio start
 ```
 
