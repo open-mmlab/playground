@@ -105,7 +105,7 @@ device=cuda:0 \
 
 2.现在启动 Label-Studio 网页服务：
 
-⚠(如不使用vit-h的SAM后端请跳过此步）使用的推理后端是SAM的 **vit-h**, 由于模型加载时间长，需要设置以下环境变量。
+⚠(如不使用vit-h的SAM后端请跳过此步）使用的推理后端是SAM的 **vit-h**, 由于模型加载时间长，导致连接后端超时，需要设置以下环境变量。
 
 具体可根据下载的SAM的权值名称判断，比如sam_vit_h_4b8939.pth 为 vit-h，sam_vit_b_01ec64.pth为 vit-b。
 
@@ -180,7 +180,7 @@ wget https://download.openmmlab.com/mmyolo/data/cat_dataset.zip && unzip cat_dat
 
 然后在设置中点击 Add Model 添加 OpenMMLabPlayGround 后端推理服务,设置好 SAM 后端推理服务的 URL，并打开 `Use for interactive preannotations` 并点击 `Validate and Save`。
 
-⚠如果你在这一步无法顺利执行，请检查你使用的是否为vit-h，并重新执行第二步中已经跳过的部分，重启SAM后端推理服务。
+⚠如果你在这一步无法顺利执行，可能由于模型加载时间长，导致连接后端超时，请重新执行第二步中已经跳过的部分，重启SAM后端推理服务。
 
 ![image](https://user-images.githubusercontent.com/25839884/233836727-568d56e3-3b32-4599-b0a8-c20f18479a6a.png)
 
@@ -195,6 +195,7 @@ wget https://download.openmmlab.com/mmyolo/data/cat_dataset.zip && unzip cat_dat
 ![image](https://user-images.githubusercontent.com/25839884/233833125-fd372b0d-5f3b-49f4-bcf9-e89971639fd5.png)
 
 需要打开 `Auto-Annotation` 的开关，并建议勾选 `Auto accept annotation suggestions`,并点击右侧 Smart 工具，切换到 Point 后，选择下方需要标注的物体标签，这里选择 cat。如果是 BBox 作为提示词请将 Smart 工具切换到 Rectangle。
+
 
 ![image](https://user-images.githubusercontent.com/25839884/233833200-a44c9c5f-66a8-491a-b268-ecfb6acd5284.png)
 
