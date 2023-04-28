@@ -95,10 +95,19 @@ label-studio-ml start sam --port 8003 --with \
 ![image](https://user-images.githubusercontent.com/25839884/233821553-0030945a-8d83-4416-8edd-373ae9203a63.png)
 
 
-At this point, the SAM backend inference service has started. Next, you can configure the http://localhost:8003 backend inference service in the Label-Studio Web system.
-The above terminal window needs to be kept open.
+At this point, the SAM backend inference service has started. 
+
+⚠The above terminal window needs to be kept open.
+
+Next, please follow the steps below to configure the http://localhost:8003 back-end reasoning service in the Label-Studio Web system.
 
 2.Now start the Label-Studio web service:
+
+Please create a new terminal window to access the label_anything project path.
+
+```shell
+cd path/to/playground/label_anything
+```
 
 ⚠(Please skip this step if you do not use SAM with vit-h) The inference backend used is SAM's **vit-h**, which requires the following environment variables to be set due to the long loading time of the model, which causes the connection to the backend to time out.
 
