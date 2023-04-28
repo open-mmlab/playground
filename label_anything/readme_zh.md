@@ -100,10 +100,19 @@ device=cuda:0 \
 ![image](https://user-images.githubusercontent.com/25839884/233821553-0030945a-8d83-4416-8edd-373ae9203a63.png)
 
 
-此时，SAM 后端推理服务已经启动，后续在 Label-Studio Web 系统中配置 http://localhost:8003 后端推理服务即可。
-以上的终端窗口需要保持打开状态。
+此时，SAM 后端推理服务已经启动。
+
+⚠以上的终端窗口需要保持打开状态。
+
+接下来请根据以下步骤在Label-Studio Web 系统中配置 http://localhost:8003 后端推理服务。
 
 2.现在启动 Label-Studio 网页服务：
+
+请新建一个终端窗口进入label_anything项目路径。
+
+```shell
+cd path/to/playground/label_anything
+```
 
 ⚠(如不使用vit-h的SAM后端请跳过此步）使用的推理后端是SAM的 **vit-h**, 由于模型加载时间长，导致连接后端超时，需要设置以下环境变量。
 
