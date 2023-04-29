@@ -1,5 +1,6 @@
 import json
 import os
+import sys
 import argparse
 import numpy as np
 from tqdm import tqdm
@@ -10,9 +11,8 @@ import shutil
 
 def parse_args():
     parser = argparse.ArgumentParser(description='Label studio convert to Coco fomat')
-    parser.add_argument('--json_file_path',default='label_studio.json', help='Label studio output json.')
-    parser.add_argument('--out_dir',default='coco_format_files', help='Output dir of coco format json.')
-    parser.add_argument('--dataset_path',default='/media/ders/mazhiming/mm/github/playground/label_anything/images', help='Output dir of Coco format json.')
+    parser.add_argument('--json_file_path',default='/media/ders/mazhiming/mm/project-4.json', help='label studio output json')
+    parser.add_argument('--out_dir',default='coco_format_files', help='output dir of Coco format json')
     parser.add_argument('--classes',default=None, help='Classes list of the dataset, if None please check the output.')
 
     args = parser.parse_args()
@@ -53,10 +53,17 @@ def rle2mask(rle,height, width):
     return mask.reshape((height, width))
 
 def format_to_coco(args):
-
+    # 读取label studio格式的JSON文件
     json_file_path=args.json_file_path
-
-    image_path_from=args.dataset_path
+    
+    with open(json_file_path, 'r') as file:
+        contents = json.loads(file.read())
+    if sys.platform == 'linux':
+        image_path_from=os.path.join('~/.local/share/label-studio/media/upload/',os.path.dirname(contents[0]['data']['image']).split('/')[-1])
+    elif sys.platform == 'win32':
+        image_path_from=os.path.join('~/AppData/Local/label-studio/label-studio/media/upload/',os.path.dirname(contents[0]['data']['image']).split('/')[-1])
+    else:
+        raise ValueError("The system does not support.")
     image_path_to=args.out_dir
     # 将coco格式保存到文件中
     output_dir=image_path_to
@@ -77,11 +84,6 @@ def format_to_coco(args):
             "id": len(coco_format["categories"]),
             "name": category
             })
-
-    # 读取label studio格式的JSON文件
-    with open(json_file_path, 'r') as file:
-        contents = json.loads(file.read())
-
     
     index_cnt=0
     # 遍历每个标注
@@ -104,7 +106,7 @@ def format_to_coco(args):
 
                 image_id = contents[index_annotation]["id"]
                 image_json_name = contents[index_annotation]["data"]['image'].split('/')[-1]
-                image_json_name = image_json_name.split('-', 1)[1]
+                image_json_name_ = image_json_name.split('-', 1)[1]
                 category = label['value']['rectanglelabels'][0]
                 rle = label_rel['value']['rle']
                 mask=rle2mask(rle,height_from_json,width_from_json)
@@ -115,7 +117,7 @@ def format_to_coco(args):
                 # 添加图像信息到coco格式
                 coco_format["images"].append({
                     "id": image_id,
-                    "file_name": image_json_name,
+                    "file_name": image_json_name_,
                     "width": width_from_json,
                     "height": height_from_json
                 })
@@ -141,7 +143,7 @@ def format_to_coco(args):
                 index_cnt+=1
             image_from=os.path.join(image_path_from,image_json_name)
             image_to=os.path.join(image_path_to,'image',image_json_name)
-            shutil.copy2(image_from, image_to)
+            shutil.copy2(os.path.expanduser(image_from), image_to)
 
 
     classes_output=[d["name"] for d in coco_format["categories"]]
