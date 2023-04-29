@@ -104,7 +104,7 @@ device=cuda:0 \
 
 ⚠以上的终端窗口需要保持打开状态。
 
-接下来请根据以下步骤在Label-Studio Web 系统中配置 http://localhost:8003 后端推理服务。
+接下来请根据以下步骤在Label-Studio Web 系统中配置使用后端推理服务。
 
 2.现在启动 Label-Studio 网页服务：
 
@@ -114,7 +114,7 @@ device=cuda:0 \
 cd path/to/playground/label_anything
 ```
 
-⚠(如不使用vit-h的SAM后端请跳过此步）使用的推理后端是SAM的 **vit-h**, 由于模型加载时间长，导致连接后端超时，需要设置以下环境变量。
+⚠(如不使用vit-h的SAM后端可跳过此步）使用的推理后端是SAM的 **vit-h**, 由于模型加载时间长，导致连接后端超时，需要设置以下环境变量。
 
 具体可根据下载的SAM的权值名称判断，比如sam_vit_h_4b8939.pth 为 vit-h，sam_vit_b_01ec64.pth为 vit-b。
 
@@ -187,7 +187,7 @@ wget https://download.openmmlab.com/mmyolo/data/cat_dataset.zip && unzip cat_dat
 ![image](https://user-images.githubusercontent.com/25839884/233832662-02f856e5-48e7-4200-9011-17693fc2e916.png)
 
 
-然后在设置中点击 Add Model 添加 OpenMMLabPlayGround 后端推理服务,设置好 SAM 后端推理服务的 URL，并打开 `Use for interactive preannotations` 并点击 `Validate and Save`。
+然后在设置中点击 Add Model 添加 OpenMMLabPlayGround 后端推理服务,设置好 SAM 后端推理服务的 URL http://localhost:8003 ，并打开 `Use for interactive preannotations` 并点击 `Validate and Save`。
 
 ⚠如果你在这一步无法顺利执行，可能由于模型加载时间长，导致连接后端超时，请重新执行第二步中已经跳过的部分，重启SAM后端推理服务。
 
@@ -228,3 +228,32 @@ Bbox2Label: 由下面的 gif 的动图可以看出，只需要标注一个边界
 ![](https://cdn.vansin.top/picgo20230330140321.png)
 
 到此半自动化标注就完成了, 通过 Label-Studio 的半自动化标注功能，可以让用户在标注过程中，通过点击一下鼠标，就可以完成目标的分割和检测，大大提高了标注效率。部分代码借鉴自 label-studio-ml-backend ID 为 253 的 Pull Request，感谢作者的贡献。
+
+## 将已经标注json转换为COCO数据集格式
+
+由于label studio 导出来的 coco 不支持 rle 的实例标注，只支持 polygon 的实例。
+
+polygon 实例格式由于不太好控制点数，太多不方便微调（不像mask可以用橡皮擦微调），太少区域不准确。
+
+此处提供将label-studio 输出的json格式转换为COCO格式的转换脚本。
+
+```shell
+cd path/to/playground/label_anything
+python convert_to_coco_format.py --json_file_path path/to/LS_json --out_dir path/to/output/file \
+--dataset_path path/to/dataset_path --classes ['your','classes']
+```
+--json_file_path 输入Label studio的输出json
+--out_dir 输出路径
+--dataset_path 原始数据集路径
+--classes （选填）类型列表
+
+生成后脚本会输出一个列表，这个列表是对应类别id的，可用于填写config用于训练（如果之前填写了classes参数，则按照该参数输出）
+
+输出路径下有annotation和image两个文件夹，annotation里是coco格式的json，image是整理好的数据集。
+
+以下是使用转换后的数据集通过 browse_dataset.py 转化结果。
+
+<img src='https://user-images.githubusercontent.com/101508488/235289869-fde91cb3-fa50-4c32-b4b7-89daef21d36b.jpg' width="500px">
+
+
+
