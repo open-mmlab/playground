@@ -243,9 +243,13 @@ python convert_to_coco_format.py --json_file_path path/to/LS_json --out_dir path
 --dataset_path path/to/dataset_path --classes ['your','classes']
 ```
 --json_file_path 输入Label studio的输出json
+
 --out_dir 输出路径
+
 --dataset_path 原始数据集路径
+
 --classes （选填）类型列表
+
 
 生成后脚本会输出一个列表，这个列表是对应类别id的，可用于填写config用于训练（如果之前填写了classes参数，则按照该参数输出）
 
