@@ -99,7 +99,7 @@ At this point, the SAM backend inference service has started.
 
 ⚠The above terminal window needs to be kept open.
 
-Next, please follow the steps below to configure the http://localhost:8003 back-end reasoning service in the Label-Studio Web system.
+Next, please follow the steps below to configure the use of the back-end reasoning service in the Label-Studio Web system.
 
 2.Now start the Label-Studio web service:
 
@@ -181,7 +181,7 @@ Next, copy and add the above XML to Label-Studio, and then click Save.
 ![image](https://user-images.githubusercontent.com/25839884/233832662-02f856e5-48e7-4200-9011-17693fc2e916.png)
 
 
-After that, go to Settings and click Add Model to add the OpenMMLabPlayGround backend inference service. Set the URL for the SAM backend inference service, enable Use for interactive preannotations, and click Validate and Save.
+After that, go to Settings and click Add Model to add the OpenMMLabPlayGround backend inference service. Set the URL http://localhost:8003 for the SAM backend inference service, enable Use for interactive preannotations, and click Validate and Save.
 
 ⚠If you can't execute successfully in this step, probably due to the long loading time of the model, which causes the connection to the backend to time out, please re-execute the part that has been skipped in step 2 and restart the SAM backend service.
 
@@ -223,3 +223,34 @@ You can use VS Code to open the extracted folder and see the annotated dataset, 
 With the semi-automated annotation function of Label-Studio, users can complete object segmentation and detection by simply clicking the mouse during the annotation process, greatly improving the efficiency of annotation.
 
 Some of the code was borrowed from Pull Request ID 253 of label-studio-ml-backend. Thank you to the author for their contribution.
+
+## Convert label-studio json to COCO dataset format
+
+Since the coco exported by label studio does not support rle instance labeling, it only supports polygon instances.
+
+The polygon instance format is not easy to control the number of points, too much is not easy to fine tune (unlike mask which can be fine tuned with an eraser) and too little area is not accurate.
+
+Here we provide a conversion script to convert the json format of label-studio output to COCO format.
+
+```shell
+cd path/to/playground/label_anything
+python convert_to_coco_format.py --json_file_path path/to/LS_json --out_dir path/to/output/file \
+--dataset_path path/to/dataset_path --classes ['your','classes']
+```
+
+--json_file_path Enter the output json from Label studio
+
+--out_dir Output path
+
+--dataset_path path to the original dataset
+
+--classes (optional) type list
+
+
+After generation the script will output a list that corresponds to the category ids, which can be used to fill in the config for training (if the classes parameter was filled in before, it will be output according to that parameter)
+
+Under the output path, there are two folders: annotation and image, annotation is the coco format json, and image is the sorted dataset.
+
+The following is the result of using the transformed dataset by browse_dataset.py.
+
+<img src='https://user-images.githubusercontent.com/101508488/235289869-fde91cb3-fa50-4c32-b4b7-89daef21d36b.jpg' width="500px">
