@@ -239,14 +239,11 @@ polygon 实例格式由于不太好控制点数，太多不方便微调（不像
 
 ```shell
 cd path/to/playground/label_anything
-python convert_to_coco_format.py --json_file_path path/to/LS_json --out_dir path/to/output/file \
---dataset_path path/to/dataset_path --classes ['your','classes']
+python convert_to_coco_format.py --json_file_path path/to/LS_json --out_dir path/to/output/file --classes ['your','classes']
 ```
 --json_file_path 输入Label studio的输出json
 
 --out_dir 输出路径
-
---dataset_path 原始数据集路径
 
 --classes （选填）类型列表
 
