@@ -234,15 +234,13 @@ Here we provide a conversion script to convert the json format of label-studio o
 
 ```shell
 cd path/to/playground/label_anything
-python convert_to_coco_format.py --json_file_path path/to/LS_json --out_dir path/to/output/file \
---dataset_path path/to/dataset_path --classes ['your','classes']
+python convert_to_coco_format.py --json_file_path path/to/LS_json --out_dir path/to/output/file --classes ['your','classes']
 ```
 
 --json_file_path Enter the output json from Label studio
 
 --out_dir Output path
 
---dataset_path path to the original dataset
 
 --classes (optional) type list
 
