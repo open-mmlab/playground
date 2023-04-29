@@ -143,6 +143,8 @@ label-studio start
 
 我们通过下面的方式下载好示例的喵喵图片，点击 Data Import 导入需要标注的猫图片，点击 Save 创建 Project。
 
+注意，如果使用其他数据集须保证数据名称中不含有中文
+
 ```shell
 cd path/to/playground/label_anything
 mkdir data && cd data
