@@ -1,6 +1,7 @@
 import json
 import os
 import sys
+import cv2
 import argparse
 import numpy as np
 from tqdm import tqdm
@@ -96,21 +97,25 @@ def format_to_coco(args):
 
             labels = contents[index_annotation]['annotations'][0]['result']
 
-            for i in range(len(labels)//2):
-                label=labels[i*2]
-                label_rel=labels[i*2+1]
-                x = label['value']['x'] * width_from_json / 100
-                y = label['value']['y'] * height_from_json / 100
-                w = label['value']['width'] * width_from_json / 100
-                h = label['value']['height'] * height_from_json / 100
+            for i in range(len(labels)):
+
+                if 'rle' in labels[i]['value'].keys():
+                    label_rel=labels[i]
+                else:
+                    continue
 
                 image_id = contents[index_annotation]["id"]
-                image_json_name = contents[index_annotation]["data"]['image'].split('/')[-1]
-                image_json_name_ = image_json_name.split('-', 1)[1]
-                category = label['value']['rectanglelabels'][0]
+                image_json_name_ = contents[index_annotation]["data"]['image'].split('/')[-1]
+                image_json_name = image_json_name_.split('-', 1)[1]
+                try:
+                    category = label_rel['value']['brushlabels'][0]
+                except:
+                    category = label_rel['value']['rectanglelabels'][0]
                 rle = label_rel['value']['rle']
                 mask=rle2mask(rle,height_from_json,width_from_json)
                 rle=binary_mask_to_rle(mask)
+                contours, hierarchy = cv2.findContours(mask.astype(np.uint8), cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+                x,y,w,h=cv2.boundingRect(contours[0])
                 bbox = [x, y, w, h]
                 area = w * h
 
@@ -141,10 +146,9 @@ def format_to_coco(args):
                     
                 })
                 index_cnt+=1
-            image_from=os.path.join(image_path_from,image_json_name)
+            image_from=os.path.join(image_path_from,image_json_name_)
             image_to=os.path.join(image_path_to,'image',image_json_name)
             shutil.copy2(os.path.expanduser(image_from), image_to)
-
 
     classes_output=[d["name"] for d in coco_format["categories"]]
     print(classes_output)
