@@ -12,7 +12,7 @@ import shutil
 
 def parse_args():
     parser = argparse.ArgumentParser(description='Label studio convert to Coco fomat')
-    parser.add_argument('--json_file_path',default='/media/ders/mazhiming/mm/project-4.json', help='label studio output json')
+    parser.add_argument('--json_file_path',default='project.json', help='label studio output json')
     parser.add_argument('--out_dir',default='coco_format_files', help='output dir of Coco format json')
     parser.add_argument('--classes',default=None, help='Classes list of the dataset, if None please check the output.')
 
@@ -115,7 +115,12 @@ def format_to_coco(args):
                 mask=rle2mask(rle,height_from_json,width_from_json)
                 rle=binary_mask_to_rle(mask)
                 contours, hierarchy = cv2.findContours(mask.astype(np.uint8), cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
-                x,y,w,h=cv2.boundingRect(contours[0])
+                new_contours = []
+                for contour in contours:
+                    new_contours.extend(list(contour))
+                new_contours = np.array(new_contours)
+                x, y, w, h = cv2.boundingRect(new_contours)
+                
                 bbox = [x, y, w, h]
                 area = w * h
 
