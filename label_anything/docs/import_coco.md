@@ -13,11 +13,9 @@ python tools/convert_to_ls_format.py --input-file instances_val2017.json \
                                     --image-root-url "/data/local-files/?d=coco2017/val2017" 
 ``` 
 其中各个参数的含义如下:
-```
 input-file：需要转换的coco格式json文件
 output-file: 需要保存的Label Studio格式的json文件
 image-root-url：Label Studio读取图片的路径前缀。本文采用本地存储来保存图片,在label-studio中本地储存的路径为/data/local-files/?d=coco2017/val2017 具体设置规则可以参见第三小节
-```
 脚本转换完成后会在目标目录下生成out.json和out.label_config.xml两个文件。out.json为转换成功的标注文件；out.label_config.xml为项目配置文件。
 
 
@@ -48,11 +46,9 @@ label-studio start
 ![image](https://user-images.githubusercontent.com/42299757/235577852-8f8377da-12d4-4dcd-acad-0d46027a16ca.png)
 此时我们需要将本地的图片文件同步进label-studio中，在project->setting->Cloud Storage选择Add Source Storage，选择local files下拉菜单：
 ![image](https://user-images.githubusercontent.com/42299757/235577703-27d47f54-48be-4bf3-9155-4b85337d2302.png)
-其中
-```
+其中:
 Storage Tile: storage的名称，可以自定义
 Absolute lcoal path: 图片所在文件夹的绝对路径，需要包含前面设置的${LABEL_STUDIO_LOCAL_FILES_DOCUMENT_ROOT}
-```
 点击check connection可以测试本地路径是否可用,最后点击Add Storage可以将本地储存添加到项目中。
 
 此时我们再打开项目可以发现，所有的图片都被读取出来了，并且标注也被正确显示出来了。
@@ -61,7 +57,7 @@ Absolute lcoal path: 图片所在文件夹的绝对路径，需要包含前面�
 ### 关于图片路径和标注文件中路径的对应
 在Label Studio中并不推荐采用本地路径来储存数据，而推荐采用url来读取图片。\
 如果图片数据储存在云端，通过url读取的话，转换脚本中--image-root-url参数直接设置为图片路径前缀即可。\
-如果采用本地路径来储存数据，label-studio读取图片的路径会是在"/data/local-files/?d=${path_relative_to_data_root}",其中${path_relative_to_data_root}是图片所在目录相对于服务器启动时候的环境变量${LABEL_STUDIO_LOCAL_FILES_DOCUMENT_ROOT}的相对路径，例如: \
+如果采用本地路径来储存数据，label-studio读取图片的路径会是在"/data/local-files/?d=${path_relative_to_data_root}",其中${path_relative_to_data_root}是图片所在目录相对于服务器启动时候的环境变量${LABEL_STUDIO_LOCAL_FILES_DOCUMENT_ROOT}的相对路径，例如: 
 
 图片绝对路径:/home/user/label-studio/datasets/coco2017/val2017/***.jpg \
 LABEL_STUDIO_LOCAL_FILES_DOCUMENT_ROOT:/home/user/label-studio/datasets \
