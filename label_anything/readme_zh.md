@@ -248,6 +248,9 @@ python tools/convert_to_rle_mask_coco.py --json_file_path path/to/LS_json --out_
 
 
 生成后脚本会在终端输出一个列表，这个列表是对应类别id的，可用于复制填写 config 用于训练。
+![image](https://user-images.githubusercontent.com/101508488/235684651-1e6b51a0-25aa-4ec4-8841-f33668f1d13d.png)
+
+
 
 输出路径下有 annotation 和 image 两个文件夹，annotation 里是 coco 格式的 json， image 是整理好的数据集。
 
