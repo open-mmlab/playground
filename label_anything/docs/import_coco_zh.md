@@ -45,6 +45,7 @@ label-studio start
 此时可以看到标注文件已经导入进项目中了，但是图片还无法读取：
 ![image](https://user-images.githubusercontent.com/42299757/235577852-8f8377da-12d4-4dcd-acad-0d46027a16ca.png)
 此时我们需要将本地的图片文件同步进 label-studio 中，在 project->setting->Cloud Storage 选择 Add Source Storage, 选择 local files 下拉菜单：
+
 ![image](https://user-images.githubusercontent.com/42299757/235577703-27d47f54-48be-4bf3-9155-4b85337d2302.png)
 
 其中: \
