@@ -243,6 +243,7 @@ python tools/convert_to_rle_mask_coco.py --json_file_path path/to/LS_json --out_
 
 
 After generation the script outputs a list in the terminal that corresponds to the category ids and can be used to copy and fill the config for training.
+![image](https://user-images.githubusercontent.com/101508488/235684651-1e6b51a0-25aa-4ec4-8841-f33668f1d13d.png)
 
 Under the output path, there are two folders: annotation and image, annotation is the coco format json, and image is the sorted dataset.
 
