@@ -13,9 +13,9 @@ python tools/convert_to_ls_format.py --input-file instances_val2017.json \
                                     --image-root-url "/data/local-files/?d=coco2017/val2017" 
 ``` 
 其中各个参数的含义如下: \
-input-file：需要转换的 coco 格式 json 文件 \
-output-file: 需要保存的 label-studio 格式的 json 文件 \
-image-root-url：label-studio 读取图片的路径前缀。本文采用本地存储来保存图片,在 label-studio 中本地储存的路径为 `/data/local-files/?d=coco2017/val2017` 具体设置规则可以参见第三小节
+`input-file`：需要转换的 coco 格式 json 文件 \
+`output-file`: 需要保存的 label-studio 格式的 json 文件 \
+`image-root-url`：label-studio 读取图片的路径前缀。本文采用本地存储来保存图片,在 label-studio 中本地储存的路径为 `/data/local-files/?d=coco2017/val2017` 具体设置规则可以参见第三小节
 
 脚本转换完成后会在目标目录下生成 `out.json` 和 `out.label_config.xml` 两个文件。`out.json` 为转换成功的标注文件；`out.label_config.xml` 为项目配置文件。
 
@@ -62,8 +62,8 @@ label-studio start
 如果图片数据储存在云端，通过 url 读取的话，转换脚本中 `--image-root-url` 参数直接设置为图片 url 前缀即可。\
 如果采用本地路径来储存数据，label-studio 读取图片的路径为 `/data/local-files/?d=${path_relative_to_data_root}` ,其中`${path_relative_to_data_root}`是图片所在目录相对于服务器启动时候的环境变量 `${LABEL_STUDIO_LOCAL_FILES_DOCUMENT_ROOT}` 的相对路径，例如: 
 
-图片绝对路径: `/home/user/label-studio/datasets/coco2017/val2017/***.jpg` \
-LABEL_STUDIO_LOCAL_FILES_DOCUMENT_ROOT: `/home/user/label-studio/datasets` \
-path_relative_to_data_root: `/data/local-files/?d=coco2017/val2017` 
+`absolute local path`: `/home/user/label-studio/datasets/coco2017/val2017/***.jpg` \
+`LABEL_STUDIO_LOCAL_FILES_DOCUMENT_ROOT`: `/home/user/label-studio/datasets` \
+`path_relative_to_data_root`: `/data/local-files/?d=coco2017/val2017` 
 
 
