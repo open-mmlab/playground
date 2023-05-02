@@ -59,11 +59,12 @@ Absolute lcoal path: 图片所在文件夹的绝对路径，需要包含前面�
 ![image](https://user-images.githubusercontent.com/42299757/235578802-c3b13152-76ea-4388-b3c9-0d3c9bee2c13.png)
 
 ### 关于图片路径和标注文件中路径的对应
-在Label Studio中并不推荐采用本地路径来储存数据，而推荐采用url来读取图片。如果图片数据储存在云端，通过url读取的话，转换脚本中--image-root-url参数直接设置为图片路径前缀即可。
-如果采用本地路径来储存数据，label-studio读取图片的路径会是在"/data/local-files/?d=${path_relative_to_data_root}",其中${path_relative_to_data_root}是图片所在目录相对于服务器启动时候的环境变量${LABEL_STUDIO_LOCAL_FILES_DOCUMENT_ROOT}的相对路径，例如:
-```
-图片绝对路径:/home/user/label-studio/datasets/coco2017/val2017/***.jpg
-LABEL_STUDIO_LOCAL_FILES_DOCUMENT_ROOT:/home/user/label-studio/datasets
-则path_relative_to_data_root为:/data/local-files/?d=coco2017/val2017
-```
+在Label Studio中并不推荐采用本地路径来储存数据，而推荐采用url来读取图片。\
+如果图片数据储存在云端，通过url读取的话，转换脚本中--image-root-url参数直接设置为图片路径前缀即可。\
+如果采用本地路径来储存数据，label-studio读取图片的路径会是在"/data/local-files/?d=${path_relative_to_data_root}",其中${path_relative_to_data_root}是图片所在目录相对于服务器启动时候的环境变量${LABEL_STUDIO_LOCAL_FILES_DOCUMENT_ROOT}的相对路径，例如: \
+
+图片绝对路径:/home/user/label-studio/datasets/coco2017/val2017/***.jpg \
+LABEL_STUDIO_LOCAL_FILES_DOCUMENT_ROOT:/home/user/label-studio/datasets \
+则path_relative_to_data_root:/data/local-files/?d=coco2017/val2017 
+
 
