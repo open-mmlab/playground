@@ -47,7 +47,7 @@ label-studio start
 此时我们需要将本地的图片文件同步进label-studio中，在project->setting->Cloud Storage选择Add Source Storage，选择local files下拉菜单：
 ![image](https://user-images.githubusercontent.com/42299757/235577703-27d47f54-48be-4bf3-9155-4b85337d2302.png)
 
-其中:
+其中: \
 Storage Tile: storage的名称，可以自定义 \
 Absolute lcoal path: 图片所在文件夹的绝对路径，需要包含前面设置的${LABEL_STUDIO_LOCAL_FILES_DOCUMENT_ROOT} \
 随后点击check connection可以测试本地路径是否可用,最后点击Add Storage可以将本地储存添加到项目中。
