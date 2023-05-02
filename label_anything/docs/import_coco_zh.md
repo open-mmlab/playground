@@ -12,10 +12,11 @@ python tools/convert_to_ls_format.py --input-file instances_val2017.json \
                                     --output-file out.json  \  
                                     --image-root-url "/data/local-files/?d=coco2017/val2017" 
 ``` 
-其中各个参数的含义如下:
-input-file：需要转换的 coco 格式 json 文件
-output-file: 需要保存的 label-studio 格式的 json 文件
+其中各个参数的含义如下: \
+input-file：需要转换的 coco 格式 json 文件 \
+output-file: 需要保存的 label-studio 格式的 json 文件 \
 image-root-url：label-studio 读取图片的路径前缀。本文采用本地存储来保存图片,在 label-studio 中本地储存的路径为 `/data/local-files/?d=coco2017/val2017` 具体设置规则可以参见第三小节
+
 脚本转换完成后会在目标目录下生成 `out.json` 和 `out.label_config.xml` 两个文件。`out.json` 为转换成功的标注文件；`out.label_config.xml` 为项目配置文件。
 
 
