@@ -227,7 +227,6 @@ Bbox2Label: 由下面的 gif 的动图可以看出，只需要标注一个边界
 
 ![](https://cdn.vansin.top/picgo20230330140321.png)
 
-到此半自动化标注就完成了, 通过 Label-Studio 的半自动化标注功能，可以让用户在标注过程中，通过点击一下鼠标，就可以完成目标的分割和检测，大大提高了标注效率。部分代码借鉴自 label-studio-ml-backend ID 为 253 的 Pull Request，感谢作者的贡献。
 
 ## 将已经标注json转换为COCO数据集格式
 
@@ -239,7 +238,7 @@ polygon 实例格式由于不太好控制点数，太多不方便微调（不像
 
 ```shell
 cd path/to/playground/label_anything
-python convert_to_coco_format.py --json_file_path path/to/LS_json --out_dir path/to/output/file --classes ['your','classes']
+python tools/convert_to_coco_format.py --json_file_path path/to/LS_json --out_dir path/to/output/file --classes ['your','classes']
 ```
 --json_file_path 输入Label studio的输出json
 
@@ -255,6 +254,8 @@ python convert_to_coco_format.py --json_file_path path/to/LS_json --out_dir path
 以下是使用转换后的数据集通过 browse_dataset.py 转化结果。
 
 <img src='https://user-images.githubusercontent.com/101508488/235289869-fde91cb3-fa50-4c32-b4b7-89daef21d36b.jpg' width="500px">
+
+到此半自动化标注就完成了, 通过 Label-Studio 的半自动化标注功能，可以让用户在标注过程中，通过点击一下鼠标，就可以完成目标的分割和检测，大大提高了标注效率。部分代码借鉴自 label-studio-ml-backend ID 为 253 的 Pull Request，感谢作者的贡献。同时感谢社区同学[ATang0729](https://github.com/ATang0729)为脚本测试重新标注了喵喵数据集。
 
 
 
