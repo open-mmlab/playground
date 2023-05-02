@@ -216,7 +216,9 @@ Point2Label：由下面的 gif 的动图可以看出，只需要在物体上点�
 Bbox2Label: 由下面的 gif 的动图可以看出，只需要标注一个边界框，SAM 算法就能将整个物体分割和检测出来。
 
 ![SAM10](https://user-images.githubusercontent.com/25839884/233969712-0d9d6f0a-70b0-4b3e-b054-13eda037fb20.gif)
+## COCO 格式数据集导出
 
+### Label Studio 网页端导出
 
 我们 submit 完毕所有图片后，点击 `exprot` 导出 COCO 格式的数据集，就能把标注好的数据集的压缩包导出来了。
 注意：此处导出的只有边界框的标注，如果想要导出实例分割的标注，需要在启动 SAM 后端服务时设置 `out_poly=True`。
@@ -228,11 +230,11 @@ Bbox2Label: 由下面的 gif 的动图可以看出，只需要标注一个边界
 ![](https://cdn.vansin.top/picgo20230330140321.png)
 
 
-## 将已经标注json转换为COCO数据集格式
+### Label Studio 输出转换为RLE格式掩码
 
-由于label studio 导出来的 coco 不支持 rle 的实例标注，只支持 polygon 的实例。
+由于 label studio 导出来的 coco 不支持 rle 的实例标注，只支持 polygon 的实例。
 
-polygon 实例格式由于不太好控制点数，太多不方便微调（不像mask可以用橡皮擦微调），太少区域不准确。
+polygon 实例格式由于不太好控制点数，太多不方便微调（不像 mask 可以用橡皮擦微调），太少区域不准确。
 
 此处提供将 label-studio 输出的json格式转换为COCO格式的转换脚本。
 
