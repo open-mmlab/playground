@@ -99,7 +99,7 @@ At this point, the SAM backend inference service has started.
 
 ⚠The above terminal window needs to be kept open.
 
-Next, please follow the steps below to configure the http://localhost:8003 back-end reasoning service in the Label-Studio Web system.
+Next, please follow the steps below to configure the use of the back-end reasoning service in the Label-Studio Web system.
 
 2.Now start the Label-Studio web service:
 
@@ -181,9 +181,9 @@ Next, copy and add the above XML to Label-Studio, and then click Save.
 ![image](https://user-images.githubusercontent.com/25839884/233832662-02f856e5-48e7-4200-9011-17693fc2e916.png)
 
 
-After that, go to Settings and click Add Model to add the OpenMMLabPlayGround backend inference service. Set the URL for the SAM backend inference service, enable Use for interactive preannotations, and click Validate and Save.
+After that, go to Settings and click Add Model to add the OpenMMLabPlayGround backend inference service. Set the URL http://localhost:8003 for the SAM backend inference service, enable Use for interactive preannotations, and click Validate and Save.
 
-⚠If you can't execute successfully in this step, probably due to the long loading time of the model, which causes the connection to the backend to time out, please re-execute the part that has been skipped in step 2 and restart the SAM backend service.
+⚠If you are unable to execute successfully at this step, probably due to the long model loading time, which causes the connection to the backend to time out, please re-execute `export ML_TIMEOUT_SETUP=40` (linux) or `set ML_TIMEOUT_SETUP=40` (windows) and restart the `label-studio start` SAM backend reasoning service.
 
 ![image](https://user-images.githubusercontent.com/25839884/233836727-568d56e3-3b32-4599-b0a8-c20f18479a6a.png)
 
@@ -211,6 +211,9 @@ Bbox2Label: As can be seen from the following gif animation, by simply annotatin
 
 ![SAM10](https://user-images.githubusercontent.com/25839884/233969712-0d9d6f0a-70b0-4b3e-b054-13eda037fb20.gif)
 
+## COCO format dataset export
+
+### Label Studio web export
 
 After submitting all the images, click on export to export the annotated dataset in COCO format, which will generate a compressed file of the annotated dataset. Note: only the bounding box annotations are exported here. If you want to export the instance segmentation annotations, you need to set out_poly=True when starting the SAM backend service.
 
@@ -220,6 +223,33 @@ You can use VS Code to open the extracted folder and see the annotated dataset, 
 
 ![](https://cdn.vansin.top/picgo20230330140321.png)
 
+
+### Label Studio Output Conversion to RLE Format Masks
+
+Since the coco exported by label studio does not support rle instance labeling, it only supports polygon instances.
+
+The polygon instance format is not easy to control the number of points, too much is not easy to fine tune (unlike mask which can be fine tuned with an eraser) and too little area is not accurate.
+
+Here we provide a conversion script to convert the json format of label-studio output to COCO format.
+
+```shell
+cd path/to/playground/label_anything
+python tools/convert_to_rle_mask_coco.py --json_file_path path/to/LS_json --out_dir path/to/output/file
+```
+
+--json_file_path Enter the output json from Label studio
+
+--out_dir Output path
+
+
+After generation the script outputs a list in the terminal that corresponds to the category ids and can be used to copy and fill the config for training.
+![image](https://user-images.githubusercontent.com/101508488/235708732-20938d81-2f63-4bf6-ba6a-e2b31048b061.png)
+
+Under the output path, there are two folders: annotation and image, annotation is the coco format json, and image is the sorted dataset.
+
+The following is the result of using the transformed dataset by browse_dataset.py.
+
+<img src='https://user-images.githubusercontent.com/101508488/235289869-fde91cb3-fa50-4c32-b4b7-89daef21d36b.jpg' width="500px">
 With the semi-automated annotation function of Label-Studio, users can complete object segmentation and detection by simply clicking the mouse during the annotation process, greatly improving the efficiency of annotation.
 
-Some of the code was borrowed from Pull Request ID 253 of label-studio-ml-backend. Thank you to the author for their contribution.
+Some of the code was borrowed from Pull Request ID 253 of label-studio-ml-backend. Thank you to the author for their contribution. Also, thanks to community member [ATang0729](https://github.com/ATang0729) for re-labeling the meow dataset for script testing.
