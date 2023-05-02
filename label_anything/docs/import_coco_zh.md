@@ -41,7 +41,7 @@ label-studio start
 ![49b69c270d2e1cb7cd56039134ab3b5](https://user-images.githubusercontent.com/42299757/235576464-c4236a23-23f9-4e9c-ab11-8b8dbddb2797.png)
 将之前转换出的 out.label_config.xml 中的内容复制到 template 中:
 ![image](https://user-images.githubusercontent.com/42299757/235576648-3f763f39-986e-4a47-9276-4574642d59cd.png)
-导入转换好的 `out.json` 文件:
+创建项目，随后点击import导入转换好的 `out.json` 文件:
 ![image](https://user-images.githubusercontent.com/42299757/235576793-9b01cc23-6bb7-4742-be9a-f1be25134060.png)
 此时可以看到标注文件已经导入进项目中了，但是图片还无法读取：
 ![image](https://user-images.githubusercontent.com/42299757/235577852-8f8377da-12d4-4dcd-acad-0d46027a16ca.png)
