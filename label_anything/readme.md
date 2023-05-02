@@ -211,6 +211,9 @@ Bbox2Label: As can be seen from the following gif animation, by simply annotatin
 
 ![SAM10](https://user-images.githubusercontent.com/25839884/233969712-0d9d6f0a-70b0-4b3e-b054-13eda037fb20.gif)
 
+## COCO format dataset export
+
+### Label Studio web export
 
 After submitting all the images, click on export to export the annotated dataset in COCO format, which will generate a compressed file of the annotated dataset. Note: only the bounding box annotations are exported here. If you want to export the instance segmentation annotations, you need to set out_poly=True when starting the SAM backend service.
 
@@ -221,7 +224,7 @@ You can use VS Code to open the extracted folder and see the annotated dataset, 
 ![](https://cdn.vansin.top/picgo20230330140321.png)
 
 
-## Convert label-studio json to COCO dataset format
+### Label Studio Output Conversion to RLE Format Masks
 
 Since the coco exported by label studio does not support rle instance labeling, it only supports polygon instances.
 
@@ -231,7 +234,7 @@ Here we provide a conversion script to convert the json format of label-studio o
 
 ```shell
 cd path/to/playground/label_anything
-python tools/convert_to_rle_mask_coco.py --json_file_path path/to/LS_json --out_dir path/to/output/file --classes ['your','classes']
+python tools/convert_to_rle_mask_coco.py --json_file_path path/to/LS_json --out_dir path/to/output/file
 ```
 
 --json_file_path Enter the output json from Label studio
