@@ -189,7 +189,7 @@ wget https://download.openmmlab.com/mmyolo/data/cat_dataset.zip && unzip cat_dat
 
 然后在设置中点击 Add Model 添加 OpenMMLabPlayGround 后端推理服务,设置好 SAM 后端推理服务的 URL http://localhost:8003 ，并打开 `Use for interactive preannotations` 并点击 `Validate and Save`。
 
-⚠如果你在这一步无法顺利执行，可能由于模型加载时间长，导致连接后端超时，请重新执行第二步中已经跳过的部分，重启SAM后端推理服务。
+⚠如果你在这一步无法顺利执行，可能由于模型加载时间长，导致连接后端超时，请重新执行 `export ML_TIMEOUT_SETUP=40` (linux) 或 `set ML_TIMEOUT_SETUP=40` (windows) ，重新启动 `label-studio start` SAM后端推理服务。
 
 ![image](https://user-images.githubusercontent.com/25839884/233836727-568d56e3-3b32-4599-b0a8-c20f18479a6a.png)
 
@@ -238,16 +238,14 @@ polygon 实例格式由于不太好控制点数，太多不方便微调（不像
 
 ```shell
 cd path/to/playground/label_anything
-python tools/convert_to_coco_format.py --json_file_path path/to/LS_json --out_dir path/to/output/file --classes ['your','classes']
+python tools/convert_to_rle_mask_coco.py --json_file_path path/to/LS_json --out_dir path/to/output/file --classes ['your','classes']
 ```
 --json_file_path 输入 Label studio 的输出 json
 
 --out_dir 输出路径
 
---classes （选填）类型列表
 
-
-生成后脚本会输出一个列表，这个列表是对应类别id的，可用于填写 config 用于训练（如果之前填写了 classes 参数，则按照该参数输出）
+生成后脚本会在终端输出一个列表，这个列表是对应类别id的，可用于复制填写 config 用于训练。
 
 输出路径下有 annotation 和 image 两个文件夹，annotation 里是 coco 格式的 json， image 是整理好的数据集。
 
