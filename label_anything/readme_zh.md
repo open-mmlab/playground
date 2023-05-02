@@ -234,22 +234,22 @@ Bbox2Label: 由下面的 gif 的动图可以看出，只需要标注一个边界
 
 polygon 实例格式由于不太好控制点数，太多不方便微调（不像mask可以用橡皮擦微调），太少区域不准确。
 
-此处提供将label-studio 输出的json格式转换为COCO格式的转换脚本。
+此处提供将 label-studio 输出的json格式转换为COCO格式的转换脚本。
 
 ```shell
 cd path/to/playground/label_anything
 python tools/convert_to_coco_format.py --json_file_path path/to/LS_json --out_dir path/to/output/file --classes ['your','classes']
 ```
---json_file_path 输入Label studio的输出json
+--json_file_path 输入 Label studio 的输出 json
 
 --out_dir 输出路径
 
 --classes （选填）类型列表
 
 
-生成后脚本会输出一个列表，这个列表是对应类别id的，可用于填写config用于训练（如果之前填写了classes参数，则按照该参数输出）
+生成后脚本会输出一个列表，这个列表是对应类别id的，可用于填写 config 用于训练（如果之前填写了 classes 参数，则按照该参数输出）
 
-输出路径下有annotation和image两个文件夹，annotation里是coco格式的json，image是整理好的数据集。
+输出路径下有 annotation 和 image 两个文件夹，annotation 里是 coco 格式的 json， image 是整理好的数据集。
 
 以下是使用转换后的数据集通过 browse_dataset.py 转化结果。
 
