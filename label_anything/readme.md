@@ -183,7 +183,7 @@ Next, copy and add the above XML to Label-Studio, and then click Save.
 
 After that, go to Settings and click Add Model to add the OpenMMLabPlayGround backend inference service. Set the URL http://localhost:8003 for the SAM backend inference service, enable Use for interactive preannotations, and click Validate and Save.
 
-⚠If you can't execute successfully in this step, probably due to the long loading time of the model, which causes the connection to the backend to time out, please re-execute the part that has been skipped in step 2 and restart the SAM backend service.
+⚠If you are unable to execute successfully at this step, probably due to the long model loading time, which causes the connection to the backend to time out, please re-execute `export ML_TIMEOUT_SETUP=40` (linux) or `set ML_TIMEOUT_SETUP=40` (windows) and restart the `label-studio start` SAM backend reasoning service.
 
 ![image](https://user-images.githubusercontent.com/25839884/233836727-568d56e3-3b32-4599-b0a8-c20f18479a6a.png)
 
@@ -231,7 +231,7 @@ Here we provide a conversion script to convert the json format of label-studio o
 
 ```shell
 cd path/to/playground/label_anything
-python tools/convert_to_coco_format.py --json_file_path path/to/LS_json --out_dir path/to/output/file --classes ['your','classes']
+python tools/convert_to_rle_mask_coco.py --json_file_path path/to/LS_json --out_dir path/to/output/file --classes ['your','classes']
 ```
 
 --json_file_path Enter the output json from Label studio
@@ -239,10 +239,7 @@ python tools/convert_to_coco_format.py --json_file_path path/to/LS_json --out_di
 --out_dir Output path
 
 
---classes (optional) type list
-
-
-After generation the script will output a list that corresponds to the category ids, which can be used to fill in the config for training (if the classes parameter was filled in before, it will be output according to that parameter)
+After generation the script outputs a list in the terminal that corresponds to the category ids and can be used to copy and fill the config for training.
 
 Under the output path, there are two folders: annotation and image, annotation is the coco format json, and image is the sorted dataset.
 
