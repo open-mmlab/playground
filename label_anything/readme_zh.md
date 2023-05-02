@@ -240,7 +240,7 @@ polygon 实例格式由于不太好控制点数，太多不方便微调（不像
 
 ```shell
 cd path/to/playground/label_anything
-python tools/convert_to_rle_mask_coco.py --json_file_path path/to/LS_json --out_dir path/to/output/file --classes ['your','classes']
+python tools/convert_to_rle_mask_coco.py --json_file_path path/to/LS_json --out_dir path/to/output/file
 ```
 --json_file_path 输入 Label studio 的输出 json
 
