@@ -220,9 +220,6 @@ You can use VS Code to open the extracted folder and see the annotated dataset, 
 
 ![](https://cdn.vansin.top/picgo20230330140321.png)
 
-With the semi-automated annotation function of Label-Studio, users can complete object segmentation and detection by simply clicking the mouse during the annotation process, greatly improving the efficiency of annotation.
-
-Some of the code was borrowed from Pull Request ID 253 of label-studio-ml-backend. Thank you to the author for their contribution.
 
 ## Convert label-studio json to COCO dataset format
 
@@ -234,7 +231,7 @@ Here we provide a conversion script to convert the json format of label-studio o
 
 ```shell
 cd path/to/playground/label_anything
-python convert_to_coco_format.py --json_file_path path/to/LS_json --out_dir path/to/output/file --classes ['your','classes']
+python tools/convert_to_coco_format.py --json_file_path path/to/LS_json --out_dir path/to/output/file --classes ['your','classes']
 ```
 
 --json_file_path Enter the output json from Label studio
@@ -252,3 +249,6 @@ Under the output path, there are two folders: annotation and image, annotation i
 The following is the result of using the transformed dataset by browse_dataset.py.
 
 <img src='https://user-images.githubusercontent.com/101508488/235289869-fde91cb3-fa50-4c32-b4b7-89daef21d36b.jpg' width="500px">
+With the semi-automated annotation function of Label-Studio, users can complete object segmentation and detection by simply clicking the mouse during the annotation process, greatly improving the efficiency of annotation.
+
+Some of the code was borrowed from Pull Request ID 253 of label-studio-ml-backend. Thank you to the author for their contribution. Also, thanks to community member [ATang0729](https://github.com/ATang0729) for re-labeling the meow dataset for script testing.
