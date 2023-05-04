@@ -15,7 +15,7 @@ def parse_args():
     parser.add_argument('--json_file_path',default='project.json', help='label studio output json')
     parser.add_argument('--out_dir',default='coco_format_files', help='output dir of Coco format json')
     parser.add_argument('--classes',default=None, help='Classes list of the dataset, if None please check the output.')
-    parser.add_argument('--out_config',default='rtmdet-ins_s_syncbn', choices=['rtmdet_l_syncbn','rtmdet-ins_s_syncbn',None],help='config mode')
+    parser.add_argument('--out_config',default='None', choices=['rtmdet_l_syncbn','rtmdet-ins_s_syncbn',None],help='config mode')
 
     args = parser.parse_args()
     return args
