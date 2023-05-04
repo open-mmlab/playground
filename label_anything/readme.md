@@ -250,6 +250,17 @@ Under the output path, there are two folders: annotation and image, annotation i
 The following is the result of using the transformed dataset by browse_dataset.py.
 
 <img src='https://user-images.githubusercontent.com/101508488/235289869-fde91cb3-fa50-4c32-b4b7-89daef21d36b.jpg' width="500px">
+
+This script can output the config for training on demand, two versions of the template are provided ``rtmdet_l_syncbn``, ``rtmdet-ins_s_syncbn``.
+```shell
+cd path/to/playground/label_anything
+python tools/convert_to_rle_mask_coco.py --json_file_path path/to/LS_json --out_dir path/to/output/file ----out_config rtmdet_l_syncbn
+```
+
+--out_dir Select your config template
+
+This generates the corresponding rtmdet training config in the output folder.
+
 With the semi-automated annotation function of Label-Studio, users can complete object segmentation and detection by simply clicking the mouse during the annotation process, greatly improving the efficiency of annotation.
 
 Some of the code was borrowed from Pull Request ID 253 of label-studio-ml-backend. Thank you to the author for their contribution. Also, thanks to community member [ATang0729](https://github.com/ATang0729) for re-labeling the meow dataset for script testing.
