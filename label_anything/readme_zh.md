@@ -260,6 +260,14 @@ python tools/convert_to_rle_mask_coco.py --json_file_path path/to/LS_json --out_
 
 <img src='https://user-images.githubusercontent.com/101508488/235289869-fde91cb3-fa50-4c32-b4b7-89daef21d36b.jpg' width="500px">
 
+本脚本可以根据需求输出训练用的 config，现提供了两个版本模板 `rtmdet_l_syncbn`, `rtmdet-ins_s_syncbn`。
+```shell
+cd path/to/playground/label_anything
+python tools/convert_to_rle_mask_coco.py --json_file_path path/to/LS_json --out_dir path/to/output/file ----out_config rtmdet_l_syncbn
+```
+
+即可在输出文件夹中生成对应的 rtmdet 训练 config。
+
 到此半自动化标注就完成了, 通过 Label-Studio 的半自动化标注功能，可以让用户在标注过程中，通过点击一下鼠标，就可以完成目标的分割和检测，大大提高了标注效率。部分代码借鉴自 label-studio-ml-backend ID 为 253 的 Pull Request，感谢作者的贡献。同时感谢社区同学[ATang0729](https://github.com/ATang0729)为脚本测试重新标注了喵喵数据集。
 
 
