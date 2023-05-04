@@ -15,7 +15,7 @@ def parse_args():
     parser.add_argument('--json_file_path',default='project.json', help='label studio output json')
     parser.add_argument('--out_dir',default='coco_format_files', help='output dir of Coco format json')
     parser.add_argument('--classes',default=None, help='Classes list of the dataset, if None please check the output.')
-    parser.add_argument('--out_config',default='rtmdet_l_syncbn_fast_8xb32-300e_coco.py', help='config mode')
+    parser.add_argument('--out_config',default='rtmdet-ins_s_syncbn', choices=['rtmdet_l_syncbn','rtmdet-ins_s_syncbn',None],help='config mode')
 
     args = parser.parse_args()
     return args
@@ -167,6 +167,9 @@ def move_to_cfg(args,classes_list):
     if 'rtmdet_l_syncbn' in args.out_config:
         config_path='config_template/rtmdet_l_syncbn_fast_8xb32-300e_coco.py'
         config_name='rtmdet_l_syncbn_fast_8xb32.py'
+    elif 'rtmdet-ins_s_syncbn' in args.out_config:
+        config_path='config_template/rtmdet-ins_s_syncbn_fast_8xb32-300e_coco.py'
+        config_name='rtmdet-ins_s_syncbn_fast_8xb32.py'
 
     num_classes = len(classes_list)
     data_root=str('\''+args.out_dir+'\'')
