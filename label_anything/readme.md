@@ -254,7 +254,7 @@ The following is the result of using the transformed dataset by browse_dataset.p
 This script can output the config for training on demand, two versions of the template are provided ``rtmdet_l_syncbn``, ``rtmdet-ins_s_syncbn``.
 ```shell
 cd path/to/playground/label_anything
-python tools/convert_to_rle_mask_coco.py --json_file_path path/to/LS_json --out_dir path/to/output/file ----out_config rtmdet_l_syncbn
+python tools/convert_to_rle_mask_coco.py --json_file_path path/to/LS_json --out_dir path/to/output/file --out_config rtmdet_l_syncbn
 ```
 
 --out_dir Select your config template
