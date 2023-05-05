@@ -15,9 +15,9 @@ import shutil
 def parse_args():
     parser = argparse.ArgumentParser(description='Label studio convert to Coco fomat')
     parser.add_argument('--json_file_path',default='project.json', help='label studio output json')
-    parser.add_argument('--out_dir',default='coco_format_files', help='output dir of Coco format json')
+    parser.add_argument('--out_dir',default='../mmyolo/data/my_set', help='output dir of Coco format json')
     parser.add_argument('--classes',default=None, help='Classes list of the dataset, if None please check the output.')
-    parser.add_argument('--out_config',default='rtmdet_s', choices=['rtmdet_l','rtmdet-ins_s','rtmdet_s',None],help='config mode')
+    parser.add_argument('--out_config',default=None, choices=['rtmdet_l','rtmdet-ins_s','rtmdet_s',None],help='config mode')
 
     args = parser.parse_args()
     return args
@@ -69,9 +69,9 @@ def format_to_coco(args):
     image_path_to=args.out_dir
     # 将coco格式保存到文件中
     output_dir=image_path_to
-    output_ann_path=os.path.join(output_dir,'annotation')
+    output_ann_path=os.path.join(output_dir,'annotations')
     os.makedirs(output_ann_path, exist_ok=True)
-    os.makedirs(os.path.join(image_path_to,'image'), exist_ok=True)
+    os.makedirs(os.path.join(image_path_to,'images'), exist_ok=True)
     # 初始化coco格式的字典
     coco_format = {
         "images": [],
@@ -128,7 +128,7 @@ def format_to_coco(args):
                 # 添加图像信息到coco格式
                 coco_format["images"].append({
                     "id": image_id,
-                    "file_name": image_json_name_,
+                    "file_name": image_json_name,
                     "width": width_from_json,
                     "height": height_from_json
                 })
@@ -153,7 +153,7 @@ def format_to_coco(args):
                 })
                 index_cnt+=1
             image_from=os.path.join(image_path_from,image_json_name_)
-            image_to=os.path.join(image_path_to,'image',image_json_name)
+            image_to=os.path.join(image_path_to,'images',image_json_name)
             shutil.copy2(os.path.expanduser(image_from), image_to)
 
     classes_output=[d["name"] for d in coco_format["categories"]]
@@ -174,10 +174,12 @@ def move_to_cfg(args,classes_list):
         config_path='config_template/rtmdet_s_syncbn_fast_8xb32-300e_coco.py'
         config_name='rtmdet_s_syncbn_fast_8xb32.py'
 
+    train_ann_pth='annotations/ann.json'
+    train_data_pf='images/'
     num_classes = len(classes_list)
-    data_root=str('\''+args.out_dir+'\'')
-    train_ann_file=val_ann_file=str('\''+args.train_ann_file+'\'')
-    train_data_prefix=val_data_prefix=str('\''+os.path.join(args.out_dir,'image')+'\'')
+    data_root=str('\''+os.path.join('./data',args.out_dir.split('/')[-1]+'/')+'\'')
+    train_ann_file=val_ann_file=str('\''+train_ann_pth+'\'')
+    train_data_prefix=val_data_prefix=str('\''+train_data_pf+'\'')
     variable_dict = {'class_name':tuple(classes_list), 'num_classes':num_classes, 'data_root':data_root,\
                        'train_ann_file':train_ann_file,'val_ann_file':train_ann_file, \
                         'train_data_prefix':train_data_prefix,'val_data_prefix':train_data_prefix}
