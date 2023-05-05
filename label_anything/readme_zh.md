@@ -260,13 +260,15 @@ python tools/convert_to_rle_mask_coco.py --json_file_path path/to/LS_json --out_
 
 <img src='https://user-images.githubusercontent.com/101508488/235289869-fde91cb3-fa50-4c32-b4b7-89daef21d36b.jpg' width="500px">
 
-本脚本可以根据需求输出训练用的 config，现提供了两个版本模板 `rtmdet_l_syncbn`, `rtmdet-ins_s_syncbn`。
+本脚本可以根据需求输出训练用的 config，现提供了三个版本模板 `rtmdet_l_syncbn`, `rtmdet-ins_s_syncbn`, `rtmdet_s_syncbn`。
 ```shell
+#安装 Jinja2
+pip install Jinja2
 cd path/to/playground/label_anything
-python tools/convert_to_rle_mask_coco.py --json_file_path path/to/LS_json --out_dir path/to/output/file --out_config rtmdet_l_syncbn
+python tools/convert_to_rle_mask_coco.py --json_file_path path/to/LS_json --out_dir path/to/output/file --out_config rtmdet_s_syncbn
 ```
 
---out_config 选择你的模板 `rtmdet_l_syncbn`, `rtmdet-ins_s_syncbn`
+--out_config 选择你的模板 `rtmdet_l_syncbn`, `rtmdet-ins_s_syncbn`, `rtmdet_s_syncbn`
 
 即可在输出文件夹中生成对应的 rtmdet 训练 config。
 
