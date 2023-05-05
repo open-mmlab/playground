@@ -1,11 +1,15 @@
+data_root = {{data_root}}
+# Path of train annotation file
+train_ann_file = {{train_ann_file}}
+train_data_prefix = {{train_data_prefix}}  # Prefix of train image path
+# Path of val annotation file
+val_ann_file = {{val_ann_file}}
+val_data_prefix = {{val_data_prefix}}  # Prefix of val image path
+
+num_classes = {{num_classes}} # Number of classes for classification
+# Batch size of a single GPU during training
+class_name = {{class_name}}
 default_scope = 'mmyolo'
-data_root = {data_root}
-train_ann_file = {train_ann_file}
-train_data_prefix = {train_data_prefix}
-val_ann_file = {val_ann_file}
-val_data_prefix = {val_data_prefix}
-num_classes = {num_classes}
-class_name = {class_name}
 default_hooks = dict(
     timer=dict(type='IterTimerHook'),
     logger=dict(type='LoggerHook', interval=50),
@@ -69,8 +73,7 @@ tta_pipeline = [
     dict(
         type='TestTimeAug',
         transforms=[[{
-            'type':
-            'Compose',
+            'type':'Compose',
             'transforms': [{
                 'type': 'YOLOv5KeepRatioResize',
                 'scale': (640, 640)
@@ -83,8 +86,7 @@ tta_pipeline = [
                 }
             }]
         }, {
-            'type':
-            'Compose',
+            'type':'Compose',
             'transforms': [{
                 'type': 'YOLOv5KeepRatioResize',
                 'scale': (320, 320)
@@ -97,8 +99,7 @@ tta_pipeline = [
                 }
             }]
         }, {
-            'type':
-            'Compose',
+            'type':'Compose',
             'transforms': [{
                 'type': 'YOLOv5KeepRatioResize',
                 'scale': (960, 960)
@@ -122,8 +123,7 @@ tta_pipeline = [
                         'with_bbox': True
                     }],
                     [{
-                        'type':
-                        'mmdet.PackDetInputs',
+                        'type':'mmdet.PackDetInputs',
                         'meta_keys':
                         ('img_id', 'img_path', 'ori_shape', 'img_shape',
                          'scale_factor', 'pad_param', 'flip', 'flip_direction')
@@ -147,7 +147,7 @@ img_scale = (640, 640)
 random_resize_ratio_range = (0.5, 2.0)
 mosaic_max_cached_images = 40
 mixup_max_cached_images = 20
-dataset_type = 'YOLOv5CocoDataset'
+dataset_type ='YOLOv5CocoDataset'
 val_batch_size_per_gpu = 32
 val_num_workers = 10
 batch_shapes_cfg = dict(
@@ -426,12 +426,12 @@ test_dataloader = dict(
 val_evaluator = dict(
     type='mmdet.CocoMetric',
     proposal_nums=(100, 1, 10),
-    ann_file='data/coco/annotations/instances_val2017.json',
+    ann_file=data_root+val_ann_file,
     metric=['bbox', 'segm'])
 test_evaluator = dict(
     type='mmdet.CocoMetric',
     proposal_nums=(100, 1, 10),
-    ann_file='data/coco/annotations/instances_val2017.json',
+    ann_file=data_root+val_ann_file,
     metric=['bbox', 'segm'])
 optim_wrapper = dict(
     type='OptimWrapper',
