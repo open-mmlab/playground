@@ -8,6 +8,9 @@ from tqdm import tqdm
 from itertools import groupby
 from label_studio_converter.brush import decode_rle
 
+import jinja2
+from jinja2 import Template
+
 import shutil
 
 def parse_args():
@@ -15,7 +18,7 @@ def parse_args():
     parser.add_argument('--json_file_path',default='project.json', help='label studio output json')
     parser.add_argument('--out_dir',default='coco_format_files', help='output dir of Coco format json')
     parser.add_argument('--classes',default=None, help='Classes list of the dataset, if None please check the output.')
-    parser.add_argument('--out_config',default='None', choices=['rtmdet_l_syncbn','rtmdet-ins_s_syncbn',None],help='config mode')
+    parser.add_argument('--out_config',default=None, choices=['rtmdet_l_syncbn','rtmdet-ins_s_syncbn','rtmdet_s_syncbn',None],help='config mode')
 
     args = parser.parse_args()
     return args
@@ -49,8 +52,6 @@ def rle2mask(rle,height, width):
     mask = mask.reshape(-1,4)[:, 0]
     if mask.max()==255:
         mask=np.where(mask==255,1,0)
-
-    # mask = mask[:len(mask)//4]
 
     return mask.reshape((height, width))
 
@@ -170,20 +171,29 @@ def move_to_cfg(args,classes_list):
     elif 'rtmdet-ins_s_syncbn' in args.out_config:
         config_path='config_template/rtmdet-ins_s_syncbn_fast_8xb32-300e_coco.py'
         config_name='rtmdet-ins_s_syncbn_fast_8xb32.py'
+    elif 'rtmdet_s_syncbn' in args.out_config:
+        config_path='config_template/rtmdet_s_syncbn_fast_8xb32-300e_coco.py'
+        config_name='rtmdet_s_syncbn_fast_8xb32.py'
 
     num_classes = len(classes_list)
     data_root=str('\''+args.out_dir+'\'')
     train_ann_file=val_ann_file=str('\''+args.train_ann_file+'\'')
     train_data_prefix=val_data_prefix=str('\''+os.path.join(args.out_dir,'image')+'\'')
-    variable_values = {'class_name':tuple(classes_list), 'num_classes':num_classes, 'data_root':data_root,'train_ann_file':train_ann_file,\
-                        'val_ann_file':train_ann_file, 'train_data_prefix':train_data_prefix,'val_data_prefix':train_data_prefix}
-    with open(config_path,encoding='utf-8') as f:
-        cfg=f.read()
-        new_cfg=cfg.format(**variable_values)
-        f.close()
-    with open(os.path.join(args.out_dir,config_name), "w") as out_file:
-        out_file.write(new_cfg)
-    print('The config have been saved in',args.out_dir)
+    variable_dict = {'class_name':tuple(classes_list), 'num_classes':num_classes, 'data_root':data_root,\
+                       'train_ann_file':train_ann_file,'val_ann_file':train_ann_file, \
+                        'train_data_prefix':train_data_prefix,'val_data_prefix':train_data_prefix}
+    current_dir = os.getcwd()
+    env = jinja2.Environment(loader=jinja2.FileSystemLoader(current_dir))
+    temp = env.get_template(config_path)
+
+    temp_out=temp.render(class_name=variable_dict['class_name'],num_classes=variable_dict['num_classes'],\
+            data_root=variable_dict['data_root'],train_ann_file=variable_dict['train_ann_file'],\
+                val_ann_file=variable_dict['val_ann_file'],train_data_prefix=variable_dict['train_data_prefix'],\
+                    val_data_prefix=variable_dict['val_data_prefix'])
+    with open(os.path.join(args.out_dir,config_name), "w", encoding='utf-8') as out_file:
+        out_file.writelines(temp_out)
+        out_file.close()
+    print(f'The config have been saved in \'{args.out_dir}\'')
 
 if __name__ == '__main__':
     args = parse_args()
