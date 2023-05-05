@@ -275,7 +275,7 @@ Your dataset
 #安装 Jinja2
 pip install Jinja2
 cd path/to/playground/label_anything
-python tools/convert_to_rle_mask_coco.py --json_file_path path/to/LS_json --out_dir path/to/output/file --out_config rtmdet_s_syncbn
+python tools/convert_to_rle_mask_coco.py --json_file_path path/to/LS_json --out_dir path/to/output/file --out_config rtmdet_s
 ```
 
 --out_config 选择你的模板 `rtmdet_l`, `rtmdet-ins_s`, `rtmdet_s`
