@@ -2,17 +2,17 @@ _base_ = ['../_base_/default_runtime.py', '../_base_/det_p5_tta.py']
 
 # ========================Frequently modified parameters======================
 # -----data related-----
-data_root = {data_root}
+data_root = {{data_root}}
 # Path of train annotation file
-train_ann_file = {train_ann_file}
-train_data_prefix = {train_ann_file}  # Prefix of train image path
+train_ann_file = {{train_ann_file}}
+train_data_prefix = {{train_data_prefix}} # Prefix of train image path
 # Path of val annotation file
-val_ann_file = {val_ann_file}
-val_data_prefix = {val_data_prefix}  # Prefix of val image path
+val_ann_file = {{val_ann_file}}
+val_data_prefix = {{val_data_prefix}}  # Prefix of val image path
 
-num_classes = {num_classes}  # Number of classes for classification
+num_classes = {{num_classes}}  # Number of classes for classification
 # Batch size of a single GPU during training
-class_name = {class_name}
+class_name = {{class_name}}
 metainfo = dict(classes=class_name, palette=[(20, 220, 60)])
 
 train_batch_size_per_gpu = 32
