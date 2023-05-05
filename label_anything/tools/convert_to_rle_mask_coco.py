@@ -9,7 +9,6 @@ from itertools import groupby
 from label_studio_converter.brush import decode_rle
 
 import jinja2
-from jinja2 import Template
 
 import shutil
 
@@ -18,7 +17,7 @@ def parse_args():
     parser.add_argument('--json_file_path',default='project.json', help='label studio output json')
     parser.add_argument('--out_dir',default='coco_format_files', help='output dir of Coco format json')
     parser.add_argument('--classes',default=None, help='Classes list of the dataset, if None please check the output.')
-    parser.add_argument('--out_config',default=None, choices=['rtmdet_l_syncbn','rtmdet-ins_s_syncbn','rtmdet_s_syncbn',None],help='config mode')
+    parser.add_argument('--out_config',default='rtmdet_s', choices=['rtmdet_l','rtmdet-ins_s','rtmdet_s',None],help='config mode')
 
     args = parser.parse_args()
     return args
@@ -159,19 +158,19 @@ def format_to_coco(args):
 
     classes_output=[d["name"] for d in coco_format["categories"]]
     print(classes_output)
-    args.train_ann_file=os.path.join(output_ann_path,'output.json')
-    with open(os.path.join(output_ann_path,'output.json'), "w") as out_file:
+    args.train_ann_file=os.path.join(output_ann_path,'ann.json')
+    with open(os.path.join(output_ann_path,'ann.json'), "w") as out_file:
         json.dump(coco_format, out_file, ensure_ascii=False, indent=4)
     return classes_output,args
 
 def move_to_cfg(args,classes_list):
-    if 'rtmdet_l_syncbn' in args.out_config:
+    if 'rtmdet_l' in args.out_config:
         config_path='config_template/rtmdet_l_syncbn_fast_8xb32-300e_coco.py'
         config_name='rtmdet_l_syncbn_fast_8xb32.py'
-    elif 'rtmdet-ins_s_syncbn' in args.out_config:
+    elif 'rtmdet-ins_s' in args.out_config:
         config_path='config_template/rtmdet-ins_s_syncbn_fast_8xb32-300e_coco.py'
         config_name='rtmdet-ins_s_syncbn_fast_8xb32.py'
-    elif 'rtmdet_s_syncbn' in args.out_config:
+    elif 'rtmdet_s' in args.out_config:
         config_path='config_template/rtmdet_s_syncbn_fast_8xb32-300e_coco.py'
         config_name='rtmdet_s_syncbn_fast_8xb32.py'
 
