@@ -1,21 +1,23 @@
+import sys
+
 import cv2
 import gradio as gr
 import numpy as np
 import PIL.Image as Image
 import torch
+# Diffusion model
+from diffusers import StableDiffusionInpaintPipeline
 from matplotlib import pyplot as plt
 # MMOCR
 from mmocr.apis.inferencers import MMOCRInferencer
 from mmocr.utils import poly2bbox
+from mmocr.utils.polygon_utils import offset_polygon
 # SAM
 from segment_anything import SamPredictor, sam_model_registry
-# Diffusion model
-from diffusers import StableDiffusionInpaintPipeline
-from mmocr.utils.polygon_utils import offset_polygon
-import sys
 
 sys.path.append('latent_diffusion')
-from latent_diffusion.ldm_erase_text import erase_text_from_image, instantiate_from_config, OmegaConf
+from latent_diffusion.ldm_erase_text import (OmegaConf, erase_text_from_image,
+                                             instantiate_from_config)
 
 det_config = 'mmocr_dev/configs/textdet/dbnetpp/dbnetpp_swinv2_base_w16_in21k.py'  # noqa
 det_weight = 'checkpoints/mmocr/db_swin_mix_pretrain.pth'
@@ -59,7 +61,7 @@ def show_mask(mask, ax, random_color=False):
 
 
 def run_mmocr_sam(img: np.ndarray, ):
-    """Run MMOCR and SAM
+    """Run MMOCR and SAM.
 
     Args:
         img (np.ndarray): Input image
@@ -132,7 +134,7 @@ def run_mmocr_sam(img: np.ndarray, ):
 
 def run_erase(img: np.ndarray, mask_results, indexs: str, diffusion_type: str,
               mask_type: str, dilate_iter: int):
-    """Run erase task
+    """Run erase task.
 
     Args:
         img (np.ndarray): Input image
@@ -177,18 +179,18 @@ def run_erase(img: np.ndarray, mask_results, indexs: str, diffusion_type: str,
             torch_dtype=torch.float16)
         pipe = pipe.to('cuda')
         img = img.resize((512, 512))
-        mask_img = numpy2PIL(numpy_image=whole_mask).convert("RGB").resize(
+        mask_img = numpy2PIL(numpy_image=whole_mask).convert('RGB').resize(
             (512, 512))
-        prompt = "Just a background with no content"
+        prompt = 'Just a background with no content'
         result_img = pipe(
             prompt=prompt, image=img, mask_image=mask_img).images[0]
         result_img = result_img.resize(ori_img_size)
 
     elif diffusion_type == 'Latent Diffusion':
-        config = OmegaConf.load("latent_diffusion/inpainting_big/config.yaml")
+        config = OmegaConf.load('latent_diffusion/inpainting_big/config.yaml')
         model = instantiate_from_config(config.model)
         model.load_state_dict(
-            torch.load("checkpoints/ldm/last.ckpt")["state_dict"],
+            torch.load('checkpoints/ldm/last.ckpt')['state_dict'],
             strict=False)
         model = model.to('cuda')
         mask_img = numpy2PIL(numpy_image=whole_mask)
@@ -234,11 +236,9 @@ if __name__ == '__main__':
                 downstream = gr.Button('Run Erasing')
             with gr.Column(scale=1):
                 output_image = gr.Image(label='Output Image')
-                gr.Markdown("## Image Examples")
+                gr.Markdown('## Image Examples')
                 gr.Examples(
-                    examples=[
-                        'imgs/ex1.jpg'
-                    ],
+                    examples=['imgs/ex1.jpg'],
                     inputs=input_image,
                 )
             mmocr_sam.click(

@@ -3,15 +3,14 @@ import gradio as gr
 import numpy as np
 import PIL.Image as Image
 import torch
+# Diffusers
+from diffusers import StableDiffusionInpaintPipeline
 from matplotlib import pyplot as plt
 # MMOCR
 from mmocr.apis.inferencers import MMOCRInferencer
 from mmocr.utils import poly2bbox
 # SAM
 from segment_anything import SamPredictor, sam_model_registry
-
-# Diffusers
-from diffusers import StableDiffusionInpaintPipeline
 
 det_config = 'mmocr_dev/configs/textdet/dbnetpp/dbnetpp_swinv2_base_w16_in21k.py'  # noqa
 det_weight = 'checkpoints/mmocr/db_swin_mix_pretrain.pth'
@@ -31,8 +30,8 @@ sam_predictor = SamPredictor(sam)
 
 # Build Diffusers
 pipe = StableDiffusionInpaintPipeline.from_pretrained(
-    "stabilityai/stable-diffusion-2-inpainting", torch_dtype=torch.float16)
-pipe = pipe.to("cuda")
+    'stabilityai/stable-diffusion-2-inpainting', torch_dtype=torch.float16)
+pipe = pipe.to('cuda')
 
 
 def show_mask(mask, ax, random_color=False):
@@ -46,7 +45,7 @@ def show_mask(mask, ax, random_color=False):
 
 
 def run_mmocr_sam(img: np.ndarray, ):
-    """Run MMOCR and SAM
+    """Run MMOCR and SAM.
 
     Args:
         img (np.ndarray): Input image
@@ -118,7 +117,7 @@ def run_mmocr_sam(img: np.ndarray, ):
 
 
 def run_downstream(img: np.ndarray, mask_results, index: str, prompt: str):
-    """Run downstream tasks
+    """Run downstream tasks.
 
     Args:
         img (np.ndarray): Input image
@@ -159,11 +158,9 @@ if __name__ == '__main__':
                 downstream = gr.Button('Run Inpainting')
             with gr.Column(scale=1):
                 output_image = gr.Image(label='Output Image')
-                gr.Markdown("## Image Examples")
+                gr.Markdown('## Image Examples')
                 gr.Examples(
-                    examples=[
-                        'imgs/ex1.jpg'
-                    ],
+                    examples=['imgs/ex1.jpg'],
                     inputs=input_image,
                 )
             mmocr_sam.click(

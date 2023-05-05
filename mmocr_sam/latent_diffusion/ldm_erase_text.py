@@ -1,32 +1,38 @@
-import argparse, os, sys, glob
+import argparse
+import glob
+import os
+import sys
+
+import numpy as np
+import torch
+from ldm.models.diffusion.ddim import DDIMSampler
+from ldm.util import instantiate_from_config
 from omegaconf import OmegaConf
 from PIL import Image
 from tqdm import tqdm
-import numpy as np
-import torch
-from ldm.util import instantiate_from_config
-from ldm.models.diffusion.ddim import DDIMSampler
 
 
 def make_batch(image, mask_pil_image, img_size, device):
     if isinstance(image, str):
         if img_size is not None:
-            image = np.array(Image.open(image).convert("RGB").resize(img_size))
+            image = np.array(Image.open(image).convert('RGB').resize(img_size))
         else:
-            image = np.array(Image.open(image).convert("RGB")) # need to resize to a image_size
+            image = np.array(Image.open(image).convert(
+                'RGB'))  # need to resize to a image_size
     else:
         if img_size is not None:
-            image = np.array(image.convert("RGB").resize(img_size))
+            image = np.array(image.convert('RGB').resize(img_size))
         else:
-            image = np.array(image.convert("RGB")) # need to resize to a image_size
+            image = np.array(
+                image.convert('RGB'))  # need to resize to a image_size
     image = image.astype(np.float32) / 255.0
     image = image[None].transpose(0, 3, 1, 2)
     image = torch.from_numpy(image)
 
     if img_size is not None:
-        mask = np.array(mask_pil_image.convert("L").resize(img_size))
+        mask = np.array(mask_pil_image.convert('L').resize(img_size))
     else:
-        mask = np.array(mask_pil_image.convert("L"))
+        mask = np.array(mask_pil_image.convert('L'))
     mask = mask.astype(np.float32) / 255.0
     mask = mask[None, None]
     mask[mask < 0.5] = 0
@@ -35,7 +41,7 @@ def make_batch(image, mask_pil_image, img_size, device):
 
     masked_image = (1 - mask) * image
 
-    batch = {"image": image, "mask": mask, "masked_image": masked_image}
+    batch = {'image': image, 'mask': mask, 'masked_image': masked_image}
     for k in batch:
         batch[k] = batch[k].to(device=device)
         batch[k] = batch[k] * 2.0 - 1.0
@@ -63,9 +69,9 @@ def erase_text_from_image(img_path,
                 batch = make_batch(
                     img_path, mask_pil_img, img_size=img_size, device=device)
             # encode masked image and concat downsampled mask
-            c = model.cond_stage_model.encode(batch["masked_image"])
+            c = model.cond_stage_model.encode(batch['masked_image'])
             cc = torch.nn.functional.interpolate(
-                batch["mask"], size=c.shape[-2:])
+                batch['mask'], size=c.shape[-2:])
             c = torch.cat((c, cc), dim=1)
 
             shape = (c.shape[1] - 1, ) + c.shape[2:]
@@ -85,8 +91,8 @@ def erase_text_from_image(img_path,
                     verbose=False)
             x_samples_ddim = model.decode_first_stage(samples_ddim)
 
-            image = torch.clamp((batch["image"] + 1.0) / 2.0, min=0.0, max=1.0)
-            mask = torch.clamp((batch["mask"] + 1.0) / 2.0, min=0.0, max=1.0)
+            image = torch.clamp((batch['image'] + 1.0) / 2.0, min=0.0, max=1.0)
+            mask = torch.clamp((batch['mask'] + 1.0) / 2.0, min=0.0, max=1.0)
             predicted_image = torch.clamp(
                 (x_samples_ddim + 1.0) / 2.0, min=0.0, max=1.0)
 

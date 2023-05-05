@@ -39,12 +39,11 @@ def get_kwargs_from_config(config_path=_DEFAULT_CONFIG_PATH):
     assert isinstance(config, dict)
     return config
 
+
 from label_studio_ml.api import init_app
 from mmdetection import MMDetection
 
 if __name__ == '__main__':
-
-
 
     parser = argparse.ArgumentParser(description='Label studio')
     parser.add_argument(

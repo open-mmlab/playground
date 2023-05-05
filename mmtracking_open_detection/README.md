@@ -26,7 +26,7 @@ conda create -n mmtracking-sam python=3.8 -y
 conda activate mmtracking-sam
 pip install torch==1.9.1+cu111 torchvision==0.10.1+cu111 -f https://download.pytorch.org/whl/torch_stable.html
 git clone https://github.com/open-mmlab/playground.git
-````
+```
 
 ### MMDet Dependencies Installation
 
@@ -47,7 +47,9 @@ pip install lap seaborn
 cd playground
 pip install git+https://github.com/IDEA-Research/GroundingDINO.git
 ```
+
 If you can't use pip to download due to network reasons, you can choose the following method instead.
+
 ```
 git clone git+https://github.com/IDEA-Research/GroundingDINO.git
 cd GroundingDINO
@@ -69,7 +71,9 @@ cd GLIP; python setup.py build develop --user; cd ..
 ```shell
 pip install git+https://github.com/facebookresearch/segment-anything.git
 ```
+
 If you can't use pip to download due to network reasons, you can choose the following method instead.
+
 ```
 git clone git+https://github.com/facebookresearch/segment-anything.git
 cd segment-anything
