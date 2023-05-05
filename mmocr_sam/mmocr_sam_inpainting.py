@@ -1,15 +1,15 @@
-from argparse import ArgumentParser
-
 import cv2
-import numpy as np
+from argparse import ArgumentParser
 import PIL.Image as Image
 import torch
-from diffusers import StableDiffusionInpaintPipeline
+import numpy as np
 # MMOCR
 from mmocr.apis.inferencers import MMOCRInferencer
 from mmocr.utils import poly2bbox
 # SAM
 from segment_anything import SamPredictor, sam_model_registry
+
+from diffusers import StableDiffusionInpaintPipeline
 
 
 def parse_args():
@@ -54,28 +54,28 @@ def parse_args():
         'If not specified, the available device will be automatically used.')
     # SAM Parser
     parser.add_argument(
-        '--sam_checkpoint',
+        "--sam_checkpoint",
         type=str,
         required=True,
         default='checkpoints/sam/sam_vit_h_4b8939.pth',
-        help='path to checkpoint file')
+        help="path to checkpoint file")
     parser.add_argument(
-        '--sam_type',
+        "--sam_type",
         type=str,
         default='vit_h',
-        help='path to checkpoint file')
+        help="path to checkpoint file")
     parser.add_argument(
-        '--prompt',
+        "--prompt",
         type=str,
         default='Text like a cake',
-        help='Prompt for inpainting')
+        help="Prompt for inpainting")
     parser.add_argument(
-        '--select_index',
+        "--select_index",
         type=int,
         default=0,
-        help='Select the index of the text to inpaint')
+        help="Select the index of the text to inpaint")
     parser.add_argument(
-        '--show', action='store_true', help='whether to show the result')
+        "--show", action='store_true', help="whether to show the result")
     args = parser.parse_args()
     return args
 
@@ -95,8 +95,8 @@ if __name__ == '__main__':
     sam_predictor = SamPredictor(sam)
     # Diffuser
     pipe = StableDiffusionInpaintPipeline.from_pretrained(
-        'stabilityai/stable-diffusion-2-inpainting', torch_dtype=torch.float16)
-    pipe = pipe.to('cuda')
+        "stabilityai/stable-diffusion-2-inpainting", torch_dtype=torch.float16)
+    pipe = pipe.to("cuda")
     img = cv2.imread(args.img_path)
     result = mmocr_inferencer(img)['predictions'][0]
     rec_texts = result['rec_texts']

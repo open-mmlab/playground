@@ -12,6 +12,7 @@ This article introduces a semi-automatic annotation solution combining Label-Stu
     <img src="https://user-images.githubusercontent.com/25839884/233969712-0d9d6f0a-70b0-4b3e-b054-13eda037fb20.gif" width="80%">
 </div>
 
+
 <br>
 
 - SAM (Segment Anything) is a segmentation model launched by Meta AI, designed to segment everything.
@@ -62,6 +63,7 @@ wget https://dl.fbaipublicfiles.com/segment_anything/sam_vit_b_01ec64.pth
 # wget https://dl.fbaipublicfiles.com/segment_anything/sam_vit_h_4b8939.pth
 ```
 
+
 Install Label-Studio 和 label-studio-ml-backend
 
 ```shell
@@ -73,7 +75,6 @@ pip install label-studio-ml==1.0.9
 ```
 
 ## Start the service:
-
 ⚠label_anything requires the SAM backend to be enabled and then the web service to be started before the model can be loaded. (a total of two steps are required to start)
 
 1.Start the SAM backend inference service:
@@ -93,7 +94,8 @@ label-studio-ml start sam --port 8003 --with \
 
 ![image](https://user-images.githubusercontent.com/25839884/233821553-0030945a-8d83-4416-8edd-373ae9203a63.png)
 
-At this point, the SAM backend inference service has started.
+
+At this point, the SAM backend inference service has started. 
 
 ⚠The above terminal window needs to be kept open.
 
@@ -119,7 +121,6 @@ set ML_TIMEOUT_SETUP=40
 ```
 
 Start Label-Studio web service:
-
 ```shell
 label-studio start
 ```
@@ -147,6 +148,7 @@ wget https://download.openmmlab.com/mmyolo/data/cat_dataset.zip && unzip cat_dat
 
 ![](https://cdn.vansin.top/picgo20230330133715.png)
 
+
 Configure Label-Studio keypoint, Mask, and other annotations in Settings/Labeling Interface.
 
 ```xml
@@ -170,14 +172,14 @@ Configure Label-Studio keypoint, Mask, and other annotations in Settings/Labelin
   </BrushLabels>
 </View>
 ```
-
-In the above XML, we have configured the annotations, where KeyPointLabels are for keypoint annotations, BrushLabels are for Mask annotations, PolygonLabels are for bounding polygon annotations, and RectangleLabels are for rectangle annotations.
+In the above XML, we have configured the annotations, where KeyPointLabels are for keypoint annotations, BrushLabels are for Mask annotations, PolygonLabels are for bounding polygon annotations, and RectangleLabels are for rectangle annotations. 
 
 This example uses two categories, cat and person. If community users want to add more categories, they need to add the corresponding categories in KeyPointLabels, BrushLabels, PolygonLabels, and RectangleLabels respectively.
 
 Next, copy and add the above XML to Label-Studio, and then click Save.
 
 ![image](https://user-images.githubusercontent.com/25839884/233832662-02f856e5-48e7-4200-9011-17693fc2e916.png)
+
 
 After that, go to Settings and click Add Model to add the OpenMMLabPlayGround backend inference service. Set the URL http://localhost:8003 for the SAM backend inference service, enable Use for interactive preannotations, and click Validate and Save.
 
@@ -199,9 +201,11 @@ To use this feature, enable the Auto-Annotation toggle and it is recommended to 
 
 ![image](https://user-images.githubusercontent.com/25839884/233833200-a44c9c5f-66a8-491a-b268-ecfb6acd5284.png)
 
+
 Point2Label: As can be seen from the following gif animation, by simply clicking a point on the object, the SAM algorithm is able to segment and detect the entire object.
 
 ![SAM8](https://user-images.githubusercontent.com/25839884/233835410-29896554-963a-42c3-a523-3b1226de59b6.gif)
+
 
 Bbox2Label: As can be seen from the following gif animation, by simply annotating a bounding box, the SAM algorithm is able to segment and detect the entire object.
 
@@ -219,6 +223,7 @@ You can use VS Code to open the extracted folder and see the annotated dataset, 
 
 ![](https://cdn.vansin.top/picgo20230330140321.png)
 
+
 ### Label Studio Output Conversion to RLE Format Masks
 
 Since the coco exported by label studio does not support rle instance labeling, it only supports polygon instances.
@@ -235,6 +240,7 @@ python tools/convert_to_rle_mask_coco.py --json_file_path path/to/LS_json --out_
 --json_file_path Enter the output json from Label studio
 
 --out_dir Output path
+
 
 After generation the script outputs a list in the terminal that corresponds to the category ids and can be used to copy and fill the config for training.
 ![image](https://user-images.githubusercontent.com/101508488/235708732-20938d81-2f63-4bf6-ba6a-e2b31048b061.png)

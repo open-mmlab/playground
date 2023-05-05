@@ -220,11 +220,11 @@ python detector_sam_demo.py ../images/cat_remote.jpg \
 
 ### 3 Grounding models + SAM
 
-Use Grounding object detectors with SAM models for instance segmentation tasks. Currently we support Grounding DINO and GLIP.
+Use Gounding object detectors with SAM models for instance segmentation tasks. Currently we support Gounding DINO and GLIP.
 
 #### Dependencies Installation
 
-Grounding DINO:
+Gounding DINO:
 
 ```shell
 cd playground

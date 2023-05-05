@@ -1,25 +1,24 @@
 import os
-import sys
 import time
+from PIL import Image
 from argparse import ArgumentParser
 
 import cv2
 import numpy as np
 import torch
-# Diffusion model
-from diffusers import StableDiffusionInpaintPipeline
 from matplotlib import pyplot as plt
 # MMOCR
 from mmocr.apis.inferencers import MMOCRInferencer
 from mmocr.utils import poly2bbox
 from mmocr.utils.polygon_utils import offset_polygon
-from PIL import Image
 # SAM
 from segment_anything import SamPredictor, sam_model_registry
+# Diffusion model
+from diffusers import StableDiffusionInpaintPipeline
+import sys
 
 sys.path.append('latent_diffusion')
-from latent_diffusion.ldm_erase_text import (OmegaConf, erase_text_from_image,
-                                             instantiate_from_config)
+from latent_diffusion.ldm_erase_text import erase_text_from_image, instantiate_from_config, OmegaConf
 
 
 def parse_args():
@@ -68,57 +67,57 @@ def parse_args():
         'If not specified, the available device will be automatically used.')
     # SAM Parser
     parser.add_argument(
-        '--use_sam',
+        "--use_sam",
         type=bool,
         default=True,
         help='Whether to use SAM to segment the character. If you use the '
         'latent-diffusion for erasing, don\'t use the sam can greatly improve '
         'the erasing quality.')
     parser.add_argument(
-        '--sam_checkpoint',
+        "--sam_checkpoint",
         type=str,
         default='checkpoints/sam/sam_vit_h_4b8939.pth',
-        help='path to checkpoint file')
+        help="path to checkpoint file")
     parser.add_argument(
-        '--sam_type',
+        "--sam_type",
         type=str,
         default='vit_h',
-        help='path to checkpoint file')
+        help="path to checkpoint file")
     parser.add_argument(
-        '--dilate_iteration',
+        "--dilate_iteration",
         type=int,
         default=2,
-        help='The dilate iteration to dilate the SAM ouput mask')
+        help="The dilate iteration to dilate the SAM ouput mask")
     parser.add_argument(
-        '--show', action='store_true', help='whether to show the result')
+        "--show", action='store_true', help="whether to show the result")
     # Diffusion Erase Model Parser
     parser.add_argument(
-        '--diffusion_model',
+        "--diffusion_model",
         type=str,
         default=
         'latent-diffusion',  # Options: latent-diffusion, stable-diffusion
-        help='path to checkpoint file')
+        help="path to checkpoint file")
     parser.add_argument(
-        '--sd_ckpt',
+        "--sd_ckpt",
         type=str,
         default='diffusers/checkpoints/stable-diffusion-2-inpainting',
         help='If use stable-diffusion for erasing, you can set the local '
         'ckpt file. If want to download from hub, set `None`')
     parser.add_argument(
-        '--prompt',
+        "--prompt",
         type=str,
         default=None,
         help='If use stable-diffusion for erasing, you can set prompt '
         'by yourself. If you want the default(`No text, clean background`), '
         'set `None`')
     parser.add_argument(
-        '--img_size',
+        "--img_size",
         type=tuple,
         default=(512, 512),
         help='If use latetn-diffusion for erasing, set the ldm-inpainting '
         'image size, also if want to use original size, set `None`')
     parser.add_argument(
-        '--steps',
+        "--steps",
         type=int,
         default=50,
         help='If use latetn-diffusion for erasing, choose the number of '
@@ -186,20 +185,20 @@ if __name__ == '__main__':
         sam = sam.to(args.device)
         sam_predictor = SamPredictor(sam)
 
-    if args.diffusion_model == 'stable-diffusion':
+    if args.diffusion_model == "stable-diffusion":
         # Build Stable Diffusion Inpainting
         if args.sd_ckpt is not None:
             sd_ckpt = args.sd_ckpt
         else:
-            sd_ckpt = 'stabilityai/stable-diffusion-2-inpainting'
+            sd_ckpt = "stabilityai/stable-diffusion-2-inpainting"
         pipe = StableDiffusionInpaintPipeline.from_pretrained(
             sd_ckpt, torch_dtype=torch.float16)
         pipe = pipe.to(args.device)
     else:
-        config = OmegaConf.load('latent_diffusion/inpainting_big/config.yaml')
+        config = OmegaConf.load("latent_diffusion/inpainting_big/config.yaml")
         model = instantiate_from_config(config.model)
         model.load_state_dict(
-            torch.load('checkpoints/ldm/last.ckpt')['state_dict'],
+            torch.load("checkpoints/ldm/last.ckpt")["state_dict"],
             strict=False)
         model = model.to(args.device)
 
@@ -219,7 +218,7 @@ if __name__ == '__main__':
         rec_texts = result['rec_texts']
         det_polygons = result['det_polygons']
         print(
-            f'The MMOCR for detecting the text has finished, costing time {end-start}s'
+            f"The MMOCR for detecting the text has finished, costing time {end-start}s"
         )
 
         h, w, c = img.shape
@@ -256,7 +255,7 @@ if __name__ == '__main__':
                 det_polygons=det_polygons,
                 args=args)
             print(
-                f'The SAM for segment the text has finished, costing time {end-start}s'
+                f"The SAM for segment the text has finished, costing time {end-start}s"
             )
         else:
             whole_mask = np.zeros((h, w, c), np.uint8)
@@ -274,11 +273,11 @@ if __name__ == '__main__':
             cv2.imwrite(
                 os.path.join(args.outdir, f'whole_mask.jpg'), whole_mask)
 
-        if args.diffusion_model == 'stable-diffusion':
+        if args.diffusion_model == "stable-diffusion":
             # Data preparation
-            sd_img = Image.open(ori_input).convert('RGB').resize((512, 512))
+            sd_img = Image.open(ori_input).convert("RGB").resize((512, 512))
             sd_mask_img = numpy2PIL(
-                numpy_image=whole_mask).convert('RGB').resize((512, 512))
+                numpy_image=whole_mask).convert("RGB").resize((512, 512))
             # sd_mask_img.save(os.path.join(args.outdir, f'whole_mask.png'))
 
             # Stable Diffusion for Erasing
@@ -294,7 +293,7 @@ if __name__ == '__main__':
             image = image.resize((w, h))
             image.save(os.path.join(args.outdir, f'erase_output.jpg'))
             print(
-                f'The Stable Diffusion for erasing the text has finished, costing time {end-start}'
+                f"The Stable Diffusion for erasing the text has finished, costing time {end-start}"
             )
 
         else:
@@ -308,7 +307,7 @@ if __name__ == '__main__':
                 opt=args)
             end = time.time()
             image = image.resize((w, h))
-            image.save(f'{args.outdir}/erased_image.jpg')
+            image.save(f"{args.outdir}/erased_image.jpg")
             print(
-                f'The Latent Diffusion for erasing the text has finished, costing time {end-start}'
+                f"The Latent Diffusion for erasing the text has finished, costing time {end-start}"
             )

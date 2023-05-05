@@ -2,35 +2,28 @@ import argparse
 import json
 import os
 import uuid
-
 try:
-    from label_studio_converter.imports.label_config import \
-        generate_label_config
+    from label_studio_converter.imports.label_config import generate_label_config
 except:
     raise ModuleNotFoundError(
-        'label_studio_converter is not installed, run `pip install label_studio_converter` to install'
-    )
+        "label_studio_converter is not installed, run `pip install label_studio_converter` to install")
 
 
 def parse_args():
     parser = argparse.ArgumentParser(
-        description='Convert COCO labeling to Label Studio JSON')
+        description="Convert COCO labeling to Label Studio JSON")
     parser.add_argument('--input-file', help='JSON file with COCO annotations')
     parser.add_argument('--output-file', help='output Label Studio JSON file')
     parser.add_argument(
-        '--image-root-url',
-        help=
-        'root URL path where images will be hosted, e.g.: http://example.com/images',
-        default='/data/local-files/?d=')
+        '--image-root-url', help='root URL path where images will be hosted, e.g.: http://example.com/images', default='/data/local-files/?d=')
 
     args = parser.parse_args()
     return args
 
 
 def new_task(out_type, root_url, file_name):
-    """create new task with Label Studio format copy from:
-    https://github.com/heartexlabs/label-studio-
-    converter/blob/master/label_studio_converter/imports/coco.py.
+    """create new task with Label Studio format
+    copy from: https://github.com/heartexlabs/label-studio-converter/blob/master/label_studio_converter/imports/coco.py
 
     Args:
         out_type (str): labeling out_type in Label Studio.
@@ -38,25 +31,23 @@ def new_task(out_type, root_url, file_name):
         file_name (str): image file_name.
 
     Returns:
-        dict: task info dict
+        dict: task info dict 
     """
     return {
-        'data': {
-            'image': os.path.join(root_url, file_name)
-        },
+        "data": {"image": os.path.join(root_url, file_name)},
         # 'annotations' or 'predictions'
-        out_type: [{
-            'result': [],
-            'ground_truth': False,
-        }],
+        out_type: [
+            {
+                "result": [],
+                "ground_truth": False,
+            }
+        ],
     }
 
 
-def create_bbox(annotation, categories, from_name, image_height, image_width,
-                to_name):
-    """create bbox labeling with Label Studio format. copy from:
-    https://github.com/heartexlabs/label-studio-
-    converter/blob/master/label_studio_converter/imports/coco.py.
+def create_bbox(annotation, categories, from_name, image_height, image_width, to_name):
+    """create bbox labeling with Label Studio format.
+    copy from: https://github.com/heartexlabs/label-studio-converter/blob/master/label_studio_converter/imports/coco.py
 
     Args:
         annotation (dict): annotation dict with COCO format.
@@ -73,37 +64,34 @@ def create_bbox(annotation, categories, from_name, image_height, image_width,
     x, y, width, height = annotation['bbox']
     x, y, width, height = float(x), float(y), float(width), float(height)
     item = {
-        'id': uuid.uuid4().hex[0:10],
-        'type': 'rectanglelabels',
-        'value': {
-            'x': x / image_width * 100.0,
-            'y': y / image_height * 100.0,
-            'width': width / image_width * 100.0,
-            'height': height / image_height * 100.0,
-            'rotation': 0,
-            'rectanglelabels': [label],
+        "id": uuid.uuid4().hex[0:10],
+        "type": "rectanglelabels",
+        "value": {
+            "x": x / image_width * 100.0,
+            "y": y / image_height * 100.0,
+            "width": width / image_width * 100.0,
+            "height": height / image_height * 100.0,
+            "rotation": 0,
+            "rectanglelabels": [label],
         },
-        'to_name': to_name,
-        'from_name': from_name,
-        'image_rotation': 0,
-        'original_width': image_width,
-        'original_height': image_height,
+        "to_name": to_name,
+        "from_name": from_name,
+        "image_rotation": 0,
+        "original_width": image_width,
+        "original_height": image_height,
     }
     return item
 
 
-def convert_coco_to_ls(
-    input_file,
-    out_file,
-    from_name='label',
-    to_name='image',
-    out_type='annotations',
-    use_super_categories=False,
-    image_root_url='/data/local-files/?d=',
-):
-    """Convert COCO labeling to Label Studio JSON Modified from:
-    https://github.com/heartexlabs/label-studio-
-    converter/blob/master/label_studio_converter/imports/coco.py.
+def convert_coco_to_ls(input_file,
+                       out_file,
+                       from_name='label',
+                       to_name='image',
+                       out_type="annotations",
+                       use_super_categories=False,
+                       image_root_url='/data/local-files/?d=',):
+    """Convert COCO labeling to Label Studio JSON
+    Modified from: https://github.com/heartexlabs/label-studio-converter/blob/master/label_studio_converter/imports/coco.py
 
     Args:
         input_file (str): input json file path with COCO annotations
@@ -121,10 +109,7 @@ def convert_coco_to_ls(
     # build categories => labels dict
     new_categories = {}
     # list to dict conversion: [...] => {category_id: category_item}
-    categories = {
-        int(category['id']): category
-        for category in coco['categories']
-    }
+    categories = {int(category['id'])                  : category for category in coco['categories']}
     ids = sorted(categories.keys())  # sort labels by their origin ids
 
     for i in ids:
@@ -140,8 +125,7 @@ def convert_coco_to_ls(
     images = {item['id']: item for item in coco['images']}
 
     print(
-        f'Found {len(categories)} categories, {len(images)} images and {len(coco["annotations"])} annotations'
-    )
+        f'Found {len(categories)} categories, {len(images)} images and {len(coco["annotations"])} annotations')
 
     # flags for labeling config composing
     bbox = False
@@ -185,8 +169,8 @@ def convert_coco_to_ls(
 
     # generate and save labeling config
     label_config_file = out_file.replace('.json', '') + '.label_config.xml'
-    generate_label_config(categories, tags, to_name, from_name,
-                          label_config_file)
+    generate_label_config(categories, tags, to_name,
+                          from_name, label_config_file)
 
     if len(tasks) > 0:
         tasks = [tasks[key] for key in sorted(tasks.keys())]
@@ -201,7 +185,8 @@ def convert_coco_to_ls(
             f'  2. Use Labeling Config from "{label_config_file}"\n'
             f'  3. Setup serving for images [e.g. you can use Local Storage (or others):\n'
             f'     https://labelstud.io/guide/storage.html#Local-storage]\n'
-            f'  4. Import "{out_file}" to the project\n')
+            f'  4. Import "{out_file}" to the project\n'
+        )
     else:
         print('No labels converted')
 

@@ -1,5 +1,6 @@
 # 导入COCO数据进入Label Studio
 
+
 本文将以 coco2017 的验证集为例，介绍如何将 coco 格式的数据集导入 label-studio.
 
 ### json 格式转换
@@ -7,11 +8,10 @@
 本小节需要将 coco 格式的标注 json 文件转换为 label-studio 标准格式的 json 文件以便将其导入进 label-studio 项目中, LABEL_ANYTHING 项目提供了辅助脚本进行格式转换，目前仅支持检测框格式转换。
 
 ```shell
-python tools/convert_to_ls_format.py --input-file instances_val2017.json \
-                                    --output-file out.json  \
-                                    --image-root-url "/data/local-files/?d=coco2017/val2017"
-```
-
+python tools/convert_to_ls_format.py --input-file instances_val2017.json \ 
+                                    --output-file out.json  \  
+                                    --image-root-url "/data/local-files/?d=coco2017/val2017" 
+``` 
 其中各个参数的含义如下: \
 `input-file`：需要转换的 coco 格式 json 文件 \
 `output-file`: 需要保存的 label-studio 格式的 json 文件 \
@@ -19,22 +19,18 @@ python tools/convert_to_ls_format.py --input-file instances_val2017.json \
 
 脚本转换完成后会在目标目录下生成 `out.json` 和 `out.label_config.xml` 两个文件。`out.json` 为转换成功的标注文件；`out.label_config.xml` 为项目配置文件。
 
+
 ### 创建label-studio项目
-
 接下来需要创建 label-studio 项目，本文采用本地储存方式来保存图片文件。根据[Local-storage](https://labelstud.io/guide/storage.html#Local-storage)，在启动 label-studio 服务器前需要设置两个环境变量:
-
 ```
 LABEL_STUDIO_LOCAL_FILES_SERVING_ENABLED=true
-LABEL_STUDIO_LOCAL_FILES_DOCUMENT_ROOT=/home/user/label-studio/datasets
+LABEL_STUDIO_LOCAL_FILES_DOCUMENT_ROOT=/home/user/label-studio/datasets 
 ```
-
 其中 `LABEL_STUDIO_LOCAL_FILES_DOCUMENT_ROOT` 为数据图片保存根目录。
 随后运行
-
 ```
 label-studio start
 ```
-
 启动 label-studio 服务器
 
 进入 label-studio 服务器 ui,创建用户并登录:
@@ -62,11 +58,12 @@ label-studio start
 ![image](https://user-images.githubusercontent.com/42299757/235578802-c3b13152-76ea-4388-b3c9-0d3c9bee2c13.png)
 
 ### 关于图片路径和标注文件中路径的对应
-
 在 label-studio 中并不推荐采用本地路径来储存数据，而推荐采用 url 来读取图片。\
 如果图片数据储存在云端，通过 url 读取的话，转换脚本中 `--image-root-url` 参数直接设置为图片 url 前缀即可。\
-如果采用本地路径来储存数据，label-studio 读取图片的路径为 `/data/local-files/?d=${path_relative_to_data_root}` ,其中`${path_relative_to_data_root}`是图片所在目录相对于服务器启动时候的环境变量 `${LABEL_STUDIO_LOCAL_FILES_DOCUMENT_ROOT}` 的相对路径，例如:
+如果采用本地路径来储存数据，label-studio 读取图片的路径为 `/data/local-files/?d=${path_relative_to_data_root}` ,其中`${path_relative_to_data_root}`是图片所在目录相对于服务器启动时候的环境变量 `${LABEL_STUDIO_LOCAL_FILES_DOCUMENT_ROOT}` 的相对路径，例如: 
 
 `absolute local path`: `/home/user/label-studio/datasets/coco2017/val2017/***.jpg` \
 `LABEL_STUDIO_LOCAL_FILES_DOCUMENT_ROOT`: `/home/user/label-studio/datasets` \
-`path_relative_to_data_root`: `/data/local-files/?d=coco2017/val2017`
+`path_relative_to_data_root`: `/data/local-files/?d=coco2017/val2017` 
+
+

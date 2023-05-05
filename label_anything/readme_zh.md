@@ -16,6 +16,7 @@
 
 <br>
 
+
 - SAM (Segment Anything) 是 Meta AI 推出的分割一切的模型。
 - [Label Studio](https://github.com/heartexlabs/label-studio) 是一款优秀的标注软件，覆盖图像分类、目标检测、分割等领域数据集标注的功能。
 
@@ -65,6 +66,7 @@ wget https://dl.fbaipublicfiles.com/segment_anything/sam_vit_b_01ec64.pth
 # wget https://dl.fbaipublicfiles.com/segment_anything/sam_vit_h_4b8939.pth
 ```
 
+
 安装 Label-Studio 和 label-studio-ml-backend
 
 ```shell
@@ -96,6 +98,7 @@ device=cuda:0 \
 ```
 
 ![image](https://user-images.githubusercontent.com/25839884/233821553-0030945a-8d83-4416-8edd-373ae9203a63.png)
+
 
 此时，SAM 后端推理服务已经启动。
 
@@ -153,6 +156,7 @@ wget https://download.openmmlab.com/mmyolo/data/cat_dataset.zip && unzip cat_dat
 
 ![](https://cdn.vansin.top/picgo20230330133715.png)
 
+
 在 `Settings/Labeling Interface` 中配置 Label-Studio 关键点和 Mask 标注。
 
 ```xml
@@ -176,7 +180,6 @@ wget https://download.openmmlab.com/mmyolo/data/cat_dataset.zip && unzip cat_dat
   </BrushLabels>
 </View>
 ```
-
 在上述 XML 中我们对标注进行了配置，其中 `KeyPointLabels` 为关键点标注，`BrushLabels` 为 Mask 标注，`PolygonLabels` 为外接多边形标注，`RectangleLabels` 为矩形标注。
 
 本实例使用 `cat` 和 `person` 两个类别，如果社区用户想增加更多的类别需要分别在 `KeyPointLabels`、`BrushLabels`、`PolygonLabels`、`RectangleLabels` 中添加对应的类别。
@@ -184,6 +187,7 @@ wget https://download.openmmlab.com/mmyolo/data/cat_dataset.zip && unzip cat_dat
 然后将上述 XML 复制添加到 Label-Studio，然后点击 Save。
 
 ![image](https://user-images.githubusercontent.com/25839884/233832662-02f856e5-48e7-4200-9011-17693fc2e916.png)
+
 
 然后在设置中点击 Add Model 添加 OpenMMLabPlayGround 后端推理服务,设置好 SAM 后端推理服务的 URL http://localhost:8003 ，并打开 `Use for interactive preannotations` 并点击 `Validate and Save`。
 
@@ -203,16 +207,17 @@ wget https://download.openmmlab.com/mmyolo/data/cat_dataset.zip && unzip cat_dat
 
 需要打开 `Auto-Annotation` 的开关，并建议勾选 `Auto accept annotation suggestions`,并点击右侧 Smart 工具，切换到 Point 后，选择下方需要标注的物体标签，这里选择 cat。如果是 BBox 作为提示词请将 Smart 工具切换到 Rectangle。
 
+
 ![image](https://user-images.githubusercontent.com/25839884/233833200-a44c9c5f-66a8-491a-b268-ecfb6acd5284.png)
 
 Point2Label：由下面的 gif 的动图可以看出，只需要在物体上点一个点，SAM 算法就能将整个物体分割和检测出来。
 
 ![SAM8](https://user-images.githubusercontent.com/25839884/233835410-29896554-963a-42c3-a523-3b1226de59b6.gif)
 
+
 Bbox2Label: 由下面的 gif 的动图可以看出，只需要标注一个边界框，SAM 算法就能将整个物体分割和检测出来。
 
 ![SAM10](https://user-images.githubusercontent.com/25839884/233969712-0d9d6f0a-70b0-4b3e-b054-13eda037fb20.gif)
-
 ## COCO 格式数据集导出
 
 ### Label Studio 网页端导出
@@ -226,6 +231,7 @@ Bbox2Label: 由下面的 gif 的动图可以看出，只需要标注一个边界
 
 ![](https://cdn.vansin.top/picgo20230330140321.png)
 
+
 ### Label Studio 输出转换为RLE格式掩码
 
 由于 label studio 导出来的 coco 不支持 rle 的实例标注，只支持 polygon 的实例。
@@ -238,13 +244,15 @@ polygon 实例格式由于不太好控制点数，太多不方便微调（不像
 cd path/to/playground/label_anything
 python tools/convert_to_rle_mask_coco.py --json_file_path path/to/LS_json --out_dir path/to/output/file
 ```
-
 --json_file_path 输入 Label studio 的输出 json
 
 --out_dir 输出路径
 
+
 生成后脚本会在终端输出一个列表，这个列表是对应类别id的，可用于复制填写 config 用于训练。
 ![image](https://user-images.githubusercontent.com/101508488/235708732-20938d81-2f63-4bf6-ba6a-e2b31048b061.png)
+
+
 
 输出路径下有 annotation 和 image 两个文件夹，annotation 里是 coco 格式的 json， image 是整理好的数据集。
 
@@ -253,3 +261,6 @@ python tools/convert_to_rle_mask_coco.py --json_file_path path/to/LS_json --out_
 <img src='https://user-images.githubusercontent.com/101508488/235289869-fde91cb3-fa50-4c32-b4b7-89daef21d36b.jpg' width="500px">
 
 到此半自动化标注就完成了, 通过 Label-Studio 的半自动化标注功能，可以让用户在标注过程中，通过点击一下鼠标，就可以完成目标的分割和检测，大大提高了标注效率。部分代码借鉴自 label-studio-ml-backend ID 为 253 的 Pull Request，感谢作者的贡献。同时感谢社区同学[ATang0729](https://github.com/ATang0729)为脚本测试重新标注了喵喵数据集。
+
+
+

@@ -1,5 +1,6 @@
 _base_ = [
-    '_base_dbnetpp_swinv2_b_w16_in21k.py', '../_base_/default_runtime.py',
+    '_base_dbnetpp_swinv2_b_w16_in21k.py',
+    '../_base_/default_runtime.py',
     '../_base_/datasets/laion400m.py',
     '../_base_/schedules/schedule_sgd_1200e.py'
 ]

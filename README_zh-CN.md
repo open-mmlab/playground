@@ -46,7 +46,16 @@
 |       [Open-Tracking](#-open-tracking)       |                       <img src="https://github.com/zwhus/pictures/raw/main/demo%2B(1).gif" width="70%" height="20%" />                       |                 开放目标检测 + tracking。探索开放目标检测和视频任务相结合，轻松实现开放类别的视频跟踪和分割                 |
 |           [MMOCR-SAM](#-mmocr-sam)           | <img src="https://user-images.githubusercontent.com/65173622/231919274-a7ebc63f-8665-4324-89bf-f685e3b5161c.jpg" width="70%" height="20%" /> | 端到端文字检测识别 + SAM，将每一个字符都进行分割。使用基于 Gradio 的 Web UI 探索有趣的 OCR 下游任务，包括文本擦除、文本编辑 |
 |       [MMEditing-SAM](#-mmediting-sam)       | <img src="https://user-images.githubusercontent.com/12782558/232716961-54b7e634-8f89-4a38-9353-4c962f9ce0cf.gif" width="70%" height="20%" /> |                                  将 SAM 和图像生成结合起来从而对图像进行任意位置的编辑修改                                  |
-|    [Label-Studio-SAM](#-label-studio-sam)    | <img src="https://user-images.githubusercontent.com/25839884/233835223-16abc0cb-09f0-407d-8be0-33e14cd86e1b.gif" width="70%" height="20%" /> |                                         将 Label-Studio 和 SAM 结合实现半自动化标注                                         |
+|       [Label-Studio-SAM](#-label-studio-sam)       | <img src="https://user-images.githubusercontent.com/25839884/233835223-16abc0cb-09f0-407d-8be0-33e14cd86e1b.gif" width="70%" height="20%" /> |  将 Label-Studio 和 SAM 结合实现半自动化标注 |
+
+
+
+
+
+
+
+
+
 
 下面详细说明。
 
@@ -129,6 +138,7 @@
 
 详情见 [README](mmediting_sam/README_zh-CN.md)。
 
+
 ## ✨ Label-Studio-SAM
 
 ![](https://user-images.githubusercontent.com/25839884/233835223-16abc0cb-09f0-407d-8be0-33e14cd86e1b.gif)
@@ -138,6 +148,7 @@
 1. Point2Label：支持在 Label-Studio 通过点击物体区域的一点来触发 SAM 生成物体的掩码和水平边界框标注生成。
 2. Bbox2Label：支持在 Label-Studio 通过标注物体的边界框来触发 SAM 生成物体掩码和水平边界框标注生成。
 3. Refine: 支持在 Label-Studio 上对 SAM 生成的标注进行修正。
+
 
 详情见 [README](./label_anything/readme_zh.md)。
 

@@ -2,7 +2,6 @@ from torch import Tensor
 
 
 class DummyCondStage:
-
     def __init__(self, conditional_key):
         self.conditional_key = conditional_key
         self.train = None

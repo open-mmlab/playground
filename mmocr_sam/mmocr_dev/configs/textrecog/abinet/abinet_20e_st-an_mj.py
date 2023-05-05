@@ -18,8 +18,12 @@ param_scheduler = [
 ]
 
 # dataset settings
-train_list = [_base_.mjsynth_textrecog_test]
-test_list = [_base_.mjsynth_textrecog_test]
+train_list = [
+    _base_.mjsynth_textrecog_test
+]
+test_list = [
+   _base_.mjsynth_textrecog_test
+]
 
 train_dataset = dict(
     type='ConcatDataset', datasets=train_list, pipeline=_base_.train_pipeline)

@@ -60,18 +60,18 @@ def parse_args():
         'If not specified, the available device will be automatically used.')
     # SAM Parser
     parser.add_argument(
-        '--sam_checkpoint',
+        "--sam_checkpoint",
         type=str,
         # required=True,
         default='checkpoints/sam/sam_vit_h_4b8939.pth',
-        help='path to checkpoint file')
+        help="path to checkpoint file")
     parser.add_argument(
-        '--sam_type',
+        "--sam_type",
         type=str,
         default='vit_h',
-        help='path to checkpoint file')
+        help="path to checkpoint file")
     parser.add_argument(
-        '--show', action='store_true', help='whether to show the result')
+        "--show", action='store_true', help="whether to show the result")
     args = parser.parse_args()
     return args
 
@@ -111,9 +111,8 @@ if __name__ == '__main__':
             img, save_vis=True, out_dir=args.outdir)['predictions'][0]
         rec_texts = result['rec_texts']
         det_polygons = result['det_polygons']
-        det_bboxes = torch.tensor(
-            np.array([poly2bbox(poly) for poly in det_polygons]),
-            device=sam_predictor.device)
+        det_bboxes = torch.tensor(np.array([poly2bbox(poly) for poly in det_polygons]),
+                                  device=sam_predictor.device)
         transformed_boxes = sam_predictor.transform.apply_boxes_torch(
             det_bboxes, img.shape[:2])
         # SAM inference
