@@ -253,20 +253,19 @@ python tools/convert_to_rle_mask_coco.py --json_file_path path/to/LS_json --out_
 ![image](https://user-images.githubusercontent.com/101508488/235708732-20938d81-2f63-4bf6-ba6a-e2b31048b061.png)
 
 
-输出路径下有 annotation 和 image 两个文件夹，annotation 里是 coco 格式的 json， image 是整理好的数据集。
+输出路径下有 annotations 和 images 两个文件夹，annotations 里是 coco 格式的 json， image 是整理好的数据集。
 ```
 Your dataset
-├── annotation
+├── annotations
 │   ├── ann.json
-├── image
-├── config.json (Optional)
+├── images
 ```
 
-### 对生成的数据集可视化
+### 对生成的数据集可视化（可选）
 
-我们可以使用 mmdetection 中 `browse_dataset.py` 对生成的数据集进行可视化。
+本节将介绍如何使用 mmdetection 中 `browse_dataset.py` 对生成的数据集进行可视化。
 
-首先在playground目录下获取 mmdetection.
+首先在playground目录下获取 mmdetection。
 
 ```shell
 cd path/to/playground/
@@ -275,22 +274,35 @@ git clone https://github.com/open-mmlab/mmdetection.git
 cd mmdetection; pip install -e .; cd ..
 ```
 
-
-
-本脚本可以根据需求输出训练用的 config，现提供了两个版本模板 `mask-rcnn_r50_fpn`, `rtmdet-ins_s`。
+然后使用本脚本根据需求输出训练用的 config，此处提供了两个版本模板 `mask-rcnn_r50_fpn`, `rtmdet-ins_s` 存放在 `label_anything/config_template` 中。
 
 ```shell
 #安装 Jinja2
 pip install Jinja2
 cd path/to/playground/label_anything
-python tools/convert_to_rle_mask_coco.py --json_file_path path/to/LS_json --out_dir path/to/output/file --out_config rtmdet-ins_s
+python tools/convert_to_rle_mask_coco.py --json_file_path path/to/LS_json --out_dir path/to/output/file --out_config config_mode
 ```
 
 --out_config 选择你的模板 `mask-rcnn_r50_fpn`, `rtmdet-ins_s`
 
-我们建议 `--json_file_path` 为 `../mmdetection/data/my_set` 以方便使用 mmdetection 进行训练。
+此处建议 `--out_dir` 为 `../mmdetection/data/my_set` 以方便使用 mmdetection 进行训练。
 
-对数据集进行可视化。
+完成转换后，即可在 `mmdetection/data/my_set` 下找到转换好的数据集以及生成好的 config。
+
+```
+playground
+├── mmdetection
+│   ├── data
+│   │   ├── my_set
+│   │   │   ├── annotations
+│   │   │   │   ├── ann.json
+│   │   │   ├── images
+│   │   │   ├── rtmdet-ins_s.py
+├── ...
+```
+
+
+接着我们使用 `tools/analysis_tools/browse_dataset.py` 对数据集进行可视化。
 
 ```shell
 cd path/to/playground/mmdetection
@@ -300,9 +312,9 @@ python tools/analysis_tools/browse_dataset.py data/my_set/rtmdet-ins_s.py
 
 以下是使用转换后的数据集通过 `mmyolo/tools/analysis_tools/browse_dataset.py` 转化结果。
 
-
-
 <img src='https://user-images.githubusercontent.com/101508488/235289869-fde91cb3-fa50-4c32-b4b7-89daef21d36b.jpg' width="500px">
+
+###对生成的数据集使用 mmdetection 进行训练（可选）
 
 即可在输出文件夹中生成对应的 rtmdet 训练 config。
 
