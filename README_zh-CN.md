@@ -1,5 +1,5 @@
 <div align=center>
-<img src="resources/playground-logo.png"/>
+<img src="resources/playground-banner.png"/>
 </div>
 
 <div align="center">
