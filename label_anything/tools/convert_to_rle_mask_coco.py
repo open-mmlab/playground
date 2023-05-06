@@ -14,10 +14,10 @@ import shutil
 
 def parse_args():
     parser = argparse.ArgumentParser(description='Label studio convert to Coco fomat')
-    parser.add_argument('--json_file_path',default='/media/ders/mazhiming/mm/project-4.json', help='label studio output json')
+    parser.add_argument('--json_file_path',default='project.json', help='label studio output json')
     parser.add_argument('--out_dir',default='../mmdetection/data/my_set', help='output dir of Coco format json')
     parser.add_argument('--classes',default=None, help='Classes list of the dataset, if None please check the output.')
-    parser.add_argument('--out_config',default='rtmdet-ins_s', choices=['mask-rcnn_r50_fpn','rtmdet-ins_s',None],help='config mode')
+    parser.add_argument('--out_config',default=None, choices=['mask-rcnn_r50_fpn','rtmdet-ins_s',None],help='config mode')
 
     args = parser.parse_args()
     return args
@@ -174,7 +174,8 @@ def move_to_cfg(args,classes_list):
     train_ann_pth='annotations/ann.json'
     train_data_pf='images/'
     num_classes = len(classes_list)
-    data_root=str('\''+os.path.join('./data',args.out_dir.split('/')[-1]+'/')+'\'')
+
+    data_root=str('\''+os.path.join('.',args.out_dir.split('/', 2)[-1]+'/')+'\'')
     train_ann_file=val_ann_file=str('\''+train_ann_pth+'\'')
     train_data_prefix=val_data_prefix=str('\''+train_data_pf+'\'')
     variable_dict = {'class_name':tuple(classes_list), 'num_classes':num_classes, 'data_root':data_root,\
