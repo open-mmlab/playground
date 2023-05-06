@@ -297,7 +297,7 @@ playground
 │   │   │   ├── annotations
 │   │   │   │   ├── ann.json
 │   │   │   ├── images
-│   │   │   ├── rtmdet-ins_s.py
+│   │   │   ├── mask-rcnn_r50_fpn.py
 ├── ...
 ```
 
@@ -307,12 +307,12 @@ playground
 ```shell
 cd path/to/playground/mmdetection
 
-python tools/analysis_tools/browse_dataset.py data/my_set/rtmdet-ins_s.py
+python tools/analysis_tools/browse_dataset.py data/my_set/mask-rcnn_r50_fpn.py
 ```
 
-以下是使用转换后的数据集通过 `mmyolo/tools/analysis_tools/browse_dataset.py` 转化结果。
+以下是使用转换后的数据集通过  `tools/analysis_tools/browse_dataset.py` 转化结果。
 
-<img src='https://user-images.githubusercontent.com/101508488/235289869-fde91cb3-fa50-4c32-b4b7-89daef21d36b.jpg' width="500px">
+<img src='https://user-images.githubusercontent.com/101508488/236607492-431468cd-273d-4a57-af9a-4757a789d35f.jpg' width="500px">
 
 ### 对生成的数据集使用 mmdetection 进行训练（可选）
 
@@ -320,7 +320,7 @@ python tools/analysis_tools/browse_dataset.py data/my_set/rtmdet-ins_s.py
 
 即可在输出文件夹中生成对应的 rtmdet 训练 config。
 
-到此半自动化标注就完成了, 通过 Label-Studio 的半自动化标注功能，可以让用户在标注过程中，通过点击一下鼠标，就可以完成目标的分割和检测，大大提高了标注效率。部分代码借鉴自 label-studio-ml-backend ID 为 253 的 Pull Request，感谢作者的贡献。同时感谢社区同学[ATang0729](https://github.com/ATang0729)为脚本测试重新标注了喵喵数据集。
+到此半自动化标注就完成了, 通过 Label-Studio 的半自动化标注功能，可以让用户在标注过程中，通过点击一下鼠标，就可以完成目标的分割和检测，大大提高了标注效率。部分代码借鉴自 label-studio-ml-backend ID 为 253 的 Pull Request，感谢作者的贡献。同时感谢社区同学[ATang0729](https://github.com/ATang0729)为脚本测试重新标注了喵喵数据集，以及[JimmyMa99](https://github.com/JimmyMa99)同学提供的转换脚本、 config 模板以及文档优化。
 
 
 
