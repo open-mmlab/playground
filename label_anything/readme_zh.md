@@ -261,7 +261,7 @@ Your dataset
 ├── images
 ```
 
-### 对生成的数据集可视化（可选）
+### 对生成的数据集制作 config 并可视化（可选）
 
 本节将介绍如何使用 mmdetection 中 `browse_dataset.py` 对生成的数据集进行可视化。
 
@@ -314,7 +314,9 @@ python tools/analysis_tools/browse_dataset.py data/my_set/rtmdet-ins_s.py
 
 <img src='https://user-images.githubusercontent.com/101508488/235289869-fde91cb3-fa50-4c32-b4b7-89daef21d36b.jpg' width="500px">
 
-###对生成的数据集使用 mmdetection 进行训练（可选）
+### 对生成的数据集使用 mmdetection 进行训练（可选）
+
+经过上一步生成了可用于 mmdetection 训练的config，路径为 `data/my_set/config_name.py` 我们可以用于训练。
 
 即可在输出文件夹中生成对应的 rtmdet 训练 config。
 
