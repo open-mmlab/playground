@@ -15,9 +15,9 @@ import shutil
 def parse_args():
     parser = argparse.ArgumentParser(description='Label studio convert to Coco fomat')
     parser.add_argument('--json_file_path',default='project.json', help='label studio output json')
-    parser.add_argument('--out_dir',default='../mmyolo/data/my_set', help='output dir of Coco format json')
+    parser.add_argument('--out_dir',default='../mmdetection/data/my_set', help='output dir of Coco format json')
     parser.add_argument('--classes',default=None, help='Classes list of the dataset, if None please check the output.')
-    parser.add_argument('--out_config',default=None, choices=['rtmdet_l','rtmdet-ins_s','rtmdet_s',None],help='config mode')
+    parser.add_argument('--out_config',default='rtmdet-ins_s', choices=['mask-rcnn_r50_fpn','rtmdet_l','rtmdet-ins_s','rtmdet_s',None],help='config mode')
 
     args = parser.parse_args()
     return args
@@ -168,11 +168,14 @@ def move_to_cfg(args,classes_list):
         config_path='config_template/rtmdet_l_syncbn_fast_8xb32-300e_coco.py'
         config_name='rtmdet_l_syncbn_fast_8xb32.py'
     elif 'rtmdet-ins_s' in args.out_config:
-        config_path='config_template/rtmdet-ins_s_syncbn_fast_8xb32-300e_coco.py'
-        config_name='rtmdet-ins_s_syncbn_fast_8xb32.py'
+        config_path='config_template/rtmdet-ins_s_8xb32-300e_coco.py'
+        config_name='rtmdet-ins_s.py'
     elif 'rtmdet_s' in args.out_config:
         config_path='config_template/rtmdet_s_syncbn_fast_8xb32-300e_coco.py'
         config_name='rtmdet_s_syncbn_fast_8xb32.py'
+    elif 'mask-rcnn_r50_fpn' in args.out_config:
+        config_path='config_template/mask-rcnn_r50_fpn_1x_coco.py'
+        config_name='mask-rcnn_r50_fpn.py'
 
     train_ann_pth='annotations/ann.json'
     train_data_pf='images/'
