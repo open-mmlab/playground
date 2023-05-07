@@ -243,26 +243,92 @@ python tools/convert_to_rle_mask_coco.py --json_file_path path/to/LS_json --out_
 
 
 After generation the script outputs a list in the terminal that corresponds to the category ids and can be used to copy and fill the config for training.
-![image](https://user-images.githubusercontent.com/101508488/235708732-20938d81-2f63-4bf6-ba6a-e2b31048b061.png)
 
-Under the output path, there are two folders: annotation and image, annotation is the coco format json, and image is the sorted dataset.
-
-The following is the result of using the transformed dataset by browse_dataset.py.
-
-<img src='https://user-images.githubusercontent.com/101508488/235289869-fde91cb3-fa50-4c32-b4b7-89daef21d36b.jpg' width="500px">
-
-This script can output the config for training on demand, three versions of the template are provided `rtmdet_l_syncbn`, `rtmdet-ins_s_syncbn`, `rtmdet_s_syncbn`.
-```shell
-#install Jinja2
-pip install Jinja2
-cd path/to/playground/label_anything
-python tools/convert_to_rle_mask_coco.py --json_file_path path/to/LS_json --out_dir path/to/output/file --out_config rtmdet_s_syncbn
+Under the output path, there are two folders: annotations and images, annotations is the coco format json, and images is the sorted dataset.
+```
+Your dataset
+├── annotations
+│   ├── ann.json
+├── images
 ```
 
---out_dir Select your config template `rtmdet_l_syncbn`, `rtmdet-ins_s_syncbn`, `rtmdet_s_syncbn`
+## Making a config and visualizing the generated dataset (optional)
 
-This generates the corresponding rtmdet training config in the output folder.
+This section describes how to visualize the generated dataset using `browse_dataset.py` in mmdetection.
+
+First get mmdetection in the playground directory.
+
+```shell
+cd path/to/playground/
+# build from source
+git clone https://github.com/open-mmlab/mmdetection.git
+cd mmdetection; pip install -e . ; cd .
+```
+
+Then use this script to output the config for training on demand, where the template `mask-rcnn_r50_fpn` is provided in `label_anything/config_template`.
+
+
+```shell
+#Install Jinja2
+pip install Jinja2
+cd path/to/playground/label_anything
+python tools/convert_to_rle_mask_coco.py --json_file_path path/to/LS_json --out_dir path/to/output/file --out_config config_mode
+```
+
+--out_config Select your template ``mask-rcnn_r50_fpn``.
+
+Here it is recommended that `--out_dir` be `. /mmdetection/data/my_set` to facilitate training with mmdetection.
+
+After the conversion, you can find the converted dataset and the generated config under `mmdetection/data/my_set`.
+
+```
+playground
+├── mmdetection
+│   ├── data
+│   │   ├── my_set
+│   │   │   ├── annotations
+│   │   │   │   ├── ann.json
+│   │   │   ├── images
+│   │   │   ├── mask-rcnn_r50_fpn.py
+├── ...
+```
+
+Then we visualize the dataset using ``tools/analysis_tools/browse_dataset.py``.
+
+```shell
+cd path/to/playground/mmdetection
+
+python tools/analysis_tools/browse_dataset.py data/my_set/mask-rcnn_r50_fpn.py --output-dir output_dir
+```
+
+The visualization results will be saved in `output_dir` under the mmdetection project path.
+
+The following is the result of the transformation using the transformed dataset via `tools/analysis_tools/browse_dataset.py`.
+
+<img src='https://user-images.githubusercontent.com/101508488/236607492-431468cd-273d-4a57-af9a-4757a789d35f.jpg' width="500px">
+
+## Training with mmdetection on the generated dataset (optional)
+
+After the previous step a config is generated that can be used for mmdetection training, the path is ``data/my_set/config_name.py`` which we can use for training.
+
+
+```shell
+python tools/train.py data/my_set/mask-rcnn_r50_fpn.py
+```
+
+![image](https://user-images.githubusercontent.com/101508488/236632841-4008225c-a3cd-4f2f-a034-08ded4127029.png)
+
+After training, you can use ``tools/test.py`` for testing.
+
+```shell
+python tools/test.py data/my_set/mask-rcnn_r50_fpn.py path/of/your/checkpoint --show --show-dir my_show
+```
+The visualization image will be saved in `work_dir/{timestamp}/my_show`
+
+When finished, we can get the model test visualization. On the left is the annotation image, and on the right is the model output.
+
+![IMG_20211205_120730](https://user-images.githubusercontent.com/101508488/236633902-987bc5d2-0566-4e58-a3b2-6239648d21d9.jpg)
 
 With the semi-automated annotation function of Label-Studio, users can complete object segmentation and detection by simply clicking the mouse during the annotation process, greatly improving the efficiency of annotation.
 
-Some of the code was borrowed from Pull Request ID 253 of label-studio-ml-backend. Thank you to the author for their contribution. Also, thanks to community member [ATang0729](https://github.com/ATang0729) for re-labeling the meow dataset for script testing.
+Some of the code was borrowed from Pull Request ID 253 of label-studio-ml-backend. Thank you to the author for their contribution. Also, thanks to fellow community member [ATang0729](https://github.com/ATang0729) for re-labeling the meow dataset for script testing, and [JimmyMa99](https://github.com/JimmyMa99) for the conversion script, config template, and documentation Optimization.
