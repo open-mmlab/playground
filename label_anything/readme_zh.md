@@ -250,17 +250,93 @@ python tools/convert_to_rle_mask_coco.py --json_file_path path/to/LS_json --out_
 
 
 生成后脚本会在终端输出一个列表，这个列表是对应类别id的，可用于复制填写 config 用于训练。
-![image](https://user-images.githubusercontent.com/101508488/235708732-20938d81-2f63-4bf6-ba6a-e2b31048b061.png)
+
+输出路径下有 annotations 和 images 两个文件夹，annotations 里是 coco 格式的 json， images 是整理好的数据集。
+```
+Your dataset
+├── annotations
+│   ├── ann.json
+├── images
+```
+
+## 对生成的数据集制作 config 并可视化（可选）
+
+本节将介绍如何使用 mmdetection 中 `browse_dataset.py` 对生成的数据集进行可视化。
+
+首先在 playground 目录下获取 mmdetection。
+
+```shell
+cd path/to/playground/
+# build from source
+git clone https://github.com/open-mmlab/mmdetection.git
+cd mmdetection; pip install -e .; cd ..
+```
+
+然后使用本脚本根据需求输出训练用的 config，此处提供了模板 `mask-rcnn_r50_fpn` 存放在 `label_anything/config_template` 中。
+
+```shell
+#安装 Jinja2
+pip install Jinja2
+cd path/to/playground/label_anything
+python tools/convert_to_rle_mask_coco.py --json_file_path path/to/LS_json --out_dir path/to/output/file --out_config config_mode
+```
+
+--out_config 选择你的模板 `mask-rcnn_r50_fpn`。
+
+此处建议 `--out_dir` 为 `../mmdetection/data/my_set` 以方便使用 mmdetection 进行训练。
+
+完成转换后，即可在 `mmdetection/data/my_set` 下找到转换好的数据集以及生成好的 config。
+
+```
+playground
+├── mmdetection
+│   ├── data
+│   │   ├── my_set
+│   │   │   ├── annotations
+│   │   │   │   ├── ann.json
+│   │   │   ├── images
+│   │   │   ├── mask-rcnn_r50_fpn.py
+├── ...
+```
 
 
+接着我们使用 `tools/analysis_tools/browse_dataset.py` 对数据集进行可视化。
 
-输出路径下有 annotation 和 image 两个文件夹，annotation 里是 coco 格式的 json， image 是整理好的数据集。
+```shell
+cd path/to/playground/mmdetection
 
-以下是使用转换后的数据集通过 browse_dataset.py 转化结果。
+python tools/analysis_tools/browse_dataset.py data/my_set/mask-rcnn_r50_fpn.py --output-dir output_dir
+```
 
-<img src='https://user-images.githubusercontent.com/101508488/235289869-fde91cb3-fa50-4c32-b4b7-89daef21d36b.jpg' width="500px">
+可视化结果将会保存在 mmdetection 项目路径下的 `output_dir` 中。
 
-到此半自动化标注就完成了, 通过 Label-Studio 的半自动化标注功能，可以让用户在标注过程中，通过点击一下鼠标，就可以完成目标的分割和检测，大大提高了标注效率。部分代码借鉴自 label-studio-ml-backend ID 为 253 的 Pull Request，感谢作者的贡献。同时感谢社区同学[ATang0729](https://github.com/ATang0729)为脚本测试重新标注了喵喵数据集。
+以下是使用转换后的数据集通过  `tools/analysis_tools/browse_dataset.py` 转化结果。
+
+<img src='https://user-images.githubusercontent.com/101508488/236607492-431468cd-273d-4a57-af9a-4757a789d35f.jpg' width="500px">
+
+## 对生成的数据集使用 mmdetection 进行训练（可选）
+
+经过上一步生成了可用于 mmdetection 训练的config，路径为 `data/my_set/config_name.py` 我们可以用于训练。
+
+
+```shell
+python tools/train.py data/my_set/mask-rcnn_r50_fpn.py
+```
+
+![image](https://user-images.githubusercontent.com/101508488/236632841-4008225c-a3cd-4f2f-a034-08ded4127029.png)
+
+训练完成后，可以使用 `tools/test.py` 进行测试。
+
+```shell
+python tools/test.py data/my_set/mask-rcnn_r50_fpn.py path/of/your/checkpoint --show --show-dir my_show
+```
+可视化图片将会保存在 `work_dir/{timestamp}/my_show`
+
+完成后我们可以获得模型测试可视化图。左边是标注图片，右边是模型输出。
+
+![IMG_20211205_120730](https://user-images.githubusercontent.com/101508488/236633902-987bc5d2-0566-4e58-a3b2-6239648d21d9.jpg)
+
+到此半自动化标注就完成了, 通过 Label-Studio 的半自动化标注功能，可以让用户在标注过程中，通过点击一下鼠标，就可以完成目标的分割和检测，大大提高了标注效率。部分代码借鉴自 label-studio-ml-backend ID 为 253 的 Pull Request，感谢作者的贡献。同时感谢社区同学 [ATang0729](https://github.com/ATang0729) 为脚本测试重新标注了喵喵数据集，以及 [JimmyMa99](https://github.com/JimmyMa99) 同学提供的转换脚本、 config 模板以及文档优化。
 
 
 

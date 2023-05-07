@@ -8,13 +8,16 @@ from tqdm import tqdm
 from itertools import groupby
 from label_studio_converter.brush import decode_rle
 
+import jinja2
+
 import shutil
 
 def parse_args():
     parser = argparse.ArgumentParser(description='Label studio convert to Coco fomat')
     parser.add_argument('--json_file_path',default='project.json', help='label studio output json')
-    parser.add_argument('--out_dir',default='coco_format_files', help='output dir of Coco format json')
+    parser.add_argument('--out_dir',default='../mmdetection/data/my_set', help='output dir of Coco format json')
     parser.add_argument('--classes',default=None, help='Classes list of the dataset, if None please check the output.')
+    parser.add_argument('--out_config',default=None, choices=['mask-rcnn_r50_fpn','rtmdet-ins_s',None],help='config mode')
 
     args = parser.parse_args()
     return args
@@ -49,8 +52,6 @@ def rle2mask(rle,height, width):
     if mask.max()==255:
         mask=np.where(mask==255,1,0)
 
-    # mask = mask[:len(mask)//4]
-
     return mask.reshape((height, width))
 
 def format_to_coco(args):
@@ -68,9 +69,9 @@ def format_to_coco(args):
     image_path_to=args.out_dir
     # 将coco格式保存到文件中
     output_dir=image_path_to
-    output_ann_path=os.path.join(output_dir,'annotation')
+    output_ann_path=os.path.join(output_dir,'annotations')
     os.makedirs(output_ann_path, exist_ok=True)
-    os.makedirs(os.path.join(image_path_to,'image'), exist_ok=True)
+    os.makedirs(os.path.join(image_path_to,'images'), exist_ok=True)
     # 初始化coco格式的字典
     coco_format = {
         "images": [],
@@ -127,7 +128,7 @@ def format_to_coco(args):
                 # 添加图像信息到coco格式
                 coco_format["images"].append({
                     "id": image_id,
-                    "file_name": image_json_name_,
+                    "file_name": image_json_name,
                     "width": width_from_json,
                     "height": height_from_json
                 })
@@ -152,15 +153,50 @@ def format_to_coco(args):
                 })
                 index_cnt+=1
             image_from=os.path.join(image_path_from,image_json_name_)
-            image_to=os.path.join(image_path_to,'image',image_json_name)
+            image_to=os.path.join(image_path_to,'images',image_json_name)
             shutil.copy2(os.path.expanduser(image_from), image_to)
 
     classes_output=[d["name"] for d in coco_format["categories"]]
     print(classes_output)
-    with open(os.path.join(output_ann_path,'output.json'), "w") as out_file:
+    args.train_ann_file=os.path.join(output_ann_path,'ann.json')
+    with open(os.path.join(output_ann_path,'ann.json'), "w") as out_file:
         json.dump(coco_format, out_file, ensure_ascii=False, indent=4)
+    return classes_output,args
+
+def move_to_cfg(args,classes_list):
+    if 'rtmdet-ins_s' in args.out_config:
+        config_path='config_template/rtmdet-ins_s_8xb32-300e_coco.py'
+        config_name='rtmdet-ins_s.py'
+    elif 'mask-rcnn_r50_fpn' in args.out_config:
+        config_path='config_template/mask-rcnn_r50_fpn_1x_coco.py'
+        config_name='mask-rcnn_r50_fpn.py'
+
+    train_ann_pth='annotations/ann.json'
+    train_data_pf='images/'
+    num_classes = len(classes_list)
+
+    data_root=str('\''+os.path.join('.',args.out_dir.split('/', 2)[-1]+'/')+'\'')
+    train_ann_file=val_ann_file=str('\''+train_ann_pth+'\'')
+    train_data_prefix=val_data_prefix=str('\''+train_data_pf+'\'')
+    variable_dict = {'class_name':tuple(classes_list), 'num_classes':num_classes, 'data_root':data_root,\
+                       'train_ann_file':train_ann_file,'val_ann_file':train_ann_file, \
+                        'train_data_prefix':train_data_prefix,'val_data_prefix':train_data_prefix}
+    current_dir = os.getcwd()
+    env = jinja2.Environment(loader=jinja2.FileSystemLoader(current_dir))
+    temp = env.get_template(config_path)
+
+    temp_out=temp.render(class_name=variable_dict['class_name'],num_classes=variable_dict['num_classes'],\
+            data_root=variable_dict['data_root'],train_ann_file=variable_dict['train_ann_file'],\
+                val_ann_file=variable_dict['val_ann_file'],train_data_prefix=variable_dict['train_data_prefix'],\
+                    val_data_prefix=variable_dict['val_data_prefix'])
+    with open(os.path.join(args.out_dir,config_name), "w", encoding='utf-8') as out_file:
+        out_file.writelines(temp_out)
+        out_file.close()
+    print(f'The config have been saved in \'{args.out_dir}\'')
 
 if __name__ == '__main__':
     args = parse_args()
-    format_to_coco(args)
+    classes_output,args=format_to_coco(args)
+    if args.out_config is not None:
+        move_to_cfg(args,classes_output)
    
