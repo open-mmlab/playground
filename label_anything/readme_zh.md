@@ -263,7 +263,7 @@ Your dataset
 
 本节将介绍如何使用 mmdetection 中 `browse_dataset.py` 对生成的数据集进行可视化。
 
-首先在playground目录下获取 mmdetection。
+首先在 playground 目录下获取 mmdetection。
 
 ```shell
 cd path/to/playground/
@@ -305,8 +305,10 @@ playground
 ```shell
 cd path/to/playground/mmdetection
 
-python tools/analysis_tools/browse_dataset.py data/my_set/mask-rcnn_r50_fpn.py
+python tools/analysis_tools/browse_dataset.py data/my_set/mask-rcnn_r50_fpn.py --output-dir output_dir
 ```
+
+可视化结果将会保存在 `output_dir` 中。
 
 以下是使用转换后的数据集通过  `tools/analysis_tools/browse_dataset.py` 转化结果。
 
@@ -326,8 +328,9 @@ python tools/train.py data/my_set/mask-rcnn_r50_fpn.py
 训练完成后，可以使用 `tools/test.py` 进行测试。
 
 ```shell
-python tools/test.py data/my_set/mask-rcnn_r50_fpn.py path/of/your/checkpoint
+python tools/test.py data/my_set/mask-rcnn_r50_fpn.py path/of/your/checkpoint --show --show-dir my_show
 ```
+可视化图片将会保存在 `work_dir/timestamp/show_dir`
 
 完成后我们可以获得模型测试可视化图。左边是标注图片，右边是模型输出。
 
