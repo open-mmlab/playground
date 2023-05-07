@@ -250,8 +250,6 @@ python tools/convert_to_rle_mask_coco.py --json_file_path path/to/LS_json --out_
 
 
 生成后脚本会在终端输出一个列表，这个列表是对应类别id的，可用于复制填写 config 用于训练。
-![image](https://user-images.githubusercontent.com/101508488/235708732-20938d81-2f63-4bf6-ba6a-e2b31048b061.png)
-
 
 输出路径下有 annotations 和 images 两个文件夹，annotations 里是 coco 格式的 json， image 是整理好的数据集。
 ```
@@ -261,7 +259,7 @@ Your dataset
 ├── images
 ```
 
-### 对生成的数据集制作 config 并可视化（可选）
+## 对生成的数据集制作 config 并可视化（可选）
 
 本节将介绍如何使用 mmdetection 中 `browse_dataset.py` 对生成的数据集进行可视化。
 
@@ -314,7 +312,7 @@ python tools/analysis_tools/browse_dataset.py data/my_set/mask-rcnn_r50_fpn.py
 
 <img src='https://user-images.githubusercontent.com/101508488/236607492-431468cd-273d-4a57-af9a-4757a789d35f.jpg' width="500px">
 
-### 对生成的数据集使用 mmdetection 进行训练（可选）
+## 对生成的数据集使用 mmdetection 进行训练（可选）
 
 经过上一步生成了可用于 mmdetection 训练的config，路径为 `data/my_set/config_name.py` 我们可以用于训练。
 
@@ -331,7 +329,7 @@ python tools/train.py data/my_set/mask-rcnn_r50_fpn.py
 python tools/test.py data/my_set/mask-rcnn_r50_fpn.py path/of/your/checkpoint
 ```
 
-完成后我们可以获得模型测试可视化图。
+完成后我们可以获得模型测试可视化图。左边是标注图片，右边是模型输出。
 
 ![IMG_20211205_120730](https://user-images.githubusercontent.com/101508488/236633902-987bc5d2-0566-4e58-a3b2-6239648d21d9.jpg)
 
