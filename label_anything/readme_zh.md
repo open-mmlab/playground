@@ -281,7 +281,7 @@ cd path/to/playground/label_anything
 python tools/convert_to_rle_mask_coco.py --json_file_path path/to/LS_json --out_dir path/to/output/file --out_config config_mode
 ```
 
---out_config 选择你的模板 `mask-rcnn_r50_fpn`, `rtmdet-ins_s`
+--out_config 选择你的模板 `mask-rcnn_r50_fpn`。
 
 此处建议 `--out_dir` 为 `../mmdetection/data/my_set` 以方便使用 mmdetection 进行训练。
 
