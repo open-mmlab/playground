@@ -330,7 +330,7 @@ python tools/train.py data/my_set/mask-rcnn_r50_fpn.py
 ```shell
 python tools/test.py data/my_set/mask-rcnn_r50_fpn.py path/of/your/checkpoint --show --show-dir my_show
 ```
-可视化图片将会保存在 `work_dir/timestamp/show_dir`
+可视化图片将会保存在 `work_dir/{timestamp}/my_show`
 
 完成后我们可以获得模型测试可视化图。左边是标注图片，右边是模型输出。
 
