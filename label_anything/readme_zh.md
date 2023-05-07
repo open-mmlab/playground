@@ -272,7 +272,7 @@ git clone https://github.com/open-mmlab/mmdetection.git
 cd mmdetection; pip install -e .; cd ..
 ```
 
-然后使用本脚本根据需求输出训练用的 config，此处提供了两个版本模板 `mask-rcnn_r50_fpn`, `rtmdet-ins_s` 存放在 `label_anything/config_template` 中。
+然后使用本脚本根据需求输出训练用的 config，此处提供了模板 `mask-rcnn_r50_fpn` 存放在 `label_anything/config_template` 中。
 
 ```shell
 #安装 Jinja2
@@ -308,7 +308,7 @@ cd path/to/playground/mmdetection
 python tools/analysis_tools/browse_dataset.py data/my_set/mask-rcnn_r50_fpn.py --output-dir output_dir
 ```
 
-可视化结果将会保存在 `output_dir` 中。
+可视化结果将会保存在 mmdetection 项目路径下的 `output_dir` 中。
 
 以下是使用转换后的数据集通过  `tools/analysis_tools/browse_dataset.py` 转化结果。
 
