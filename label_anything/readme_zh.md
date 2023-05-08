@@ -268,6 +268,10 @@ Your dataset
 ```shell
 cd path/to/playground/
 # build from source
+# 查看文档配置 mmdetection https://mmdetection.readthedocs.io/zh_CN/latest/get_started.html
+# pip install -U openmim
+# mim install mmengine
+# mim install "mmcv>=2.0.0"
 git clone https://github.com/open-mmlab/mmdetection.git
 cd mmdetection; pip install -e .; cd ..
 ```
