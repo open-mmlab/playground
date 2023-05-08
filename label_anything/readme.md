@@ -111,7 +111,9 @@ $env:sam_config = "vit_b"
 $env:sam_checkpoint_file = ".\sam_vit_b_01ec64.pth"
 $env:out_mask = "True"
 $env:out_bbox = "True"
-$env:device = "cpu"
+$env:device = "cuda:0"
+# device=cuda:0 is for using GPU inference. If you want to use CPU inference, replace cuda:0 with cpu.
+# out_poly=True returns the annotation of the bounding polygon.
 
 label-studio-ml start sam --port 8003 --with `
 sam_config=$env:sam_config `
