@@ -38,6 +38,12 @@ conda activate rtmdet-sam
 git clone https://github.com/open-mmlab/playground
 ```
 
+如果你遇到网络错误，请尝试通过ssh完成git克隆，像下面这个命令一样：
+
+```shell
+git clone git@github.com:<your_username>/playground.git
+```
+
 安装 PyTorch
 
 ```shell
@@ -57,6 +63,8 @@ pip install torch==1.10.1 torchvision==0.11.2 torchaudio==0.10.1
 
 ```shell
 cd path/to/playground/label_anything
+# 在Windows中，进行下一步之前需要完成以下命令行
+# conda install pycocotools -c conda-forge 
 pip install opencv-python pycocotools matplotlib onnxruntime onnx
 pip install git+https://github.com/facebookresearch/segment-anything.git
 wget https://dl.fbaipublicfiles.com/segment_anything/sam_vit_b_01ec64.pth
@@ -66,6 +74,7 @@ wget https://dl.fbaipublicfiles.com/segment_anything/sam_vit_b_01ec64.pth
 # wget https://dl.fbaipublicfiles.com/segment_anything/sam_vit_h_4b8939.pth
 ```
 
+PS: 如果您使用Windows环境，请忽略wget命令，手动下载wget的目标文件（复制url到浏览器或下载工具中），下同
 
 安装 Label-Studio 和 label-studio-ml-backend
 
