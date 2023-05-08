@@ -271,6 +271,8 @@ Your dataset
 cd path/to/playground/
 # build from source
 conda activate rtmdet-sam
+# Windows 用户需要使用 conda 安装 pycocotools
+# conda install pycocotools -c conda-forge
 pip install -U openmim
 mim install mmengine
 mim install "mmcv>=2.0.0"
