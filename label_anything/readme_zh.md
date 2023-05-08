@@ -240,6 +240,8 @@ polygon 实例格式由于不太好控制点数，太多不方便微调（不像
 
 此处提供将 label-studio 输出的json格式转换为COCO格式的转换脚本。
 
+⚠目前该脚本仅支持标注完成的 label-studio 项目。
+
 ```shell
 cd path/to/playground/label_anything
 python tools/convert_to_rle_mask_coco.py --json_file_path path/to/LS_json --out_dir path/to/output/file
