@@ -72,6 +72,7 @@ wget https://dl.fbaipublicfiles.com/segment_anything/sam_vit_b_01ec64.pth
 ```
 
 PS: If you are using a Windows environment, please ignore the "wget" command and manually download the target file of "wget" (copy the URL to a browser or download tool). The same applies to the following instructions.
+For example: https://dl.fbaipublicfiles.com/segment_anything/sam_vit_b_01ec64.pth
 
 Install Label-Studio 和 label-studio-ml-backend
 
