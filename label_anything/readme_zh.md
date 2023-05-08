@@ -74,7 +74,9 @@ wget https://dl.fbaipublicfiles.com/segment_anything/sam_vit_b_01ec64.pth
 # wget https://dl.fbaipublicfiles.com/segment_anything/sam_vit_h_4b8939.pth
 ```
 
-PS: 如果您使用Windows环境，请忽略wget命令，手动下载wget的目标文件（复制url到浏览器或下载工具中），下同
+PS: 如果您使用Windows环境，请忽略wget命令，手动下载wget的目标文件（复制url到浏览器或下载工具中），例如
+https://dl.fbaipublicfiles.com/segment_anything/sam_vit_b_01ec64.pth
+下同
 
 安装 Label-Studio 和 label-studio-ml-backend
 
