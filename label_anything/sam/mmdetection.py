@@ -3,6 +3,7 @@ import io
 import json
 import logging
 import os
+import urllib
 from urllib.parse import urlparse
 import numpy as np
 from label_studio_converter import brush
@@ -23,12 +24,41 @@ import random
 import string
 logger = logging.getLogger(__name__)
 
-def load_my_model(device="cuda:0",sam_config="vit_b",sam_checkpoint_file="sam_vit_b_01ec64.pth"):
+
+
+def load_my_model(device="cuda:0",sam_config="vit_b"):
         """
         Loads the Segment Anything model on initializing Label studio, so if you call it outside MyModel it doesn't load every time you try to make a prediction
         Returns the predictor object. For more, look at Facebook's SAM docs
         """
-        sam = sam_model_registry[sam_config](checkpoint=sam_checkpoint_file)
+        if sam_config=='vit_b':
+            checkpoint_name='sam_vit_b_01ec64.pth'
+            if os.path.exists (checkpoint_name):
+                pass
+            else:
+                model_url='https://dl.fbaipublicfiles.com/segment_anything/sam_vit_b_01ec64.pth'
+                urllib.request.urlretrieve(model_url,'sam_vit_b_01ec64.pth')
+                
+        elif sam_config=='vit_l':
+            checkpoint_name='sam_vit_l_0b3195.pth'
+            if os.path.exists (checkpoint_name):
+                pass
+            else:
+                model_url='https://dl.fbaipublicfiles.com/segment_anything/sam_vit_l_0b3195.pth'
+                urllib.request.urlretrieve(model_url,'sam_vit_l_0b3195.pth')
+            
+        elif sam_config=='vit_l':
+            checkpoint_name='sam_vit_h_4b8939.pth' 
+            if os.path.exists (checkpoint_name):
+                pass
+            else:
+                model_url='https://dl.fbaipublicfiles.com/segment_anything/sam_vit_h_4b8939.pth'
+                urllib.request.urlretrieve(model_url,'sam_vit_h_4b8939.pth')
+            
+        else:
+            raise ValueError(f'{sam_config} is not in our alternative model, please choose among vit_s, vit_l, vit_h.')
+        
+        sam = sam_model_registry[sam_config](checkpoint=checkpoint_name)
         sam.to(device=device)
         predictor = SamPredictor(sam)
         return predictor
@@ -42,7 +72,6 @@ class MMDetection(LabelStudioMLBase):
                  config_file=None,
                  checkpoint_file=None,
                  sam_config='vit_b',
-                 sam_checkpoint_file=None,
                  image_dir=None,
                  labels_file=None,
                  out_mask=True,
@@ -54,7 +83,7 @@ class MMDetection(LabelStudioMLBase):
 
         super(MMDetection, self).__init__(**kwargs)
 
-        PREDICTOR=load_my_model(device,sam_config,sam_checkpoint_file)
+        PREDICTOR=load_my_model(device,sam_config)
         self.PREDICTOR = PREDICTOR
 
         self.out_mask = out_mask
