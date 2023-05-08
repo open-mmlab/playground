@@ -232,6 +232,8 @@ The polygon instance format is not easy to control the number of points, too muc
 
 Here we provide a conversion script to convert the json format of label-studio output to COCO format.
 
+⚠ Currently this script only supports label-studio projects with completed annotations.
+
 ```shell
 cd path/to/playground/label_anything
 python tools/convert_to_rle_mask_coco.py --json_file_path path/to/LS_json --out_dir path/to/output/file
