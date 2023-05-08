@@ -58,9 +58,15 @@ def load_my_model(device="cuda:0",sam_config="vit_b"):
         else:
             raise ValueError(f'{sam_config} is not in our alternative model, please choose among vit_s, vit_l, vit_h.')
         
+        if os.path.exists (checkpoint_name):
+            pass
+        else:
+            raise ValueError(f'Checkpoint did not install succeed.')
+        
         sam = sam_model_registry[sam_config](checkpoint=checkpoint_name)
         sam.to(device=device)
         predictor = SamPredictor(sam)
+  
         return predictor
 
 
