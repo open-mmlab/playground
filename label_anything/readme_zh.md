@@ -240,6 +240,8 @@ polygon 实例格式由于不太好控制点数，太多不方便微调（不像
 
 此处提供将 label-studio 输出的json格式转换为COCO格式的转换脚本。
 
+⚠目前仅支持已经标注完所有图片的项目.
+
 ```shell
 cd path/to/playground/label_anything
 python tools/convert_to_rle_mask_coco.py --json_file_path path/to/LS_json --out_dir path/to/output/file
@@ -268,6 +270,12 @@ Your dataset
 ```shell
 cd path/to/playground/
 # build from source
+conda activate rtmdet-sam
+# Windows 用户需要使用 conda 安装 pycocotools
+# conda install pycocotools -c conda-forge
+pip install -U openmim
+mim install mmengine
+mim install "mmcv>=2.0.0"
 git clone https://github.com/open-mmlab/mmdetection.git
 cd mmdetection; pip install -e .; cd ..
 ```

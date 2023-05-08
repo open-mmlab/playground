@@ -232,6 +232,8 @@ The polygon instance format is not easy to control the number of points, too muc
 
 Here we provide a conversion script to convert the json format of label-studio output to COCO format.
 
+⚠Only items that have been annotated with all images are supported.
+
 ```shell
 cd path/to/playground/label_anything
 python tools/convert_to_rle_mask_coco.py --json_file_path path/to/LS_json --out_dir path/to/output/file
@@ -261,8 +263,14 @@ First get mmdetection in the playground directory.
 ```shell
 cd path/to/playground/
 # build from source
+conda activate rtmdet-sam
+# Windows users need to install pycocotools using conda
+# conda install pycocotools -c conda-forge 
+pip install -U openmim
+mim install mmengine
+mim install "mmcv>=2.0.0"
 git clone https://github.com/open-mmlab/mmdetection.git
-cd mmdetection; pip install -e . ; cd .
+cd mmdetection; pip install -e .; cd ..
 ```
 
 Then use this script to output the config for training on demand, where the template `mask-rcnn_r50_fpn` is provided in `label_anything/config_template`.
