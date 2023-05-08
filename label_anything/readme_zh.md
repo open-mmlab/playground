@@ -107,6 +107,25 @@ device=cuda:0 \
 
 ```
 
+PS: 在Windows环境中，在Anaconda Powershell Prompt输入以下内容等价于上方的输入:
+
+```shell
+cd path/to/playground/label_anything
+
+$env:sam_config = "vit_b"
+$env:sam_checkpoint_file = ".\sam_vit_b_01ec64.pth"
+$env:out_mask = "True"
+$env:out_bbox = "True"
+$env:device = "cpu"
+
+label-studio-ml start sam --port 8003 --with `
+sam_config=$env:sam_config `
+sam_checkpoint_file=$env:sam_checkpoint_file `
+out_mask=$env:out_mask `
+out_bbox=$env:out_bbox `
+device=$env:device
+```
+
 ![image](https://user-images.githubusercontent.com/25839884/233821553-0030945a-8d83-4416-8edd-373ae9203a63.png)
 
 
