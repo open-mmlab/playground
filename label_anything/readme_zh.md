@@ -1,4 +1,4 @@
-# OpenMMLab PlayGround：Label-Studio X SAM 半自动化标注之 Point2Label
+# OpenMMLab PlayGround：Label-Studio X SAM 半自动化标注
 
 本文将介绍结合 Label-Studio 和 SAM (Segment Anything) 半自动化标注方案，Point2Labl：用户只需要在物体的区域内点一个点就能得到物体的掩码和边界框标注，Bbox2Label：用户只需要标注物体的边界框就能生成物体的掩码，社区的用户可以借鉴此方法，提高数据标注的效率。
 

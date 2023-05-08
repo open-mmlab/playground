@@ -1,4 +1,4 @@
-# OpenMMLab PlayGround: Point2Label - Semi-Automated Annotation with Label-Studio and SAM
+# OpenMMLab PlayGround: Semi-Automated Annotation with Label-Studio and SAM
 
 This article introduces a semi-automatic annotation solution combining Label-Studio and SAM (Segment Anything) with two methods: Point2Label and Bbox2Label. With Point2Label, users only need to click a point within the object's area to obtain the object's mask and bounding box annotations. With Bbox2Label, users simply annotate the object's bounding box to generate the object's mask. Community users can learn from these methods to improve the efficiency of data annotation.
 
