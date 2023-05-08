@@ -263,6 +263,7 @@ First get mmdetection in the playground directory.
 ```shell
 cd path/to/playground/
 # build from source
+conda activate rtmdet-sam
 pip install -U openmim
 mim install mmengine
 mim install "mmcv>=2.0.0"
