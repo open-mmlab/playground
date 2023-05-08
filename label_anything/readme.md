@@ -163,6 +163,7 @@ Open your browser and visit [http://localhost:8080/](http://localhost:8080/) to 
 ![](https://cdn.vansin.top/picgo20230330133118.png)
 
 We will register a user and then create an OpenMMLabPlayGround project.
+PS: Label-Studio's username and password are stored locally. If you encounter a situation where the browser remembers the password but you are unable to log in, please register again.
 
 ![](https://cdn.vansin.top/picgo20230330133333.png)
 
