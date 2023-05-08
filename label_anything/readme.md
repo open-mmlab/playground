@@ -264,6 +264,8 @@ First get mmdetection in the playground directory.
 cd path/to/playground/
 # build from source
 conda activate rtmdet-sam
+# Windows users need to install pycocotools using conda
+conda install pycocotools -c conda-forge 
 pip install -U openmim
 mim install mmengine
 mim install "mmcv>=2.0.0"
