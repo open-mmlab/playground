@@ -169,6 +169,7 @@ label-studio start
 ![](https://cdn.vansin.top/picgo20230330133118.png)
 
 我们注册一个用户，然后创建一个 OpenMMLabPlayGround 项目。
+PS: Label-Studio的用户名密码存储于本地，如果出现浏览器记住了密码却无法登陆的情况，请重新注册
 
 ![](https://cdn.vansin.top/picgo20230330133333.png)
 
