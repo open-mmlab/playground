@@ -263,7 +263,6 @@ First get mmdetection in the playground directory.
 ```shell
 cd path/to/playground/
 # build from source
-# View the documentation to install mmdetection https://mmdetection.readthedocs.io/en/latest/get_started.html#
 pip install -U openmim
 mim install mmengine
 mim install "mmcv>=2.0.0"
