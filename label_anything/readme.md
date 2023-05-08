@@ -35,6 +35,12 @@ Clone OpenMMLab PlayGround
 git clone https://github.com/open-mmlab/playground
 ```
 
+If you encounter network errors, try to complete the git clone via ssh, like the following command:
+
+```shell
+git clone git@github.com:<your_username>/playground.git
+```
+
 Install PyTorch
 
 ```shell
@@ -54,6 +60,8 @@ Install SAM and download the pre-trained model:
 
 ```shell
 cd path/to/playground/label_anything
+# Before proceeding to the next step in Windows, you need to complete the following command line.
+# conda install pycocotools -c conda-forge
 pip install opencv-python pycocotools matplotlib onnxruntime onnx
 pip install git+https://github.com/facebookresearch/segment-anything.git
 wget https://dl.fbaipublicfiles.com/segment_anything/sam_vit_b_01ec64.pth
@@ -63,6 +71,7 @@ wget https://dl.fbaipublicfiles.com/segment_anything/sam_vit_b_01ec64.pth
 # wget https://dl.fbaipublicfiles.com/segment_anything/sam_vit_h_4b8939.pth
 ```
 
+PS: If you are using a Windows environment, please ignore the "wget" command and manually download the target file of "wget" (copy the URL to a browser or download tool). The same applies to the following instructions.
 
 Install Label-Studio 和 label-studio-ml-backend
 
