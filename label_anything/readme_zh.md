@@ -41,7 +41,7 @@ git clone https://github.com/open-mmlab/playground
 如果你遇到网络错误，请尝试通过ssh完成git克隆，像下面这个命令一样：
 
 ```shell
-git clone git@github.com:<your_username>/playground.git
+git clone git@github.com:open-mmlab/playground.git
 ```
 
 安装 PyTorch
