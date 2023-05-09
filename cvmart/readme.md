@@ -1,0 +1,2 @@
+# cvmart competition baseline
+
