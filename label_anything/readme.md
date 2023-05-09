@@ -35,6 +35,12 @@ Clone OpenMMLab PlayGround
 git clone https://github.com/open-mmlab/playground
 ```
 
+If you encounter network errors, try to complete the git clone via ssh, like the following command:
+
+```shell
+git clone git@github.com:open-mmlab/playground.git
+```
+
 Install PyTorch
 
 ```shell
@@ -54,6 +60,8 @@ Install SAM and download the pre-trained model:
 
 ```shell
 cd path/to/playground/label_anything
+# Before proceeding to the next step in Windows, you need to complete the following command line.
+# conda install pycocotools -c conda-forge
 pip install opencv-python pycocotools matplotlib onnxruntime onnx
 pip install git+https://github.com/facebookresearch/segment-anything.git
 wget https://dl.fbaipublicfiles.com/segment_anything/sam_vit_b_01ec64.pth
@@ -63,8 +71,10 @@ wget https://dl.fbaipublicfiles.com/segment_anything/sam_vit_b_01ec64.pth
 # wget https://dl.fbaipublicfiles.com/segment_anything/sam_vit_h_4b8939.pth
 ```
 
+PS: If you are using a Windows environment, please ignore the "wget" command and manually download the target file of "wget" (copy the URL to a browser or download tool). The same applies to the following instructions.
+For example: https://dl.fbaipublicfiles.com/segment_anything/sam_vit_b_01ec64.pth
 
-Install Label-Studio 和 label-studio-ml-backend
+Install Label-Studio and label-studio-ml-backend
 
 ```shell
 # sudo apt install libpq-dev python3-dev # Note: If using Label Studio 1.7.2 version, you need to install libpq-dev and python3-dev dependencies.
@@ -90,6 +100,27 @@ label-studio-ml start sam --port 8003 --with \
   device=cuda:0
 # device=cuda:0 is for using GPU inference. If you want to use CPU inference, replace cuda:0 with cpu.
 # out_poly=True returns the annotation of the bounding polygon.
+```
+
+PS: In Windows environment, entering the following in Anaconda Powershell Prompt is equivalent to the input above:
+
+```shell
+cd path/to/playground/label_anything
+
+$env:sam_config = "vit_b"
+$env:sam_checkpoint_file = ".\sam_vit_b_01ec64.pth"
+$env:out_mask = "True"
+$env:out_bbox = "True"
+$env:device = "cuda:0"
+# device=cuda:0 is for using GPU inference. If you want to use CPU inference, replace cuda:0 with cpu.
+# out_poly=True returns the annotation of the bounding polygon.
+
+label-studio-ml start sam --port 8003 --with `
+sam_config=$env:sam_config `
+sam_checkpoint_file=$env:sam_checkpoint_file `
+out_mask=$env:out_mask `
+out_bbox=$env:out_bbox `
+device=$env:device
 ```
 
 ![image](https://user-images.githubusercontent.com/25839884/233821553-0030945a-8d83-4416-8edd-373ae9203a63.png)
@@ -132,6 +163,7 @@ Open your browser and visit [http://localhost:8080/](http://localhost:8080/) to 
 ![](https://cdn.vansin.top/picgo20230330133118.png)
 
 We will register a user and then create an OpenMMLabPlayGround project.
+PS: Label-Studio's username and password are stored locally. If you encounter a situation where the browser remembers the password but you are unable to log in, please register again.
 
 ![](https://cdn.vansin.top/picgo20230330133333.png)
 
