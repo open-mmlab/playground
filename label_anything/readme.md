@@ -38,7 +38,7 @@ git clone https://github.com/open-mmlab/playground
 If you encounter network errors, try to complete the git clone via ssh, like the following command:
 
 ```shell
-git clone git@github.com:<your_username>/playground.git
+git clone git@github.com:open-mmlab/playground.git
 ```
 
 Install PyTorch
