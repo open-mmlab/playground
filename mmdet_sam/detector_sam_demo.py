@@ -484,7 +484,7 @@ def main():
         if not only_det:
 
             if cpu_off_load:
-                sam_model.mode = sam_model.model.to(args.sam_device)
+                sam_model.model = sam_model.model.to(args.sam_device)
 
             sam_model.set_image(image)
 
