@@ -107,6 +107,13 @@ wget https://extremevision-js-userfile.oss-cn-hangzhou.aliyuncs.com/user-35679-f
 <img src="https://github.com/open-mmlab/playground/assets/105597268/01ed5db0-b419-4c81-b27d-e7c51bba023b"/>
 </div>
 
+注意，由于文件全名不能超过50个字符，请将预训练权重的名称改为：rtmdet_tiny_syncbn_fast_8xb32-300e_coco.pth，然后再上传文件。
+
+<div align=center>
+<img src="https://github.com/open-mmlab/playground/assets/105597268/95b3bd17-5de6-41da-b61f-f8bff5b3b78a"/>
+</div>
+
+
 ```linux
 wget https://extremevision-js-userfile.oss-cn-hangzhou.aliyuncs.com/user-35679-files/f05a6660-d240-4a28-85fc-eef11d374038/rtmdet_tiny_syncbn_fast_8xb32-300e_coco.pth（该地址即为刚才复制的 mmyolo 的软件包地址）
 ```
@@ -123,24 +130,35 @@ unzip mmyolo-main.zip
 mv playground-main playground
 mv mmyolo-main mmyolo
 cp -r playground train/src_repo
-cp -r mmyolo train/src_repo
-cp 
+cp -r mmyolo train/src_repo 
 ```
 
 11、执行下面指令，创建所需文件夹，并将 playground 文件里面的 run.sh ji.py convert_to_coco.py 以及预训练权重复制相应的位置。
 
 ```linux
 mkdir /project/ev_sdk/src
+mkdir /project/train/src_repo/dataset
 mkdir /project/train/src_repo/dataset/images
-mkdir /project/train/src_repo/mmyolo/pth
+mkdir /project/train/src_repo/coco_annotations
+touch /project/train/src_repo/coco_annotations/instances_train2014.json
+mkdir /project/train/src_repo/mmyolo/tools/pth
 cp -r train/src_repo/playground/cvmart/Helmet_identification_10163/ji.py /project/ev_sdk/src
 cp -r train/src_repo/playground/cvmart/Helmet_identification_10163/run.sh /project/train/src_repo
 cp -r train/src_repo/playground/cvmart/Helmet_identification_10163/convert_to_coco.py /project/train/src_repo
-cp -r train/src_repo/playground/cvmart/rtmdet_tiny_syncbn_fast_8xb32-300e_coco.py /project/train/src_repo/mmyolo/tools
-cp -r rtmdet_tiny_syncbn_fast_8xb32-300e_coco.pth /project/train/src_repo/mmyolo/pth/
+cp -r train/src_repo/playground/cvmart/Helmet_identification_10163/rtmdet_tiny_syncbn_fast_8xb32-300e_coco.py /project/train/src_repo/mmyolo/tools
+cp -r rtmdet_tiny_syncbn_fast_8xb32-300e_coco.pth /project/train/src_repo/mmyolo/tools/pth/
+```
+12、安装所需要的安装包
+
+```linux
+pip install -i https://pypi.tuna.tsinghua.edu.cn/simple -U openmim
+pip install -i https://pypi.tuna.tsinghua.edu.cn/simple --upgrade pip
+mim install -i https://pypi.tuna.tsinghua.edu.cn/simple mmengine
+mim install -i https://pypi.tuna.tsinghua.edu.cn/simple mmyolo
+mim install -i https://pypi.tuna.tsinghua.edu.cn/simple mmcv
 ```
 
-12、首先在VSCode终端执行一下训练程序，验证是否能跑起来
+13、首先在VSCode终端执行一下训练程序，验证是否能跑起来
 
 ```linux
 bash /project/train/src_repo/run.sh
@@ -152,7 +170,7 @@ bash /project/train/src_repo/run.sh
 <img src="https://github.com/open-mmlab/playground/assets/105597268/7e53fe22-fbc0-4aa8-b3e1-be48a2616d97"/>
 </div>
 
-13、用极市的官方平台执行训练任务。
+14、用极市的官方平台执行训练任务。
 
 <div align=center>
 <img src="https://github.com/open-mmlab/playground/assets/105597268/018436ef-43b0-452d-8447-d594a402614e"/>
@@ -164,7 +182,7 @@ bash /project/train/src_repo/run.sh
 <img src="https://github.com/open-mmlab/playground/assets/105597268/431e6145-1964-4896-a6fe-661912d3f4b4"/>
 </div>
 
-14、测试训练得到的模型，
+15、测试训练得到的模型，
 
 训练完成之后，可以在我们的模型列表里面查看我们训练得到的模型。
 
@@ -190,7 +208,7 @@ bash /project/train/src_repo/run.sh
 <img src="https://github.com/open-mmlab/playground/assets/105597268/7805ccd3-7072-4d07-94e0-152e7f3c10b7"/>
 </div>
 
-15、查看测试的结果
+16、查看测试的结果
 
 <div align=center>
 <img src="https://github.com/open-mmlab/playground/assets/105597268/fbfd11fa-0de1-4abf-a734-7bc7bad98446"/>
