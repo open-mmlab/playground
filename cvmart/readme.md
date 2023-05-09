@@ -153,6 +153,7 @@ cp -r rtmdet_tiny_syncbn_fast_8xb32-300e_coco.pth /project/train/src_repo/mmyolo
 ```linux
 pip install -i https://pypi.tuna.tsinghua.edu.cn/simple -U openmim
 pip install -i https://pypi.tuna.tsinghua.edu.cn/simple --upgrade pip
+pip install -i https://pypi.tuna.tsinghua.edu.cn/simple xml
 mim install -i https://pypi.tuna.tsinghua.edu.cn/simple mmengine
 mim install -i https://pypi.tuna.tsinghua.edu.cn/simple mmyolo
 mim install -i https://pypi.tuna.tsinghua.edu.cn/simple mmcv
