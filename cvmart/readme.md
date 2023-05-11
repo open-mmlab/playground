@@ -236,6 +236,10 @@ bash /project/train/src_repo/run.sh
 
 找到该段代码之后， 将 <vis_backends=[dict(type='LocalVisBackend')]> 修改为 <vis_backends=[dict(type='LocalVisBackend'), dict(type='TensorboardVisBackend')]>
 
+```python
+vis_backends=[dict(type='LocalVisBackend'), dict(type='TensorboardVisBackend')]
+```
+
 <div align=center>
 <img src="https://github.com/open-mmlab/playground/assets/105597268/6117a2a2-9a78-4663-8b90-0c76df578fe9"/>
 </div>
