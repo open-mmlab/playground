@@ -270,8 +270,7 @@ bash /project/train/src_repo/run.sh
 如果你想要一边训练，一边就能实现训练过程的可视化，那么请点击下图中的【+】再打开一个 VSCode 终端窗口。
 
 <div align=center>
-<img src="https://github.com/open-mmlab/playground/assets/105597268/ca811641-918c-408c-b41c-1c46d20b3314
-"/>
+<img src="https://github.com/open-mmlab/playground/assets/105597268/ca811641-918c-408c-b41c-1c46d20b3314"/>
 </div>
 
 然后在新的 VSCode 终端窗口，执行 <bash /project/train/src_repo/run.sh> 。然后点击 Open in Browser。
