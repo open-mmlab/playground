@@ -32,6 +32,12 @@ conda create -n rtmdet-sam python=3.9 -y
 conda activate rtmdet-sam
 ```
 
+PS: 如果你在conda环境中无法使用git命令，可以按照以下命令安装git
+
+```shell
+conda install git
+```
+
 克隆 OpenMMLab PlayGround
 
 ```shell
