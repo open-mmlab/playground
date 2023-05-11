@@ -174,13 +174,23 @@ bash /project/train/src_repo/run.sh
 14、用极市的官方平台执行训练任务。
 
 <div align=center>
-<img src="https://github.com/open-mmlab/playground/assets/105597268/018436ef-43b0-452d-8447-d594a402614e"/>
+<img src="https://github.com/open-mmlab/playground/assets/105597268/50bde7d9-f95c-4911-8d6b-52cc4ada47ce"/>
 </div>
 
 执行之后，等待它训练完成
 
 <div align=center>
 <img src="https://github.com/open-mmlab/playground/assets/105597268/431e6145-1964-4896-a6fe-661912d3f4b4"/>
+</div>
+
+模型跑起来之后，可以通过点击【实时日志】查看训练过程的数据。
+
+<div align=center>
+<img src="https://github.com/open-mmlab/playground/assets/105597268/f9276258-65a2-4e4c-86ac-ef4720b3a0c8"/>
+</div>
+
+<div align=center>
+<img src="https://github.com/open-mmlab/playground/assets/105597268/ccbcfc48-ae51-443c-acd4-a7bedd0f96fb"/>
 </div>
 
 15、测试训练得到的模型，
@@ -213,4 +223,61 @@ bash /project/train/src_repo/run.sh
 
 <div align=center>
 <img src="https://github.com/open-mmlab/playground/assets/105597268/fbfd11fa-0de1-4abf-a734-7bc7bad98446"/>
+</div>
+
+
+## 使用 TensorBoard 实现训练过程的可视化
+
+首先修改配置文件：在 rtmdet_tiny_syncbn_fast_8xb32-300e_coco.py 中， Contrl + F 搜索 visualizer 。
+
+<div align=center>
+<img src="https://github.com/open-mmlab/playground/assets/105597268/01048309-2111-4af6-b1c4-b8b36949cb5a"/>
+</div>
+
+找到该段代码之后， 将 <vis_backends=[dict(type='LocalVisBackend')]> 修改为 <vis_backends=[dict(type='LocalVisBackend'), dict(type='TensorboardVisBackend')]>
+
+<div align=center>
+<img src="https://github.com/open-mmlab/playground/assets/105597268/6117a2a2-9a78-4663-8b90-0c76df578fe9"/>
+</div>
+
+
+### 针对样本数据训练过程的可视化
+
+说明： 由于极市的数据具有保密性，所以我们能在 VSCode 终端执行训练的只有样本数据。
+
+1、在 VSCode 终端执行下面指令训练样本，用样本数据训练模型。
+
+```linux
+bash /project/train/src_repo/run.sh
+```
+
+训练得到的模型，以及训练日志文件都会保存在 /project/train/models/train/exp/weights 路径下
+
+<div align=center>
+<img src="https://github.com/open-mmlab/playground/assets/105597268/aef4206c-5c04-418f-9a2e-a27df8a4cccd"/>
+</div>
+
+2、在 VSCode 终端执行下面指令，打开 Tensorboard 可视化工具。
+
+```linux
+bash /project/train/src_repo/run.sh
+```
+
+如果你想要一边训练，一边就能实现训练过程的可视化，那么请点击下图中的【+】再打开一个 VSCode 终端窗口。
+
+<div align=center>
+<img src="https://github.com/open-mmlab/playground/assets/105597268/ca811641-918c-408c-b41c-1c46d20b3314
+"/>
+</div>
+
+然后在新的 VSCode 终端窗口，执行 <bash /project/train/src_repo/run.sh> 。然后点击 Open in Browser。
+
+<div align=center>
+<img src="https://github.com/open-mmlab/playground/assets/105597268/2154a76a-9174-4ff3-922a-d9b624bb1d48"/>
+</div>
+
+如此，便得到我们想要的可视化效果了。
+
+<div align=center>
+<img src="https://github.com/open-mmlab/playground/assets/105597268/f4f1ac5b-d651-48f0-92c2-976d07feeeec"/>
 </div>
