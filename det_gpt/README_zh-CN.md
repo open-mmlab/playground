@@ -1,9 +1,15 @@
 # Det GPT
 
-Det GPT: DetGPT: Detect What You Need via Reasoning
+DetGPT: DetGPT: Detect What You Need via Reasoning
 官方地址： https://detgpt.github.io/
 
-**注意: 这不是一个官方的 Det GPT 也不是一个官方 Det GPT 复现，而是一个无需训练的仿真版本！** 
+**注意: 这不是一个官方的 DetGPT 也不是一个官方 DetGPT 复现，而是一个无需训练的仿真版本！** 
+
+<div align=center>
+<img src="https://github.com/open-mmlab/playground/assets/17425982/c3145a82-7748-4a79-a187-bcb8d91f1dd3"/>
+</div>
+
+原理图如上所示。左边为 DetGPT 官方做法，右边为结合 ChatGPT 做法。
 
 ## 项目说明
 
@@ -11,23 +17,23 @@ Det GPT: DetGPT: Detect What You Need via Reasoning
 <img src="https://github.com/hhaAndroid/awesome-mm-chat/assets/17425982/928feaf4-d47c-4d81-89c3-257253347adc"/>
 </div>
 
-DetGPT 是通过输入文本来推理进行特定物体检测，而无需用户直接告诉模型我想要什么东西。
+DetGPT 通过输入文本来推理从而进行特定物体检测，而无需用户直接告诉模型我想要什么具体的东西。
 
 - 常规的目标检测是在特定类别上训练，然后给定图片将对应类别的所有物体都检测出来
 - 开发词汇目标检测是给定特定类别的词汇表和一张图片，检测出包括特定类别词汇的所有物体
 - Grounding 目标检测是给定特定类别词汇或者一句话，检测出包括特定类别词汇或者输入句子中蕴含的所有物体
 
-而 DetGPT 做的是首先使用 LLM 生成句子中包括的物体，然后将类别词和图片输入到 Grounding 目标检测中。可以发现 DetGPT 做的主要是事情就是通过 LLM 生成符合用户要求的类别词。
+而 DetGPT 做的是首先使用 LLM 生成句子中包括的物体类别，然后将类别词和图片输入到 Grounding 目标检测中。可以发现 DetGPT 做的主要是事情就是通过 LLM 生成符合用户要求的类别词，作者称该任务为推理式目标检测。
 
-以上图为例，用户输入： 我想喝冷饮，LLM 会自动进行推理解析输出 冰箱 这个单词，从而可以通过 Grounding 目标检测算法把冰箱检测出来。
+以上图为例，用户输入： `我想喝冷饮`，LLM 会自动进行推理解析输出 `冰箱` 这个单词，从而可以通过 Grounding 目标检测算法把冰箱检测出来。
 
-一旦 DetGPT 的过程做的很鲁棒，将其嵌入到机器人中，机器人就能够直接理解用户质量，并且执行用户的命令例如前面说的他自己给你打开冰箱拿冷饮了。这样的机器人将会非常有趣。
+一旦 DetGPT 的过程做的很鲁棒，将其嵌入到机器人中，机器人就能够直接理解用户质量，并且执行用户的命令例如前面说的他自己给你打开冰箱拿冷饮了，这样的机器人将会非常有趣。
 
 <div align=center>
 <img src="https://github.com/hhaAndroid/awesome-mm-chat/assets/17425982/12f22c88-75e7-4da8-b28d-3673bc078cb5"/>
 </div>
 
-以上是整体结构图，可以发现和 minigpt-4 类似，也是仅仅训练一个线性连接层，连接视觉特征和文本特征，其余模型参数全部估固定。
+以上是整体结构图，可以发现和 MiniGPT-4 非常类似，采用的模型也几乎一样，实际上代码也是写的几乎一样。也是仅仅训练一个线性连接层，连接视觉特征和文本特征，其余模型参数全部估固定。
 
 整个过程可以说是一个 PEFT 过程，核心在于跨模态文本-图片对的构建，然后基于这个数据集进行微调即可。
 
@@ -46,7 +52,7 @@ system_message = "You must strictly answer the question step by step:\n" \
                  "You must finish the answer with complete sentences."
 ```
 
-作者是通过微调的方式来促使模型能够输出符合特定格式的输出。那如果不微调呢？或者说如果不微调直接使用 MiniGPT-4 来实现这个功能效果如何？ 又或者将 LLM 模型换成 ChatGPT 呢？ 本项目就是做了这个比较简单的探索。
+前面说过作者是通过微调的方式来促使模型输出符合特定格式的输出。那如果不微调呢？或者说如果不微调直接使用 MiniGPT-4 来实现这个功能效果如何？ 又或者将 LLM 模型换成 ChatGPT 呢？ 本项目就是做了这个比较简单的探索。
 
 ## MiniGPT-4 简单探索
 
@@ -94,13 +100,17 @@ user input: find the foods high in protein
 <img src="https://github.com/hhaAndroid/awesome-mm-chat/assets/17425982/05410f26-94b7-46e4-bdbf-b1b0bb578a1b"/>
 </div>
 
-显示格式有点小问题。可以看到 MiniGPT-4 其实已经有很强的指令跟随功能了，每次都能正确的按照我要求的格式输出，但是效果好像是差一点。DetGPT 设置的 beam search 参数是 5，而由于机器显存有限，MiniGPT-4 中我只能设置为 1，否则会 OOM,因此这个参数也有点影响。
+显示格式有点小问题。可以看到 MiniGPT-4 其实已经有很强的指令跟随功能了，每次都能正确的按照我要求的格式输出，但是效果好像是差一点，可能是图片过于复杂。我测试了一些简单场景是没有问题的。
 
-总的来说通过特定的数据集微调效果确实还是比 MiniGPT-4 好一些，但是 MiniGPT-4 也还行，如果能构建更好的 prompt 估计会更好。下面探索采用强大的 ChatGPT3 效果如何。
+同时 DetGPT 设置的 beam search 参数是 5，而由于机器显存有限，MiniGPT-4 中我只能设置为 1，否则会 OOM, 因此这个参数也有点影响。
+
+总的来说通过特定的数据集微调效果确实还是比 MiniGPT-4 好一些，但是 MiniGPT-4 也还行，如果能构建更好的 prompt 估计会更好。更多的尝试大家可以自己去体验。
+
+下面探索采用强大的 ChatGPT3 效果如何。
 
 ## 环境安装
 
-注意： 目前你需要有 OpenAI Key 否则你跑不起来。但是如果你想换成其他模型例如 MiniGPT-4 则可以实现本地部署而无需  OpenAI Key。 
+注意： 目前你需要有 OpenAI Key 否则你跑不起来。但是如果你想换成其他模型例如 MiniGPT-4 则可以实现本地部署而无需 OpenAI Key。 
 
 OpenAI Key 是通过环境变量方式导入的，因此再运行前你需要设置环境变量
 
@@ -197,3 +207,10 @@ python simulate_det_gpt.py ../images/big_kitchen.jpg \
 ```
 
 效果和上述类似，故不在此展示。 
+
+## 结论
+
+MiniGPT-4 和 ChatGPT3 都有不错的质量跟随能力。由于模型本身没有被专门微调过，因此在构造 prompt 时候非常关键，如果你设置的好那效果可能就非常棒了！ 不过专门进行微调的模型效果会更好，微调的一个关键就是不能微调 LLM 和 视觉编码器部分，否则可能出现 shift。
+
+以上只是我个人的一些小验证，如果大家有更好的更酷的想法，也欢迎交流和沟通。
+

@@ -36,25 +36,23 @@
 </div>
 <br>
 
+# 更新
+
+🥳 🚀 我们新增了一个基于 DetGPT 项目，其是一个无需训练的仿真版本，可以进行推理式目标检测。具体见 [DetGPT](det_gpt/README_zh-CN.md)
+
+
 # 项目列表
 
-|                                              |                                                                     示例                                                                     |                                                            说明                                                             |
-| :------------------------------------------: | :------------------------------------------------------------------------------------------------------------------------------------------: | :-------------------------------------------------------------------------------------------------------------------------: |
-|           [MMDet-SAM](#-mmdet-sam)           | <img src="https://user-images.githubusercontent.com/17425982/231419108-bc5ef1ed-cb0b-496a-a19e-9b3b55479426.png" width="70%" height="20%"/>  |       目标检测检测相关模型 + SAM。将闭集目标检测、开放词汇目标检测、 Grounding 目标检测和 SAM 结合探索实例分割新玩法        |
-|        [MMRotate-SAM](#-mmrotate-sam)        | <img src="https://user-images.githubusercontent.com/79644233/231568599-58694ec9-a3b1-44a4-833f-74cfb4d4ca45.png" width="70%" height="20%"/>  |             旋转框检测相关模型 + SAM。 将 SAM 和弱监督即水平框检测联合实现旋转框检测，从此省掉累人的旋转框标注              |
-| [Open-Pose-Detection](#-open-pose-detection) |  <img src="https://user-images.githubusercontent.com/8425513/231439110-c0e7d6f8-5692-4bcb-b6cf-c3c243a990a5.jpg" width="70%" height="20%"/>  |                      开放目标检测 + mmpose。探索开放目标检测和各类姿态估计算法结合实现万物皆可摆 Pose                       |
-|       [Open-Tracking](#-open-tracking)       |                       <img src="https://github.com/zwhus/pictures/raw/main/demo%2B(1).gif" width="70%" height="20%" />                       |                 开放目标检测 + tracking。探索开放目标检测和视频任务相结合，轻松实现开放类别的视频跟踪和分割                 |
+|                                              |                                                                     示例                                                                     |                                     说明                                      |
+|:--------------------------------------------:| :------------------------------------------------------------------------------------------------------------------------------------------: |:---------------------------------------------------------------------------:|
+|           [MMDet-SAM](#-mmdet-sam)           | <img src="https://user-images.githubusercontent.com/17425982/231419108-bc5ef1ed-cb0b-496a-a19e-9b3b55479426.png" width="70%" height="20%"/>  |     目标检测检测相关模型 + SAM。将闭集目标检测、开放词汇目标检测、 Grounding 目标检测和 SAM 结合探索实例分割新玩法      |
+|             [DetGPT](#-det-gpt)              | <img src="https://github.com/open-mmlab/playground/assets/17425982/c3145a82-7748-4a79-a187-bcb8d91f1dd3" width="70%" height="20%"/>  |     视觉语言多模态 + Grounding。将视觉语言多模态如 MiniGPT-4 和 Grounding 结合探索推理式目标检测新方向      |
+|        [MMRotate-SAM](#-mmrotate-sam)        | <img src="https://user-images.githubusercontent.com/79644233/231568599-58694ec9-a3b1-44a4-833f-74cfb4d4ca45.png" width="70%" height="20%"/>  |           旋转框检测相关模型 + SAM。 将 SAM 和弱监督即水平框检测联合实现旋转框检测，从此省掉累人的旋转框标注           |
+| [Open-Pose-Detection](#-open-pose-detection) |  <img src="https://user-images.githubusercontent.com/8425513/231439110-c0e7d6f8-5692-4bcb-b6cf-c3c243a990a5.jpg" width="70%" height="20%"/>  |               开放目标检测 + mmpose。探索开放目标检测和各类姿态估计算法结合实现万物皆可摆 Pose               |
+|       [Open-Tracking](#-open-tracking)       |                       <img src="https://github.com/zwhus/pictures/raw/main/demo%2B(1).gif" width="70%" height="20%" />                       |             开放目标检测 + tracking。探索开放目标检测和视频任务相结合，轻松实现开放类别的视频跟踪和分割             |
 |           [MMOCR-SAM](#-mmocr-sam)           | <img src="https://user-images.githubusercontent.com/65173622/231919274-a7ebc63f-8665-4324-89bf-f685e3b5161c.jpg" width="70%" height="20%" /> | 端到端文字检测识别 + SAM，将每一个字符都进行分割。使用基于 Gradio 的 Web UI 探索有趣的 OCR 下游任务，包括文本擦除、文本编辑 |
-|       [MMEditing-SAM](#-mmediting-sam)       | <img src="https://user-images.githubusercontent.com/12782558/232716961-54b7e634-8f89-4a38-9353-4c962f9ce0cf.gif" width="70%" height="20%" /> |                                  将 SAM 和图像生成结合起来从而对图像进行任意位置的编辑修改                                  |
-|       [Label-Studio-SAM](#-label-studio-sam)       | <img src="https://user-images.githubusercontent.com/25839884/233835223-16abc0cb-09f0-407d-8be0-33e14cd86e1b.gif" width="70%" height="20%" /> |  将 Label-Studio 和 SAM 结合实现半自动化标注 |
-
-
-
-
-
-
-
-
+|       [MMEditing-SAM](#-mmediting-sam)       | <img src="https://user-images.githubusercontent.com/12782558/232716961-54b7e634-8f89-4a38-9353-4c962f9ce0cf.gif" width="70%" height="20%" /> |                       将 SAM 和图像生成结合起来从而对图像进行任意位置的编辑修改                       |
+|    [Label-Studio-SAM](#-label-studio-sam)    | <img src="https://user-images.githubusercontent.com/25839884/233835223-16abc0cb-09f0-407d-8be0-33e14cd86e1b.gif" width="70%" height="20%" /> |                       将 Label-Studio 和 SAM 结合实现半自动化标注                       |
 
 
 下面详细说明。
@@ -75,6 +73,20 @@
 4. 所有模型均支持分布式检测和分割评估和自动 COCO JSON 导出，方便用户对自定义数据进行评估
 
 详情见 [README](mmdet_sam/README_zh-CN.md)
+
+## ✨ Det-GPT
+
+<div align=center>
+<img src="https://github.com/open-mmlab/playground/assets/17425982/c3145a82-7748-4a79-a187-bcb8d91f1dd3"/>
+</div>
+
+基于 DetGPT 原理，提供了一个无需训练的仿真版本：
+
+1. 提供了 DetGPT 原理说明
+2. 基于 MiniGPT-4 简单探索了使用无需专门微调的多模态算法进行推理式目标检测的可能性
+3. 基于 ChatGPT3 实现了推理式目标检测，Grounding 检测算法支持 Grounding DINO 和 GLIP
+
+详情见 [README](det_gpt/README_zh-CN.md)
 
 ## ✨ MMRotate-SAM
 
