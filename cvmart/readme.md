@@ -279,7 +279,7 @@ bash /project/train/src_repo/run.sh
 <img src="https://github.com/open-mmlab/playground/assets/105597268/2154a76a-9174-4ff3-922a-d9b624bb1d48"/>
 </div>
 
-如此，便得到我们想要的可视化效果了。
+如此，便得到基于样本数据训练的可视化效果了。
 
 <div align=center>
 <img src="https://github.com/open-mmlab/playground/assets/105597268/f4f1ac5b-d651-48f0-92c2-976d07feeeec"/>
