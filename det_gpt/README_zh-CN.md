@@ -1,6 +1,6 @@
 # Det GPT
 
-DetGPT: DetGPT: Detect What You Need via Reasoning
+DetGPT: DetGPT: Detect What You Need via Reasoning  
 官方地址： https://detgpt.github.io/
 
 **注意: 这不是一个官方的 DetGPT 也不是一个官方 DetGPT 复现，而是一个无需训练的仿真版本！** 
