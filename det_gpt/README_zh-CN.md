@@ -141,6 +141,10 @@ pip install openai transformers
 ```shell
 cd playground
 pip install git+https://github.com/IDEA-Research/GroundingDINO.git # 需要编译 CUDA OP，请确保你的 PyTorch 版本、GCC 版本和 NVCC 编译版本兼容
+
+# 下载权重
+mkdir ../models
+wget -P ../models/ https://github.com/IDEA-Research/GroundingDINO/releases/download/v0.1.0-alpha/groundingdino_swint_ogc.pth
 ```
 
 (4) 安装 GLIP [可选]
@@ -155,6 +159,10 @@ pip install einops shapely timm yacs tensorboardX ftfy prettytable pymongo trans
 
 git clone https://github.com/microsoft/GLIP.git
 cd GLIP; python setup.py build develop --user  # 需要编译 CUDA OP，请确保你的 PyTorch 版本、GCC 版本和 NVCC 编译版本兼容，暂时不支持 PyTorch 1.11+ 版本
+
+# 下载权重
+mkdir ../models
+wget -P ../models/ https://penzhanwu2bbs.blob.core.windows.net/data/GLIPv1_Open/models/glip_a_tiny_o365.pth
 ```
 
 ## 功能演示
