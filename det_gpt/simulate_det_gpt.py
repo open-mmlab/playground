@@ -1,12 +1,13 @@
-import argparse
 import os
-
+import argparse
+from PIL import Image
 import cv2
-import matplotlib.pyplot as plt
-import torch
-from transformers import BlipProcessor, BlipForConditionalGeneration
-import openai
 import re
+import torch
+import openai
+import matplotlib.pyplot as plt
+from transformers import BlipProcessor, BlipForConditionalGeneration
+from mmengine.config import Config
 
 # Grounding DINO
 try:
@@ -32,21 +33,6 @@ try:
 except ImportError:
     maskrcnn_benchmark = None
 
-# mmdet
-try:
-    import mmdet
-    from mmdet.apis import inference_detector, init_detector
-except ImportError:
-    mmdet = None
-
-import sys
-
-from mmengine.config import Config
-from PIL import Image
-
-sys.path.append('../')
-from mmdet_sam.utils import apply_exif_orientation, get_file_list  # noqa
-
 system_prompt = """You must strictly answer the question step by step:
 
 Step-1. based on the description and requirement provided by the user, find all objects related to the input from the description, and concisely explain why these objects meet the requirement.
@@ -60,12 +46,12 @@ requirement:
 
 
 def parse_args():
-    parser = argparse.ArgumentParser(
-        'Det GPT', add_help=True)
+    parser = argparse.ArgumentParser('Simulate Det GPT', add_help=True)
     parser.add_argument('image', type=str, help='path to image file')
     parser.add_argument('det_config', type=str, help='path to det config file')
     parser.add_argument('det_weight', type=str, help='path to det weight file')
     parser.add_argument('text_prompt', type=str, help='text prompt')
+    parser.add_argument('--verbose', action='store_true')
     parser.add_argument('--not-show-label', action='store_true')
     parser.add_argument(
         '--out-dir',
@@ -73,8 +59,6 @@ def parse_args():
         type=str,
         default='outputs',
         help='output directory')
-    parser.add_argument(
-        '--box-thr', '-b', type=float, default=0.3, help='box threshold')
     parser.add_argument(
         '-det-device',
         '-d',
@@ -85,6 +69,8 @@ def parse_args():
         '-p',
         default='cpu',
         help='Device used for inference')
+    parser.add_argument(
+        '--box-thr', '-b', type=float, default=0.3, help='box threshold')
     parser.add_argument(
         '--text-thr', type=float, default=0.25, help='text threshold')
     return parser.parse_args()
@@ -113,14 +99,47 @@ def __build_glip_model(args):
     return model
 
 
+def apply_exif_orientation(image):
+    _EXIF_ORIENT = 274
+    if not hasattr(image, 'getexif'):
+        return image
+
+    try:
+        exif = image.getexif()
+    except Exception:
+        # https://github.com/facebookresearch/detectron2/issues/1885
+        exif = None
+
+    if exif is None:
+        return image
+
+    orientation = exif.get(_EXIF_ORIENT)
+
+    method = {
+        2: Image.FLIP_LEFT_RIGHT,
+        3: Image.ROTATE_180,
+        4: Image.FLIP_TOP_BOTTOM,
+        5: Image.TRANSPOSE,
+        6: Image.ROTATE_270,
+        7: Image.TRANSVERSE,
+        8: Image.ROTATE_90,
+    }.get(orientation)
+    if method is not None:
+        return image.transpose(method)
+    return image
+
+
 def build_detecter(args):
     if 'GroundingDINO' in args.det_config:
         detecter = __build_grounding_dino_model(args)
+        detecter = detecter.to(args.det_device)
     elif 'glip' in args.det_config:
         detecter = __build_glip_model(args)
+        detecter.model = detecter.model.to(args.det_device)
+        detecter.device = args.det_device
     else:
         raise NotImplementedError()
-    return detecter.to(args.det_device)
+    return detecter
 
 
 def build_blip(args):
@@ -172,15 +191,16 @@ def convert_grounding_to_od_logits(logits,
 
 
 def run(det_model, blip_model, blip_processor, args):
+    verbose = args.verbose
     raw_image = Image.open(args.image).convert('RGB')
     raw_image = apply_exif_orientation(raw_image)
     inputs = blip_processor(raw_image, return_tensors="pt")
     out = blip_model.generate(**inputs)
     description = blip_processor.decode(out[0], skip_special_tokens=True)
 
-    print(description)
-    if len(str(description).strip()) == 0:
-        print('exit!')
+    print(f'blip output description is: {description}')
+    if len(description.strip()) == 0:
+        print('blip no description appears and exit!')
         return None
 
     content = system_prompt.replace('description: ', f'description: {description}')
@@ -192,20 +212,24 @@ def run(det_model, blip_model, blip_processor, args):
             'content': content,
         }
     ]
+    if verbose:
+        print(f'LLM input prompt is: {prompt}')
 
-    print(prompt)
     response = openai.ChatCompletion.create(model='gpt-3.5-turbo', messages=prompt, temperature=0.5, max_tokens=1000)
     text_prompt = response['choices'][0]['message']['content']
-    print('pre match:', text_prompt)
+    if verbose:
+        print(f'LLM output message is: {text_prompt}')
 
     matches = re.findall(r'\[([^]]*)\]', text_prompt)
 
     if len(matches) == 0:
-        print('exit!!')
+        print(f'LLM output message is {text_prompt}, does not match specific format, exit!')
         return None
 
+    # Only fetch one
     text_prompt = matches[0]
-    print('post match:', text_prompt)
+
+    print(f'The text prompt input to the detection is {text_prompt}')
 
     pred_dict = {}
     if 'GroundingDINO' in args.det_config:
@@ -233,11 +257,12 @@ def run(det_model, blip_model, blip_processor, args):
             caption_string += separation_tokens
 
         text_prompt = caption_string
-        print('text_prompt:', text_prompt, 'label_name', label_name)
+
+        if verbose:
+            print('The final text_prompt is', text_prompt, ', label_name is ', label_name)
 
         tokenizer = get_tokenlizer.get_tokenlizer('bert-base-uncased')
-        tokenized = tokenizer(
-            text_prompt, padding='longest', return_tensors='pt')
+        tokenized = tokenizer(text_prompt, padding='longest', return_tensors='pt')
         positive_map_label_to_token = create_positive_dict(
             tokenized, tokens_positive, list(range(len(label_name))))
 
@@ -260,7 +285,7 @@ def run(det_model, blip_model, blip_processor, args):
         logits_filt = logits_filt[filt_mask]  # num_filt, 256
         boxes_filt = boxes_filt[filt_mask]  # num_filt, 4
         scores, pred_phrase_idxs = logits_filt.max(1)
-        # build pred
+
         pred_labels = []
         pred_scores = []
         for score, pred_phrase_idx in zip(scores, pred_phrase_idxs):
@@ -279,11 +304,14 @@ def run(det_model, blip_model, blip_processor, args):
 
     elif 'glip' in args.det_config:
         image = cv2.imread(args.image)
-        text_prompt = args.text_prompt
+
         text_prompt = text_prompt.lower()
         text_prompt = text_prompt.strip()
-        if not text_prompt.endswith('.'):
-            text_prompt = text_prompt + '.'
+        text_prompt = text_prompt.replace(',', '.')
+
+        if not text_prompt.endswith('. '):
+            text_prompt = text_prompt + ' . '
+
         top_predictions = det_model.inference(image, text_prompt)
         scores = top_predictions.get_field('scores').tolist()
         labels = top_predictions.get_field('labels').tolist()
@@ -299,7 +327,8 @@ def run(det_model, blip_model, blip_processor, args):
         pred_dict['labels'] = new_labels
         pred_dict['scores'] = scores
         pred_dict['boxes'] = top_predictions.bbox
-
+    if verbose:
+        print(f'detector prediction is {pred_dict}')
     return pred_dict
 
 
@@ -337,6 +366,7 @@ def draw_and_save(image_path,
 
     plt.axis('off')
     plt.savefig(save_path)
+    print(f'Results have been saved at {save_path}')
 
 
 def main():
@@ -349,85 +379,12 @@ def main():
     blip_model, blip_processor = build_blip(args)
     pred_dict = run(det_model, blip_model, blip_processor, args)
 
-    os.makedirs(args.out_dir, exist_ok=True)
-    save_path = os.path.join(args.out_dir, os.path.basename(args.image))
-    draw_and_save(
-        args.image, pred_dict, save_path, show_label=not args.not_show_label)
+    if pred_dict is not None:
+        os.makedirs(args.out_dir, exist_ok=True)
+        save_path = os.path.join(args.out_dir, os.path.basename(args.image))
+        draw_and_save(
+            args.image, pred_dict, save_path, show_label=not args.not_show_label)
 
 
 if __name__ == '__main__':
     main()
-
-# processor = BlipProcessor.from_pretrained("Salesforce/blip-image-captioning-large")
-# model = BlipForConditionalGeneration.from_pretrained("Salesforce/blip-image-captioning-large")
-#
-# # img_url = 'https://storage.googleapis.com/sfr-vision-language-research/BLIP/demo.jpg'
-# # raw_image = Image.open(requests.get(img_url, stream=True).raw).convert('RGB')
-# img_url = '/home/PJLAB/huanghaian/yolo/DetGPT/examples/big_kitchen.jpg'
-# raw_image = Image.open(img_url).convert('RGB')
-# # conditional image captioning
-# # text = "a photography of"
-# # inputs = processor(raw_image, text, return_tensors="pt")
-# #
-# # out = model.generate(**inputs)
-# # print(processor.decode(out[0], skip_special_tokens=True))
-#
-# # unconditional image captioning
-# inputs = processor(raw_image, return_tensors="pt")
-#
-# out = model.generate(**inputs)
-#
-# description = processor.decode(out[0], skip_special_tokens=True)
-# print(description)
-#
-# use_input = 'I want to have a cold beverage'
-#
-# system_prompt = """You must strictly answer the question step by step:
-#
-# Step-1. based on the description and requirement provided by the user, find all objects related to the input from the description, and concisely explain why these objects meet the requirement.
-# Step-2. list out all related objects strictly as follows: <Therefore the answer is: [object_names]>.
-#
-# If you did not complete all 2 steps as detailed as possible, you will be killed. You must finish the answer with complete sentences.
-#
-# description:
-# requirement:
-# """
-#
-# content = system_prompt.replace('description: ', f'description: {description}')
-# content = content.replace('requirement: ', f'requirement: {use_input}')
-#
-# prompt = [
-#     {
-#         'role': 'system',
-#         'content': content,
-#     }
-# ]
-#
-# print(prompt)
-# # response = openai.ChatCompletion.create(model='gpt-3.5-turbo', messages=prompt, temperature=0.5, max_tokens=1000)
-# # reply = response['choices'][0]['message']['content']
-# # print(reply)
-#
-# reply = 'stainless steel refrigerator'
-#
-# from groundingdino.util.inference import load_model, load_image, predict, annotate, Model
-# import cv2
-#
-# model = load_model("GroundingDINO/groundingdino/config/GroundingDINO_SwinT_OGC.py", "./groundingdino_swint_ogc.pth")
-# IMAGE_PATH = "assets/demo1.jpg"
-# TEXT_PROMPT = "bear."
-# BOX_TRESHOLD = 0.35
-# TEXT_TRESHOLD = 0.25
-#
-# image_source, image = load_image(IMAGE_PATH)
-#
-# boxes, logits, phrases = predict(
-#     model=model,
-#     image=image,
-#     caption=TEXT_PROMPT,
-#     box_threshold=BOX_TRESHOLD,
-#     text_threshold=TEXT_TRESHOLD
-# )
-#
-# annotated_frame = annotate(image_source=image_source, boxes=boxes, logits=logits, phrases=phrases)
-# cv2.imwrite("annotated_image.jpg", annotated_frame)
