@@ -38,9 +38,11 @@
 <img src="https://github.com/open-mmlab/playground/assets/105597268/76685f15-fe9b-4dff-9e95-99c5f09e1b24"/>
 </div>
 
+
 <div align=center>
 <img src="https://github.com/open-mmlab/playground/assets/105597268/c94b552e-4deb-4edb-ad3f-2dd834da9b01"/>
 </div>
+
 
 <div align=center>
 <img src="https://github.com/open-mmlab/playground/assets/105597268/bf42132c-c918-4cf5-aafd-4df1a4c12bd9"/>
