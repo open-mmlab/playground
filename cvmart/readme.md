@@ -322,7 +322,16 @@ cp -r train/src_repo/playground/cvmart/Helmet_identification_10163/move_log.py /
 bash /project/train/src_repo/run.sh
 ```
 
-4、样本数据跑完之后，然后点击【】，即可得到样本数据训练的可视化结果，说明我们的配置没有问题。
+4、样本数据跑完之后，然后点击【Open in Browser】，即可得到样本数据训练的可视化结果(下图为 300 个 epoch 的效果)，说明我们的配置没有问题。
+
+<div align=center>
+<img src="https://github.com/open-mmlab/playground/assets/105597268/149a7742-b7ae-4d0b-949a-8ade5be8d52b"/>
+</div>
+
+<div align=center>
+<img src="https://github.com/open-mmlab/playground/assets/105597268/4ecad3d8-8606-496c-ae81-6e32033fd3fd"/>
+</div>
+
 
 5、用极市官方封装的数据，训练我们的模型，并查看可视化效果。
 
