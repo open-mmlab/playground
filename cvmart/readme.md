@@ -289,7 +289,7 @@ bash /project/train/src_repo/run.sh
 
 ### 针对极市官方封装的全数据训练过程的可视化
 
-说明，如果没有专门对 mmyolo 的可视化进行相应的适配，那么会出现下面的情况，即无法通过官方的启动功能，正常打开Tensorboard：
+说明，如果没有专门对 mmyolo 的可视化进行相应的适配，那么会出现下面的情况，即无法通过官方的启动功能正常打开Tensorboard：
 
 <div align=center>
 <img src="https://github.com/open-mmlab/playground/assets/105597268/d42d275e-7b1f-4ce4-aab1-dc96790cb408"/>
