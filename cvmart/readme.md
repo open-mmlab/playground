@@ -23,14 +23,14 @@
 <img src="https://github.com/open-mmlab/playground/assets/105597268/e1bee667-d801-433a-a301-4bd404bb97a9"/>
 </div>
 
-解释：由于没法通过git clone 下载相应的MMLAB的软件包，我们接下来采用极市平台上手动下载的方式。
+解释：由于没法通过 git clone 下载相应的MMLAB的软件包，我们接下来采用极市平台上手动下载的方式。
 
 <div align=center>
 <img src="https://github.com/open-mmlab/playground/assets/105597268/405d49cd-fc05-4708-b5e0-1a5560956875"/>
 </div>
 
 
-4、下载open-mmlab/playground的软件包，拖进资产管理/我的文件里面
+4、下载 open-mmlab/playground 的软件包，拖进资产管理/我的文件里面
 
 下载地址：https://github.com/open-mmlab/playground
 
@@ -60,7 +60,7 @@
 </div>
 
 7、打开VSCode终端，输入下面代码指令。
-```linux
+```shell
 wget https://extremevision-js-userfile.oss-cn-hangzhou.aliyuncs.com/user-35679-files/9a3f2b18-a4e8-4470-8a13-3415f8bc3e41/playground-main.zip（该地址即为刚才复制的playground的软件包地址）
 ```
 <div align=center>
@@ -87,7 +87,7 @@ wget https://extremevision-js-userfile.oss-cn-hangzhou.aliyuncs.com/user-35679-f
 <img src="https://github.com/open-mmlab/playground/assets/105597268/fdaa05ca-68c7-404b-b0fb-2fd78b532f42"/>
 </div>
 
-```linux
+```shell
 wget https://extremevision-js-userfile.oss-cn-hangzhou.aliyuncs.com/user-35679-files/ca0f112a-9f5e-444c-97e7-433e7e2e3f56/mmyolo-main.zip（该地址即为刚才复制的 mmyolo 的软件包地址）
 ```
 
@@ -114,7 +114,7 @@ wget https://extremevision-js-userfile.oss-cn-hangzhou.aliyuncs.com/user-35679-f
 </div>
 
 
-```linux
+```shell
 wget https://extremevision-js-userfile.oss-cn-hangzhou.aliyuncs.com/user-35679-files/f05a6660-d240-4a28-85fc-eef11d374038/rtmdet_tiny_syncbn_fast_8xb32-300e_coco.pth（该地址即为刚才复制的 mmyolo 的软件包地址）
 ```
 
@@ -124,7 +124,7 @@ wget https://extremevision-js-userfile.oss-cn-hangzhou.aliyuncs.com/user-35679-f
 
 10、输入下面指令，将 playground-main 和 mmyolo-main 软件包解压，重命名 playground-main 文件为 playground ,重命名 mmyolo-main 文件为 mmyolo 并且复制放到 train/src_repo 路径下面。
 
-```linux
+```shell
 unzip playground-main.zip
 unzip mmyolo-main.zip
 mv playground-main playground
@@ -135,7 +135,7 @@ cp -r mmyolo train/src_repo
 
 11、执行下面指令，创建所需文件夹，并将 playground 文件里面的 run.sh ji.py convert_to_coco.py 以及预训练权重复制相应的位置。
 
-```linux
+```shell
 mkdir /project/ev_sdk/src
 mkdir /project/train/src_repo/dataset
 mkdir /project/train/src_repo/dataset/images
@@ -150,7 +150,7 @@ cp -r rtmdet_tiny_syncbn_fast_8xb32-300e_coco.pth /project/train/src_repo/mmyolo
 ```
 12、安装所需要的安装包
 
-```linux
+```shell
 pip install -i https://pypi.tuna.tsinghua.edu.cn/simple -U openmim
 pip install -i https://pypi.tuna.tsinghua.edu.cn/simple --upgrade pip
 pip install -i https://pypi.tuna.tsinghua.edu.cn/simple xml
@@ -161,7 +161,7 @@ mim install -i https://pypi.tuna.tsinghua.edu.cn/simple mmcv
 
 13、首先在VSCode终端执行一下训练程序，验证是否能跑起来
 
-```linux
+```shell
 bash /project/train/src_repo/run.sh
 ```
 
@@ -251,7 +251,7 @@ vis_backends=[dict(type='LocalVisBackend'), dict(type='TensorboardVisBackend')]
 
 1、在 VSCode 终端执行下面指令训练样本，用样本数据训练模型。
 
-```linux
+```shell
 bash /project/train/src_repo/run.sh
 ```
 
@@ -263,7 +263,7 @@ bash /project/train/src_repo/run.sh
 
 2、在 VSCode 终端执行下面指令，打开 Tensorboard 可视化工具。
 
-```linux
+```shell
 bash /project/train/src_repo/run.sh
 ```
 
@@ -284,3 +284,47 @@ bash /project/train/src_repo/run.sh
 <div align=center>
 <img src="https://github.com/open-mmlab/playground/assets/105597268/f4f1ac5b-d651-48f0-92c2-976d07feeeec"/>
 </div>
+
+### 针对极市官方封装的全数据训练过程的可视化
+
+说明，如果没有专门对 mmyolo 的可视化进行相应的适配，那么会出现下面的情况，即无法通过官方的启动功能，正常打开Tensorboard：
+
+<div align=center>
+<img src="https://github.com/open-mmlab/playground/assets/105597268/d42d275e-7b1f-4ce4-aab1-dc96790cb408"/>
+</div>
+
+1、首先将 run.sh 的内容删除，替换为下面的内容：
+
+```shell
+rm -rf /project/train/models/train/exp/weights
+mkdir /project/train/models/train/exp/weights
+rm -rf /project/train/tensorboard
+
+cp /home/data/831/*.jpg  /project/train/src_repo/dataset/images
+python /project/train/src_repo/convert_to_coco.py 
+
+python /project/train/src_repo/mmyolo/tools/train.py /project/train/src_repo/mmyolo/tools/rtmdet_tiny_syncbn_fast_8xb32-300e_coco.py
+python /project/train/src_repo/move_log.py
+tensorboard --logdir=/project/train/tensorboard
+```
+
+2、在 VSCode 终端，执行下面指令，将 move_log.py 复制到指定的文件夹：
+
+```shell
+cp -r train/src_repo/playground/cvmart/Helmet_identification_10163/move_log.py /project/train/src_repo 
+```
+
+3、首先在 VSCode 终端，执行下面指令，用样本数据跑一下，看是否能跑通：
+
+```shell
+bash /project/train/src_repo/run.sh
+```
+
+4、样本数据跑完之后，然后点击【】，即可得到样本数据训练的可视化结果，说明我们的配置没有问题。
+
+5、用极市官方封装的数据，训练我们的模型，并查看可视化效果。
+
+
+
+
+
