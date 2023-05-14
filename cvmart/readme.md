@@ -287,7 +287,7 @@ bash /project/train/src_repo/run.sh
 <img src="https://github.com/open-mmlab/playground/assets/105597268/f4f1ac5b-d651-48f0-92c2-976d07feeeec"/>
 </div>
 
-### 针对极市官方封装的全数据训练过程的可视化
+### 针对极市官方封装的全数据训练过程的可视化(可以一边训练，一边实现可视化)
 
 说明，如果没有专门对 mmyolo 的可视化进行相应的适配，那么会出现下面的情况，即无法通过官方的启动功能正常打开Tensorboard：
 
@@ -298,22 +298,34 @@ bash /project/train/src_repo/run.sh
 1、首先将 run.sh 的内容删除，替换为下面的内容：
 
 ```shell
+python /project/train/src_repo/is_there_tensorboard.py
+python /project/train/src_repo/is_there_tensorboard.py
+
 rm -rf /project/train/models/train/exp/weights
 mkdir /project/train/models/train/exp/weights
-rm -rf /project/train/tensorboard
+
 
 cp /home/data/831/*.jpg  /project/train/src_repo/dataset/images
 python /project/train/src_repo/convert_to_coco.py 
 
 python /project/train/src_repo/mmyolo/tools/train.py /project/train/src_repo/mmyolo/tools/rtmdet_tiny_syncbn_fast_8xb32-300e_coco.py
+
+
 python /project/train/src_repo/move_log.py
-tensorboard --logdir=/project/train/tensorboard
+# tensorboard --logdir=/project/train/tensorboard
 ```
 
-2、在 VSCode 终端，执行下面指令，将 move_log.py 复制到指定的文件夹：
+2、在 VSCode 终端，执行下面指令，将 move_log.py 和 is_there_tensorboard.py 复制到指定的文件夹：
 
 ```shell
-cp -r train/src_repo/playground/cvmart/Helmet_identification_10163/move_log.py /project/train/src_repo 
+cp -r train/src_repo/playground/cvmart/Helmet_identification_10163/move_model.py /project/train/src_repo
+cp -r train/src_repo/playground/cvmart/Helmet_identification_10163/is_there_tensorboard.py /project/train/src_repo
+```
+
+3、修改配置文件，打开 rtmdet_tiny_syncbn_fast_8xb32-300e_coco.py 将最后一行改为下面代码：
+
+```python
+work_dir = '/project/train/tensorboard'
 ```
 
 3、首先在 VSCode 终端，执行下面指令，用样本数据跑一下，看是否能跑通：
@@ -322,10 +334,26 @@ cp -r train/src_repo/playground/cvmart/Helmet_identification_10163/move_log.py /
 bash /project/train/src_repo/run.sh
 ```
 
-4、样本数据跑完之后，然后点击【Open in Browser】，即可得到样本数据训练的可视化结果(下图为 300 个 epoch 的效果)，说明我们的配置没有问题。
+正常跑起来的效果如下图所示：
+<div align=center>
+<img src="https://github.com/open-mmlab/playground/assets/105597268/6e5448fd-487c-45e7-b7b7-36a2d8517c9e"/>
+</div>
+
+
+4、样本数据跑的过程中，至少跑 10 个 epoch 之后，新建一个 VSCode 终端，执行下面指令：
+
+```shell
+tensorboard --logdir=/project/train/tensorboard
+```
 
 <div align=center>
-<img src="https://github.com/open-mmlab/playground/assets/105597268/149a7742-b7ae-4d0b-949a-8ade5be8d52b"/>
+<img src="https://github.com/open-mmlab/playground/assets/105597268/9804f9e4-d820-4b9a-ae18-d6b7b5dfc2b9"/>
+</div>
+
+5、然后点击【Open in Browser】，即可得到样本数据训练的可视化结果(下图为 300 个 epoch 的效果)，说明我们的配置没有问题。
+
+<div align=center>
+<img src="https://github.com/open-mmlab/playground/assets/105597268/eeac2922-3d8d-43ed-9175-70c2362b1dd4"/>
 </div>
 
 <div align=center>
