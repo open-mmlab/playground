@@ -328,7 +328,7 @@ cp -r train/src_repo/playground/cvmart/Helmet_identification_10163/is_there_tens
 work_dir = '/project/train/tensorboard'
 ```
 
-3、首先在 VSCode 终端，执行下面指令，用样本数据跑一下，看是否能跑通：
+4、首先在 VSCode 终端，执行下面指令，用样本数据跑一下，看是否能跑通：
 
 ```shell
 bash /project/train/src_repo/run.sh
@@ -340,7 +340,7 @@ bash /project/train/src_repo/run.sh
 </div>
 
 
-4、样本数据跑的过程中，至少跑 10 个 epoch 之后，新建一个 VSCode 终端，执行下面指令：
+5、样本数据跑的过程中，至少跑 10 个 epoch 之后，新建一个 VSCode 终端，执行下面指令：
 
 ```shell
 tensorboard --logdir=/project/train/tensorboard
@@ -350,7 +350,7 @@ tensorboard --logdir=/project/train/tensorboard
 <img src="https://github.com/open-mmlab/playground/assets/105597268/9804f9e4-d820-4b9a-ae18-d6b7b5dfc2b9"/>
 </div>
 
-5、然后点击【Open in Browser】，即可得到样本数据训练的可视化结果(下图为 300 个 epoch 的效果)，说明我们的配置没有问题。
+6、然后点击【Open in Browser】，即可得到样本数据训练的可视化结果(下图为 300 个 epoch 的效果)，说明我们的配置没有问题。
 
 <div align=center>
 <img src="https://github.com/open-mmlab/playground/assets/105597268/eeac2922-3d8d-43ed-9175-70c2362b1dd4"/>
@@ -361,7 +361,7 @@ tensorboard --logdir=/project/train/tensorboard
 </div>
 
 
-5、用极市官方封装的数据，训练我们的模型，并查看可视化效果。
+7、用极市官方封装的数据，训练我们的模型，并查看可视化效果。
 
 <div align=center>
 <img src="https://github.com/open-mmlab/playground/assets/105597268/f02a018e-a8f9-4179-ba17-d759e033317c"/>
