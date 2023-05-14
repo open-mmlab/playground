@@ -335,6 +335,19 @@ bash /project/train/src_repo/run.sh
 
 5、用极市官方封装的数据，训练我们的模型，并查看可视化效果。
 
+<div align=center>
+<img src="https://github.com/open-mmlab/playground/assets/105597268/f02a018e-a8f9-4179-ba17-d759e033317c"/>
+</div>
+
+<div align=center>
+<img src="https://github.com/open-mmlab/playground/assets/105597268/abb24073-9beb-4f6b-8da7-795df33ffa9f"/>
+</div>
+
+<div align=center>
+<img src="https://github.com/open-mmlab/playground/assets/105597268/4f018284-bb10-498e-9d51-0022fa909b62"/>
+</div>
+
+
 
 
 
