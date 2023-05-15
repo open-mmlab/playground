@@ -7,6 +7,7 @@ from urllib.parse import urlparse
 import numpy as np
 from label_studio_converter import brush
 import torch
+from torch.nn import functional as F
 
 import cv2
 
@@ -19,8 +20,13 @@ from label_studio_tools.core.utils.io import get_data_dir
 
 # from mmdet.apis import inference_detector, init_detector
 from segment_anything import SamPredictor, sam_model_registry, SamAutomaticMaskGenerator
+from segment_anything.utils.transforms import ResizeLongestSide
 import random
 import string
+import time
+import onnxruntime
+
+
 logger = logging.getLogger(__name__)
 
 def load_my_model(device="cuda:0",sam_config="vit_b",sam_checkpoint_file="sam_vit_b_01ec64.pth"):
@@ -34,6 +40,28 @@ def load_my_model(device="cuda:0",sam_config="vit_b",sam_checkpoint_file="sam_vi
         return predictor
 
 
+def load_my_onnx(onnx_config:dict):
+    # !wget https://huggingface.co/visheratin/segment-anything-vit-b/resolve/main/encoder.onnx
+    # !wget https://huggingface.co/visheratin/segment-anything-vit-b/resolve/main/decoder.onnx
+    encoder_model_abs_path = "./encoder.onnx"
+    decoder_model_abs_path = "./decoder.onnx"
+
+
+    providers = onnxruntime.get_available_providers()
+    if providers:
+        logging.info(
+                "Available providers for ONNXRuntime: %s", ", ".join(providers)
+            )
+    else:
+        logging.warning("No available providers for ONNXRuntime")
+    encoder_session = onnxruntime.InferenceSession(
+            encoder_model_abs_path, providers=providers
+            )
+    decoder_session = onnxruntime.InferenceSession(
+            decoder_model_abs_path, providers=providers
+        )
+
+    return encoder_session,decoder_session
 
 class MMDetection(LabelStudioMLBase):
     """Object detector based on https://github.com/open-mmlab/mmdetection."""
@@ -50,21 +78,23 @@ class MMDetection(LabelStudioMLBase):
                  out_poly=False,
                  score_threshold=0.5,
                  device='cpu',
+                 onnx=False,
                  **kwargs):
 
         super(MMDetection, self).__init__(**kwargs)
+        self.onnx=onnx
+        if self.onnx:
+            PREDICTOR=load_my_onnx(device)
+        else:
+            PREDICTOR=load_my_model(device,sam_config,sam_checkpoint_file)
 
-        PREDICTOR=load_my_model(device,sam_config,sam_checkpoint_file)
+        
         self.PREDICTOR = PREDICTOR
 
         self.out_mask = out_mask
         self.out_bbox = out_bbox
         self.out_poly = out_poly
 
-        # config_file = config_file or os.environ['config_file']
-        # checkpoint_file = checkpoint_file or os.environ['checkpoint_file']
-        # self.config_file = config_file
-        # self.checkpoint_file = checkpoint_file
         self.labels_file = labels_file
         # default Label Studio image upload folder
         upload_dir = os.path.join(get_data_dir(), 'media', 'upload')
@@ -76,8 +106,6 @@ class MMDetection(LabelStudioMLBase):
         else:
             self.label_map = {}
 
-        # self.from_name, self.to_name, self.value, self.labels_in_config = get_single_tag_keys(  # noqa E501
-        #     self.parsed_label_config, 'RectangleLabels', 'Image')
 
         self.labels_in_config = dict(
                 label=self.parsed_label_config['KeyPointLabels']
@@ -132,6 +160,78 @@ class MMDetection(LabelStudioMLBase):
         # self.model = init_detector(config_file, checkpoint_file, device=device)
         self.score_thresh = score_threshold
 
+
+    def pre_process(self, image):
+        image_size = 1024
+        transform = ResizeLongestSide(image_size)
+
+        input_image = transform.apply_image(image)
+        input_image_torch = torch.as_tensor(input_image, device="cpu")
+        input_image_torch = input_image_torch.permute(2, 0, 1).contiguous()[None, :, :, :]
+        pixel_mean = torch.Tensor([123.675, 116.28, 103.53]).view(-1, 1, 1)
+        pixel_std = torch.Tensor([58.395, 57.12, 57.375]).view(-1, 1, 1)
+        x = (input_image_torch - pixel_mean) / pixel_std
+        h, w = x.shape[-2:]
+        padh = image_size - h
+        padw = image_size - w
+        x = F.pad(x, (0, padw, 0, padh))
+        x = x.numpy()
+
+        encoder_inputs = {
+            "x": x,
+        }
+        return encoder_inputs, image.shape[:2]
+
+    def run_encoder(self, encoder_inputs):
+        output = self.encoder_session.run(None, encoder_inputs)
+        image_embedding = output[0]
+        return image_embedding
+
+
+
+    def run_decoder(
+        self, image_embedding, input_prompt,img_size):
+        (original_height,original_width)=img_size
+        points=input_prompt['points']
+        masks=input_prompt['mask']
+        boxes=input_prompt['boxes']
+        labels=input_prompt['label']
+
+        image_size = 1024
+        transform = ResizeLongestSide(image_size)
+        if boxes is not None:
+            onnx_box_coords = boxes.reshape(2, 2)
+            input_labels = np.array([2,3])
+
+            onnx_coord = np.concatenate([onnx_box_coords, np.array([[0.0, 0.0]])], axis=0)[None, :, :]
+            onnx_label = np.concatenate([input_labels, np.array([-1])], axis=0)[None, :].astype(np.float32)
+        elif points is not None:
+            input_point=points
+            input_label = np.array([1])
+            onnx_coord = np.concatenate([input_point, np.array([[0.0, 0.0]])], axis=0)[None, :, :]
+            onnx_label = np.concatenate([input_label, np.array([-1])], axis=0)[None, :].astype(np.float32)
+
+        onnx_coord = transform.apply_coords(onnx_coord, img_size).astype(np.float32)
+
+        onnx_mask_input = np.zeros((1, 1, 256, 256), dtype=np.float32)
+        onnx_has_mask_input = np.zeros(1, dtype=np.float32)
+
+        
+        decoder_inputs = {
+            "image_embeddings": image_embedding,
+            "point_coords": onnx_coord,
+            "point_labels": onnx_label,
+            "mask_input": onnx_mask_input,
+            "has_mask_input": onnx_has_mask_input,
+            "orig_im_size": np.array(
+                img_size, dtype=np.float32
+            ),
+        }
+        masks, _, _ = self.decoder_session.run(None, decoder_inputs)
+        masks = masks > 0.0
+
+        return masks
+
     def _get_image_url(self, task):
         image_url = task['data'].get(
             self.value) or task['data'].get(DATA_UNDEFINED_NAME)
@@ -156,8 +256,7 @@ class MMDetection(LabelStudioMLBase):
 
     def predict(self, tasks, **kwargs):
 
-        predictor = self.PREDICTOR
-
+        start = time.time()
         results = []
         assert len(tasks) == 1
         task = tasks[0]
@@ -167,48 +266,83 @@ class MMDetection(LabelStudioMLBase):
         if kwargs.get('context') is None:
             return []
         
-        # image = cv2.imread(f"./{split}")
         image = cv2.imread(image_path)
         image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
-        predictor.set_image(image)
-        
         prompt_type = kwargs['context']['result'][0]['type']
         original_height = kwargs['context']['result'][0]['original_height']
         original_width = kwargs['context']['result'][0]['original_width']
 
+        if self.onnx:
+            self.encoder_session,self.decoder_session=self.PREDICTOR
+            encoder_inputs,_ = self.pre_process(image)
 
-        if prompt_type == 'keypointlabels':
-            # getting x and y coordinates of the keypoint
-            x = kwargs['context']['result'][0]['value']['x'] * original_width / 100
-            y = kwargs['context']['result'][0]['value']['y'] * original_height / 100
-            output_label = kwargs['context']['result'][0]['value']['labels'][0]
+            input_prompt={}
+
+            input_prompt['boxes']=input_prompt['mask']=input_prompt['points']=input_prompt['label']=None
+            if prompt_type == 'keypointlabels':
+                # getting x and y coordinates of the keypoint
+                x = kwargs['context']['result'][0]['value']['x'] * original_width / 100
+                y = kwargs['context']['result'][0]['value']['y'] * original_height / 100
+                output_label = kwargs['context']['result'][0]['value']['labels'][0]
+
+                input_prompt['points']=np.array([[x, y]])
+                input_prompt['label']=np.array([1])
+
+            
+            if prompt_type == 'rectanglelabels':
+
+                x = kwargs['context']['result'][0]['value']['x'] * original_width / 100
+                y = kwargs['context']['result'][0]['value']['y'] * original_height / 100
+                w = kwargs['context']['result'][0]['value']['width'] * original_width / 100
+                h = kwargs['context']['result'][0]['value']['height'] * original_height / 100
+
+                output_label = kwargs['context']['result'][0]['value']['rectanglelabels'][0]
+            
+                input_prompt['boxes']=np.array([x, y, x+w, y+h])
+
+                input_prompt['label'] = np.array([2,3])
+            
+            
+            #encoder
+            image_embedding = self.run_encoder(encoder_inputs)
+            masks = self.run_decoder(image_embedding,input_prompt,\
+                                     (original_height,original_width))
+            masks = masks[0].astype(np.uint8)
+
+        else:
+            predictor = self.PREDICTOR
+            predictor.set_image(image)
+
+            if prompt_type == 'keypointlabels':
+                # getting x and y coordinates of the keypoint
+                x = kwargs['context']['result'][0]['value']['x'] * original_width / 100
+                y = kwargs['context']['result'][0]['value']['y'] * original_height / 100
+                output_label = kwargs['context']['result'][0]['value']['labels'][0]
 
 
-            masks, scores, logits = predictor.predict(
-                point_coords=np.array([[x, y]]),
-                # box=np.array([x.cpu() for x in bbox[:4]]),
-                point_labels=np.array([1]),
-                multimask_output=False,
-            )
+                masks, scores, logits = predictor.predict(
+                    point_coords=np.array([[x, y]]),
+                    # box=np.array([x.cpu() for x in bbox[:4]]),
+                    point_labels=np.array([1]),
+                    multimask_output=False,
+                )
 
 
-        if prompt_type == 'rectanglelabels':
+            if prompt_type == 'rectanglelabels':
 
+                x = kwargs['context']['result'][0]['value']['x'] * original_width / 100
+                y = kwargs['context']['result'][0]['value']['y'] * original_height / 100
+                w = kwargs['context']['result'][0]['value']['width'] * original_width / 100
+                h = kwargs['context']['result'][0]['value']['height'] * original_height / 100
 
-            x = kwargs['context']['result'][0]['value']['x'] * original_width / 100
-            y = kwargs['context']['result'][0]['value']['y'] * original_height / 100
-            w = kwargs['context']['result'][0]['value']['width'] * original_width / 100
-            h = kwargs['context']['result'][0]['value']['height'] * original_height / 100
+                output_label = kwargs['context']['result'][0]['value']['rectanglelabels'][0]
 
-            output_label = kwargs['context']['result'][0]['value']['rectanglelabels'][0]
-
-            masks, scores, logits = predictor.predict(
-                # point_coords=np.array([[x, y]]),
-                box=np.array([x, y, x+w, y+h]),
-                point_labels=np.array([1]),
-                multimask_output=False,
-            )
-
+                masks, scores, logits = predictor.predict(
+                    # point_coords=np.array([[x, y]]),
+                    box=np.array([x, y, x+w, y+h]),
+                    point_labels=np.array([1]),
+                    multimask_output=False,
+                )
 
         mask = masks[0].astype(np.uint8) # each mask has shape [H, W]
         # converting the mask from the model to RLE format which is usable in Label Studio
@@ -216,12 +350,11 @@ class MMDetection(LabelStudioMLBase):
         # 找到轮廓
         contours, hierarchy = cv2.findContours(mask, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
 
-
+        end = time.time()
+        print(end-start)
 
 
         # 计算外接矩形
-
-
         if self.out_bbox:
             new_contours = []
             for contour in contours:
