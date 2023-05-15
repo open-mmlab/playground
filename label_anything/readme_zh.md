@@ -384,5 +384,35 @@ python tools/test.py data/my_set/mask-rcnn_r50_fpn.py path/of/your/checkpoint --
 
 到此半自动化标注就完成了, 通过 Label-Studio 的半自动化标注功能，可以让用户在标注过程中，通过点击一下鼠标，就可以完成目标的分割和检测，大大提高了标注效率。部分代码借鉴自 label-studio-ml-backend ID 为 253 的 Pull Request，感谢作者的贡献。同时感谢社区同学 [ATang0729](https://github.com/ATang0729) 为脚本测试重新标注了喵喵数据集，以及 [JimmyMa99](https://github.com/JimmyMa99) 同学提供的转换脚本、 config 模板以及文档优化。
 
+## (测试阶段)🚀使用 onnx runtime 进行 SAM 后端推理🚀（可选）
+
+我们使用 onnx runtime 进行 SAM 后端推理以提升 SAM 的推理速度，在一张 3090 上测试，使用 pytorch 需要 4.6s ，使用 onnx runtime 只要 0.24s。
+
+首先下载 huggingface 上转换好的 onnx。
+
+```shell
+cd path/to/playground/label_anything
+wget https://huggingface.co/visheratin/segment-anything-vit-b/resolve/main/encoder.onnx
+wget https://huggingface.co/visheratin/segment-anything-vit-b/resolve/main/decoder.onnx
+```
+
+接着开启后端推理。
+
+```shell
+cd path/to/playground/label_anything
+
+label-studio-ml start sam --port 8003 --with \
+sam_config=vit_b \
+sam_checkpoint_file=./sam_vit_b_01ec64.pth \
+out_mask=True \
+out_bbox=True \
+device=cuda:0 \
+onnx=True \
+# device=cuda:0 为使用 GPU 推理，如果使用 cpu 推理，将 cuda:0 替换为 cpu
+# out_poly=True 返回外接多边形的标注
+```
+
+⚠目前仅支持 sam_vit_b。
+
 
 
