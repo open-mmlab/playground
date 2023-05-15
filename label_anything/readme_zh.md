@@ -32,10 +32,22 @@ conda create -n rtmdet-sam python=3.9 -y
 conda activate rtmdet-sam
 ```
 
+PS: 如果你在conda环境中无法使用git命令，可以按照以下命令安装git
+
+```shell
+conda install git
+```
+
 克隆 OpenMMLab PlayGround
 
 ```shell
 git clone https://github.com/open-mmlab/playground
+```
+
+如果你遇到网络错误，请尝试通过ssh完成git克隆，像下面这个命令一样：
+
+```shell
+git clone git@github.com:open-mmlab/playground.git
 ```
 
 安装 PyTorch
@@ -57,6 +69,8 @@ pip install torch==1.10.1 torchvision==0.11.2 torchaudio==0.10.1
 
 ```shell
 cd path/to/playground/label_anything
+# 在Windows中，进行下一步之前需要完成以下命令行
+# conda install pycocotools -c conda-forge 
 pip install opencv-python pycocotools matplotlib onnxruntime onnx
 pip install git+https://github.com/facebookresearch/segment-anything.git
 wget https://dl.fbaipublicfiles.com/segment_anything/sam_vit_b_01ec64.pth
@@ -66,6 +80,8 @@ wget https://dl.fbaipublicfiles.com/segment_anything/sam_vit_b_01ec64.pth
 # wget https://dl.fbaipublicfiles.com/segment_anything/sam_vit_h_4b8939.pth
 ```
 
+PS: 如果您使用Windows环境，请忽略wget命令，手动下载wget的目标文件（复制url到浏览器或下载工具中）
+例如: https://dl.fbaipublicfiles.com/segment_anything/sam_vit_b_01ec64.pth
 
 安装 Label-Studio 和 label-studio-ml-backend
 
@@ -95,6 +111,27 @@ device=cuda:0 \
 # device=cuda:0 为使用 GPU 推理，如果使用 cpu 推理，将 cuda:0 替换为 cpu
 # out_poly=True 返回外接多边形的标注
 
+```
+
+PS: 在Windows环境中，在Anaconda Powershell Prompt输入以下内容等价于上方的输入:
+
+```shell
+cd path/to/playground/label_anything
+
+$env:sam_config = "vit_b"
+$env:sam_checkpoint_file = ".\sam_vit_b_01ec64.pth"
+$env:out_mask = "True"
+$env:out_bbox = "True"
+$env:device = "cuda:0"
+# device=cuda:0 为使用 GPU 推理，如果使用 cpu 推理，将 cuda:0 替换为 cpu
+# out_poly=True 返回外接多边形的标注
+
+label-studio-ml start sam --port 8003 --with `
+sam_config=$env:sam_config `
+sam_checkpoint_file=$env:sam_checkpoint_file `
+out_mask=$env:out_mask `
+out_bbox=$env:out_bbox `
+device=$env:device
 ```
 
 ![image](https://user-images.githubusercontent.com/25839884/233821553-0030945a-8d83-4416-8edd-373ae9203a63.png)
@@ -138,6 +175,7 @@ label-studio start
 ![](https://cdn.vansin.top/picgo20230330133118.png)
 
 我们注册一个用户，然后创建一个 OpenMMLabPlayGround 项目。
+PS: Label-Studio的用户名密码存储于本地，如果出现浏览器记住了密码却无法登陆的情况，请重新注册
 
 ![](https://cdn.vansin.top/picgo20230330133333.png)
 
