@@ -179,6 +179,10 @@ PS: Label-Studio的用户名密码存储于本地，如果出现浏览器记住�
 
 ![](https://cdn.vansin.top/picgo20230330133333.png)
 
+图片数据导入方法：
+
+1.直接上传
+
 我们通过下面的方式下载好示例的喵喵图片，点击 Data Import 导入需要标注的猫图片，点击 Save 创建 Project。
 
 注意，如果使用其他数据集须保证数据名称中不含有中文
@@ -195,6 +199,33 @@ wget https://download.openmmlab.com/mmyolo/data/cat_dataset.zip && unzip cat_dat
 ![](https://cdn.vansin.top/picgo20230330133715.png)
 
 
+2 直接使用服务器上的图片数据：
+
+通过Cloud Storages的方式实现。
+
+1 在启动SAM后端之前，需要设置环境变量：
+```
+export LOCAL_FILES_DOCUMENT_ROOT=path/to/playground/label_anything
+```
+
+2 在启动label studio之前，需要设置环境变量：
+```
+export LABEL_STUDIO_LOCAL_FILES_SERVING_ENABLED=true
+
+export LABEL_STUDIO_LOCAL_FILES_DOCUMENT_ROOT=path/to/playground/label_anything
+```
+
+3 启动SAM后端和label studio之后，先Create Project，在Cloud Storage中选择 Add Source Storage。
+
+![](./screenshots/iShot_2023-05-15_15.08.57.png)
+
+选择 Local files, 填写绝对路径
+
+![](./screenshots/iShot_2023-05-15_15.10.45.png)
+之后就可以与服务器上的数据同步,使用服务器上的数据进行标注、导出等操作。
+![](./screenshots/iShot_2023-05-15_15.12.58.png)
+
+---
 在 `Settings/Labeling Interface` 中配置 Label-Studio 关键点和 Mask 标注。
 
 ```xml

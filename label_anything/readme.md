@@ -173,6 +173,10 @@ PS: Label-Studio's username and password are stored locally. If you encounter a 
 
 ![](https://cdn.vansin.top/picgo20230330133333.png)
 
+Import images to be annotated:
+
+1 Upload
+
 We will download the example Meow Meow images using the method below, click on Data Import to import the cat images that need to be annotated, and then click Save to create the project.
 
 ```shell
@@ -186,6 +190,35 @@ wget https://download.openmmlab.com/mmyolo/data/cat_dataset.zip && unzip cat_dat
 
 ![](https://cdn.vansin.top/picgo20230330133715.png)
 
+
+2 Use images stored on the server：
+
+
+realized through 'Cloud Storages'
+
+1 Set environment variables before launch the SAM backend:
+```
+export LOCAL_FILES_DOCUMENT_ROOT=path/to/playground/label_anything
+```
+
+2 Set environment variables before launch the label studio backend to allow label studio to use local files：
+```
+export LABEL_STUDIO_LOCAL_FILES_SERVING_ENABLED=true
+
+export LABEL_STUDIO_LOCAL_FILES_DOCUMENT_ROOT=path/to/playground/label_anything
+```
+
+3 After launching SAM and label studio backend，Create Project first，click on 'Add Source Storage' in Cloud Storage .
+
+![](./screenshots/iShot_2023-05-15_15.08.57.png)
+
+Choose 'Local files', write 'Absolute local path'
+
+![](./screenshots/iShot_2023-05-15_15.10.45.png)
+Then it can synchronize with the data on the server and use the data on the server for annotation, export and other operations.
+![](./screenshots/iShot_2023-05-15_15.12.58.png)
+
+---
 
 Configure Label-Studio keypoint, Mask, and other annotations in Settings/Labeling Interface.
 
