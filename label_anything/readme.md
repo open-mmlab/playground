@@ -210,13 +210,13 @@ export LABEL_STUDIO_LOCAL_FILES_DOCUMENT_ROOT=path/to/playground/label_anything
 
 3 After launching SAM and label studio backend，Create Project first，click on 'Add Source Storage' in Cloud Storage .
 
-![](./screenshots/iShot_2023-05-15_15.08.57.png)
+![](https://github.com/GodfatherPacino/img/assets/33151790/9b9e47a4-af9b-4fad-a572-12b947b770b0)
 
 Choose 'Local files', write 'Absolute local path'
 
-![](./screenshots/iShot_2023-05-15_15.10.45.png)
+![iShot_2023-05-15_15 10 45](https://github.com/GodfatherPacino/img/assets/33151790/1b5b1963-0d4c-4897-912e-30200b1676f9)
 Then it can synchronize with the data on the server and use the data on the server for annotation, export and other operations.
-![](./screenshots/iShot_2023-05-15_15.12.58.png)
+![iShot_2023-05-15_15 12 58](https://github.com/GodfatherPacino/img/assets/33151790/82cb4c31-e5b7-4c6d-9137-5d93289a424c)
 
 ---
 
