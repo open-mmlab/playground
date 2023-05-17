@@ -203,19 +203,19 @@ wget https://download.openmmlab.com/mmyolo/data/cat_dataset.zip && unzip cat_dat
 
 通过Cloud Storages的方式实现。
 
-1 在启动SAM后端之前，需要设置环境变量：
+① 在启动SAM后端之前，需要设置环境变量：
 ```
 export LOCAL_FILES_DOCUMENT_ROOT=path/to/playground/label_anything
 ```
 
-2 在启动label studio之前，需要设置环境变量：
+② 在启动label studio之前，需要设置环境变量：
 ```
 export LABEL_STUDIO_LOCAL_FILES_SERVING_ENABLED=true
 
 export LABEL_STUDIO_LOCAL_FILES_DOCUMENT_ROOT=path/to/playground/label_anything
 ```
 
-3 启动SAM后端和label studio之后，先Create Project，在Cloud Storage中选择 Add Source Storage。
+③ 启动SAM后端和label studio之后，先Create Project，在Cloud Storage中选择 Add Source Storage。
 
 ![](https://github.com/GodfatherPacino/img/assets/33151790/9b9e47a4-af9b-4fad-a572-12b947b770b0)
 

@@ -196,19 +196,19 @@ wget https://download.openmmlab.com/mmyolo/data/cat_dataset.zip && unzip cat_dat
 
 realized through 'Cloud Storages'
 
-1 Set environment variables before launch the SAM backend:
+① Set environment variables before launch the SAM backend:
 ```
 export LOCAL_FILES_DOCUMENT_ROOT=path/to/playground/label_anything
 ```
 
-2 Set environment variables before launch the label studio backend to allow label studio to use local files：
+② Set environment variables before launch the label studio backend to allow label studio to use local files：
 ```
 export LABEL_STUDIO_LOCAL_FILES_SERVING_ENABLED=true
 
 export LABEL_STUDIO_LOCAL_FILES_DOCUMENT_ROOT=path/to/playground/label_anything
 ```
 
-3 After launching SAM and label studio backend，Create Project first，click on 'Add Source Storage' in Cloud Storage .
+③ After launching SAM and label studio backend，Create Project first，click on 'Add Source Storage' in Cloud Storage .
 
 ![](https://github.com/GodfatherPacino/img/assets/33151790/9b9e47a4-af9b-4fad-a572-12b947b770b0)
 
