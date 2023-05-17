@@ -90,7 +90,7 @@ pip install label-studio==1.7.3
 pip install label-studio-ml==1.0.9
 ```
 
-## Start the service:
+## Start the service
 ⚠label_anything requires the SAM backend to be enabled and then the web service to be started before the model can be loaded. (a total of two steps are required to start)
 
 1.Start the SAM backend inference service:
