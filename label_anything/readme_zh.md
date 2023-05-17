@@ -201,7 +201,7 @@ wget https://download.openmmlab.com/mmyolo/data/cat_dataset.zip && unzip cat_dat
 ![](https://cdn.vansin.top/picgo20230330133715.png)
 
 
-2 直接使用服务器上的图片数据：
+2.直接使用服务器上的图片数据：
 
 通过 Cloud Storages 的方式实现。
 
@@ -229,7 +229,7 @@ export LABEL_STUDIO_LOCAL_FILES_DOCUMENT_ROOT=path/to/playground/label_anything
 
 ![iShot_2023-05-15_15 12 58](https://github.com/GodfatherPacino/img/assets/33151790/82cb4c31-e5b7-4c6d-9137-5d93289a424c)
 
-### 配置XML
+### 配置 XML
 
 ---
 在 `Settings/Labeling Interface` 中配置 Label-Studio 关键点和 Mask 标注。
@@ -267,7 +267,7 @@ export LABEL_STUDIO_LOCAL_FILES_DOCUMENT_ROOT=path/to/playground/label_anything
 
 然后在设置中点击 Add Model 添加 OpenMMLabPlayGround 后端推理服务,设置好 SAM 后端推理服务的 URL http://localhost:8003 ，并打开 `Use for interactive preannotations` 并点击 `Validate and Save`。
 
-⚠如果你在这一步无法顺利执行，可能由于模型加载时间长，导致连接后端超时，请重新执行 `export ML_TIMEOUT_SETUP=40` (linux) 或 `set ML_TIMEOUT_SETUP=40` (windows) ，重新启动 `label-studio start` SAM后端推理服务。
+⚠如果你在这一步无法顺利执行，可能由于模型加载时间长，导致连接后端超时，请重新执行 `export ML_TIMEOUT_SETUP=40` (linux) 或 `set ML_TIMEOUT_SETUP=40` (windows) ，重新启动 `label-studio start` SAM 后端推理服务。
 
 ![image](https://user-images.githubusercontent.com/25839884/233836727-568d56e3-3b32-4599-b0a8-c20f18479a6a.png)
 
