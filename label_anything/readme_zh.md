@@ -201,28 +201,30 @@ wget https://download.openmmlab.com/mmyolo/data/cat_dataset.zip && unzip cat_dat
 
 2 直接使用服务器上的图片数据：
 
-通过Cloud Storages的方式实现。
+通过 Cloud Storages 的方式实现。
 
-① 在启动SAM后端之前，需要设置环境变量：
+① 在启动 SAM 后端之前，需要设置环境变量：
 ```
 export LOCAL_FILES_DOCUMENT_ROOT=path/to/playground/label_anything
 ```
 
-② 在启动label studio之前，需要设置环境变量：
+② 在启动 label studio 之前，需要设置环境变量：
 ```
 export LABEL_STUDIO_LOCAL_FILES_SERVING_ENABLED=true
 
 export LABEL_STUDIO_LOCAL_FILES_DOCUMENT_ROOT=path/to/playground/label_anything
 ```
 
-③ 启动SAM后端和label studio之后，先Create Project，在Cloud Storage中选择 Add Source Storage。
+③ 启动 SAM 后端和 label studio 之后，先 Create Project，在 Cloud Storage 中选择 Add Source Storage。
 
 ![](https://github.com/GodfatherPacino/img/assets/33151790/9b9e47a4-af9b-4fad-a572-12b947b770b0)
 
 选择 Local files, 填写绝对路径
 
 ![iShot_2023-05-15_15 10 45](https://github.com/GodfatherPacino/img/assets/33151790/1b5b1963-0d4c-4897-912e-30200b1676f9)
-之后就可以与服务器上的数据同步,使用服务器上的数据进行标注、导出等操作。
+
+之后就可以与服务器上的数据同步,点击 Sync Storage，使用服务器上的数据进行标注、导出等操作。
+
 ![iShot_2023-05-15_15 12 58](https://github.com/GodfatherPacino/img/assets/33151790/82cb4c31-e5b7-4c6d-9137-5d93289a424c)
 
 
