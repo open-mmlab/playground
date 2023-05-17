@@ -177,7 +177,7 @@ PS: Label-Studio's username and password are stored locally. If you encounter a 
 
 ### Import images to be annotated:
 
-1 Upload
+1.Upload
 
 We will download the example Meow Meow images using the method below, click on Data Import to import the cat images that need to be annotated, and then click Save to create the project.
 
@@ -193,7 +193,7 @@ wget https://download.openmmlab.com/mmyolo/data/cat_dataset.zip && unzip cat_dat
 ![](https://cdn.vansin.top/picgo20230330133715.png)
 
 
-2 Use images stored on the server：
+2.Use images stored on the server：
 
 
 realized through 'Cloud Storages'
