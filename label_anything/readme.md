@@ -173,7 +173,9 @@ PS: Label-Studio's username and password are stored locally. If you encounter a 
 
 ![](https://cdn.vansin.top/picgo20230330133333.png)
 
-## Import images to be annotated:
+## Frontend Configuration
+
+### Import images to be annotated:
 
 1 Upload
 
@@ -219,6 +221,8 @@ Choose 'Local files', write 'Absolute local path'
 Click on 'Sync Storage'. Then it can synchronize with the data on the server and use the data on the server for annotation, export and other operations.
 
 ![iShot_2023-05-15_15 12 58](https://github.com/GodfatherPacino/img/assets/33151790/82cb4c31-e5b7-4c6d-9137-5d93289a424c)
+
+### XML configuration
 
 ---
 
