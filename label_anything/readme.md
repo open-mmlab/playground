@@ -90,7 +90,7 @@ pip install label-studio==1.7.3
 pip install label-studio-ml==1.0.9
 ```
 
-## Start the service:
+## Start the service
 ⚠label_anything requires the SAM backend to be enabled and then the web service to be started before the model can be loaded. (a total of two steps are required to start)
 
 1.Start the SAM backend inference service:
@@ -173,6 +173,12 @@ PS: Label-Studio's username and password are stored locally. If you encounter a 
 
 ![](https://cdn.vansin.top/picgo20230330133333.png)
 
+## Frontend Configuration
+
+### Import images to be annotated:
+
+1.Upload
+
 We will download the example Meow Meow images using the method below, click on Data Import to import the cat images that need to be annotated, and then click Save to create the project.
 
 ```shell
@@ -186,6 +192,39 @@ wget https://download.openmmlab.com/mmyolo/data/cat_dataset.zip && unzip cat_dat
 
 ![](https://cdn.vansin.top/picgo20230330133715.png)
 
+
+2.Use images stored on the server：
+
+
+realized through 'Cloud Storages'
+
+① Set environment variables before launch the SAM backend:
+```
+export LOCAL_FILES_DOCUMENT_ROOT=path/to/playground/label_anything
+```
+
+② Set environment variables before launch the label studio backend to allow label studio to use local files：
+```
+export LABEL_STUDIO_LOCAL_FILES_SERVING_ENABLED=true
+
+export LABEL_STUDIO_LOCAL_FILES_DOCUMENT_ROOT=path/to/playground/label_anything
+```
+
+③ After launching SAM and label studio backend，Create Project first，click on 'Add Source Storage' in Cloud Storage .
+
+![](https://github.com/GodfatherPacino/img/assets/33151790/9b9e47a4-af9b-4fad-a572-12b947b770b0)
+
+Choose 'Local files', write 'Absolute local path'
+
+![iShot_2023-05-15_15 10 45](https://github.com/GodfatherPacino/img/assets/33151790/1b5b1963-0d4c-4897-912e-30200b1676f9)
+
+Click on 'Sync Storage'. Then it can synchronize with the data on the server and use the data on the server for annotation, export and other operations.
+
+![iShot_2023-05-15_15 12 58](https://github.com/GodfatherPacino/img/assets/33151790/82cb4c31-e5b7-4c6d-9137-5d93289a424c)
+
+### XML configuration
+
+---
 
 Configure Label-Studio keypoint, Mask, and other annotations in Settings/Labeling Interface.
 
@@ -218,6 +257,7 @@ Next, copy and add the above XML to Label-Studio, and then click Save.
 
 ![image](https://user-images.githubusercontent.com/25839884/233832662-02f856e5-48e7-4200-9011-17693fc2e916.png)
 
+### Load SAM backend
 
 After that, go to Settings and click Add Model to add the OpenMMLabPlayGround backend inference service. Set the URL http://localhost:8003 for the SAM backend inference service, enable Use for interactive preannotations, and click Validate and Save.
 
