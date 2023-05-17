@@ -179,7 +179,7 @@ PS: Label-Studio的用户名密码存储于本地，如果出现浏览器记住�
 
 ![](https://cdn.vansin.top/picgo20230330133333.png)
 
-## 前段配置
+## 前端配置
 
 ### 导入图片
 
