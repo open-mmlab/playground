@@ -257,6 +257,7 @@ Next, copy and add the above XML to Label-Studio, and then click Save.
 
 ![image](https://user-images.githubusercontent.com/25839884/233832662-02f856e5-48e7-4200-9011-17693fc2e916.png)
 
+### Load SAM backend
 
 After that, go to Settings and click Add Model to add the OpenMMLabPlayGround backend inference service. Set the URL http://localhost:8003 for the SAM backend inference service, enable Use for interactive preannotations, and click Validate and Save.
 
