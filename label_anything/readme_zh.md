@@ -32,7 +32,7 @@ conda create -n rtmdet-sam python=3.9 -y
 conda activate rtmdet-sam
 ```
 
-PS: 如果你在conda环境中无法使用git命令，可以按照以下命令安装git
+PS: 如果你在 conda 环境中无法使用 git 命令，可以按照以下命令安装 git
 
 ```shell
 conda install git
@@ -44,7 +44,7 @@ conda install git
 git clone https://github.com/open-mmlab/playground
 ```
 
-如果你遇到网络错误，请尝试通过ssh完成git克隆，像下面这个命令一样：
+如果你遇到网络错误，请尝试通过 ssh 完成 git 克隆，像下面这个命令一样：
 
 ```shell
 git clone git@github.com:open-mmlab/playground.git
@@ -69,7 +69,7 @@ pip install torch==1.10.1 torchvision==0.11.2 torchaudio==0.10.1
 
 ```shell
 cd path/to/playground/label_anything
-# 在Windows中，进行下一步之前需要完成以下命令行
+# 在 Windows 中，进行下一步之前需要完成以下命令行
 # conda install pycocotools -c conda-forge 
 pip install opencv-python pycocotools matplotlib onnxruntime onnx
 pip install git+https://github.com/facebookresearch/segment-anything.git
@@ -80,7 +80,7 @@ wget https://dl.fbaipublicfiles.com/segment_anything/sam_vit_b_01ec64.pth
 # wget https://dl.fbaipublicfiles.com/segment_anything/sam_vit_h_4b8939.pth
 ```
 
-PS: 如果您使用Windows环境，请忽略wget命令，手动下载wget的目标文件（复制url到浏览器或下载工具中）
+PS: 如果您使用 Windows 环境，请忽略 wget 命令，手动下载 wget 的目标文件（复制 url 到浏览器或下载工具中）
 例如: https://dl.fbaipublicfiles.com/segment_anything/sam_vit_b_01ec64.pth
 
 安装 Label-Studio 和 label-studio-ml-backend
@@ -95,7 +95,7 @@ pip install label-studio-ml==1.0.9
 
 ## 启动服务
 
-⚠label_anything 需要启用SAM后端推理后再启动网页服务才可配置模型（一共需要两步启动）
+⚠label_anything 需要启用 SAM 后端推理后再启动网页服务才可配置模型（一共需要两步启动）
 
 1.启动 SAM 后端推理服务：
 
@@ -113,7 +113,7 @@ device=cuda:0 \
 
 ```
 
-PS: 在Windows环境中，在Anaconda Powershell Prompt输入以下内容等价于上方的输入:
+PS: 在 Windows 环境中，在 Anaconda Powershell Prompt 输入以下内容等价于上方的输入:
 
 ```shell
 cd path/to/playground/label_anything
@@ -141,24 +141,24 @@ device=$env:device
 
 ⚠以上的终端窗口需要保持打开状态。
 
-接下来请根据以下步骤在Label-Studio Web 系统中配置使用后端推理服务。
+接下来请根据以下步骤在 Label-Studio Web 系统中配置使用后端推理服务。
 
 2.现在启动 Label-Studio 网页服务：
 
-请新建一个终端窗口进入label_anything项目路径。
+请新建一个终端窗口进入 label_anything 项目路径。
 
 ```shell
 cd path/to/playground/label_anything
 ```
 
-⚠(如不使用vit-h的SAM后端可跳过此步）使用的推理后端是SAM的 **vit-h**, 由于模型加载时间长，导致连接后端超时，需要设置以下环境变量。
+⚠(如不使用 vit-h 的 SAM 后端可跳过此步）使用的推理后端是 SAM 的 **vit-h**, 由于模型加载时间长，导致连接后端超时，需要设置以下环境变量。
 
-具体可根据下载的SAM的权值名称判断，比如sam_vit_h_4b8939.pth 为 vit-h，sam_vit_b_01ec64.pth为 vit-b。
+具体可根据下载的 SAM 的权值名称判断，比如 sam_vit_h_4b8939.pth 为 vit-h，sam_vit_b_01ec64.pth 为 vit-b。
 
 ```shell
-# Linux需要使用以下指令
+# Linux 需要使用以下指令
 export ML_TIMEOUT_SETUP=40
-# Windows要使用以下指令
+# Windows 要使用以下指令
 set ML_TIMEOUT_SETUP=40
 ```
 
@@ -175,7 +175,7 @@ label-studio start
 ![](https://cdn.vansin.top/picgo20230330133118.png)
 
 我们注册一个用户，然后创建一个 OpenMMLabPlayGround 项目。
-PS: Label-Studio的用户名密码存储于本地，如果出现浏览器记住了密码却无法登陆的情况，请重新注册
+PS: Label-Studio 的用户名密码存储于本地，如果出现浏览器记住了密码却无法登陆的情况，请重新注册
 
 ![](https://cdn.vansin.top/picgo20230330133333.png)
 
@@ -314,7 +314,7 @@ Bbox2Label: 由下面的 gif 的动图可以看出，只需要标注一个边界
 
 polygon 实例格式由于不太好控制点数，太多不方便微调（不像 mask 可以用橡皮擦微调），太少区域不准确。
 
-此处提供将 label-studio 输出的json格式转换为COCO格式的转换脚本。
+此处提供将 label-studio 输出的 json 格式转换为 COCO 格式的转换脚本。
 
 ⚠目前仅支持已经标注完所有图片的项目.
 
@@ -400,7 +400,7 @@ python tools/analysis_tools/browse_dataset.py data/my_set/mask-rcnn_r50_fpn.py -
 
 ## 对生成的数据集使用 mmdetection 进行训练（可选）
 
-经过上一步生成了可用于 mmdetection 训练的config，路径为 `data/my_set/config_name.py` 我们可以用于训练。
+经过上一步生成了可用于 mmdetection 训练的 config，路径为 `data/my_set/config_name.py` 我们可以用于训练。
 
 
 ```shell
