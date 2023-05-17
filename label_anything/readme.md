@@ -173,7 +173,7 @@ PS: Label-Studio's username and password are stored locally. If you encounter a 
 
 ![](https://cdn.vansin.top/picgo20230330133333.png)
 
-Import images to be annotated:
+## Import images to be annotated:
 
 1 Upload
 
