@@ -179,7 +179,9 @@ PS: Label-Studio的用户名密码存储于本地，如果出现浏览器记住�
 
 ![](https://cdn.vansin.top/picgo20230330133333.png)
 
-## 图片数据导入方法：
+## 前段配置
+
+### 导入图片
 
 1.直接上传
 
@@ -227,6 +229,7 @@ export LABEL_STUDIO_LOCAL_FILES_DOCUMENT_ROOT=path/to/playground/label_anything
 
 ![iShot_2023-05-15_15 12 58](https://github.com/GodfatherPacino/img/assets/33151790/82cb4c31-e5b7-4c6d-9137-5d93289a424c)
 
+### 配置XML
 
 ---
 在 `Settings/Labeling Interface` 中配置 Label-Studio 关键点和 Mask 标注。
@@ -260,6 +263,7 @@ export LABEL_STUDIO_LOCAL_FILES_DOCUMENT_ROOT=path/to/playground/label_anything
 
 ![image](https://user-images.githubusercontent.com/25839884/233832662-02f856e5-48e7-4200-9011-17693fc2e916.png)
 
+### 加载 SAM 后端
 
 然后在设置中点击 Add Model 添加 OpenMMLabPlayGround 后端推理服务,设置好 SAM 后端推理服务的 URL http://localhost:8003 ，并打开 `Use for interactive preannotations` 并点击 `Validate and Save`。
 
