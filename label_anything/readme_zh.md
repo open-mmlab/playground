@@ -394,6 +394,7 @@ python tools/test.py data/my_set/mask-rcnn_r50_fpn.py path/of/your/checkpoint --
 cd path/to/playground/label_anything
 wget https://huggingface.co/visheratin/segment-anything-vit-b/resolve/main/encoder.onnx
 wget https://huggingface.co/visheratin/segment-anything-vit-b/resolve/main/decoder.onnx
+#其他版本可以在 https://github.com/vietanhdev/anylabeling-assets/releases/tag/v0.2.0 下载
 ```
 
 接着开启后端推理。
@@ -402,17 +403,16 @@ wget https://huggingface.co/visheratin/segment-anything-vit-b/resolve/main/decod
 cd path/to/playground/label_anything
 
 label-studio-ml start sam --port 8003 --with \
-sam_config=vit_b \
-sam_checkpoint_file=./sam_vit_b_01ec64.pth \
 out_mask=True \
 out_bbox=True \
 device=cuda:0 \
 onnx=True \
+onnx_encoder_file='encoder.onnx' \
+onnx_decoder_file='decoder.onnx'
 # device=cuda:0 为使用 GPU 推理，如果使用 cpu 推理，将 cuda:0 替换为 cpu
 # out_poly=True 返回外接多边形的标注
 ```
 
-⚠目前仅支持 sam_vit_b。
 
 
 
