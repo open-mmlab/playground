@@ -23,29 +23,24 @@ from segment_anything import SamPredictor, sam_model_registry, SamAutomaticMaskG
 from segment_anything.utils.transforms import ResizeLongestSide
 import random
 import string
-import time
-import onnxruntime
-
-
 logger = logging.getLogger(__name__)
 
-def load_my_model(device="cuda:0",sam_config="vit_b",sam_checkpoint_file="sam_vit_b_01ec64.pth"):
-        """
-        Loads the Segment Anything model on initializing Label studio, so if you call it outside MyModel it doesn't load every time you try to make a prediction
-        Returns the predictor object. For more, look at Facebook's SAM docs
-        """
-        sam = sam_model_registry[sam_config](checkpoint=sam_checkpoint_file)
-        sam.to(device=device)
-        predictor = SamPredictor(sam)
-        return predictor
 
+import onnxruntime
+import time
 
-def load_my_onnx(onnx_config:dict):
+def load_my_onnx(encoder_model_abs_path,decoder_model_abs_path):
     # !wget https://huggingface.co/visheratin/segment-anything-vit-b/resolve/main/encoder.onnx
     # !wget https://huggingface.co/visheratin/segment-anything-vit-b/resolve/main/decoder.onnx
-    encoder_model_abs_path = "./encoder.onnx"
-    decoder_model_abs_path = "./decoder.onnx"
-
+    # if onnx_config == 'vit_b':
+    #     encoder_model_abs_path = "models/segment_anything_vit_b_encoder_quant.onnx"
+    #     decoder_model_abs_path = "models/segment_anything_vit_b_decoder_quant.onnx"
+    # elif onnx_config == 'vit_l':
+    #     encoder_model_abs_path = "models/segment_anything_vit_l_encoder_quant.onnx"
+    #     decoder_model_abs_path = "models/segment_anything_vit_l_decoder_quant.onnx"
+    # elif onnx_config == 'vit_h':
+    #     encoder_model_abs_path = "models/segment_anything_vit_h_encoder_quant.onnx"
+    #     decoder_model_abs_path = "models/segment_anything_vit_h_decoder_quant.onnx"
 
     providers = onnxruntime.get_available_providers()
     if providers:
@@ -62,6 +57,19 @@ def load_my_onnx(onnx_config:dict):
         )
 
     return encoder_session,decoder_session
+ 
+
+def load_my_model(device="cuda:0",sam_config="vit_b",sam_checkpoint_file="sam_vit_b_01ec64.pth"):
+        """
+        Loads the Segment Anything model on initializing Label studio, so if you call it outside MyModel it doesn't load every time you try to make a prediction
+        Returns the predictor object. For more, look at Facebook's SAM docs
+        """
+        sam = sam_model_registry[sam_config](checkpoint=sam_checkpoint_file)
+        sam.to(device=device)
+        predictor = SamPredictor(sam)
+        return predictor
+
+
 
 class MMDetection(LabelStudioMLBase):
     """Object detector based on https://github.com/open-mmlab/mmdetection."""
@@ -79,22 +87,27 @@ class MMDetection(LabelStudioMLBase):
                  score_threshold=0.5,
                  device='cpu',
                  onnx=False,
+                 onnx_encoder_file=None,
+                 onnx_decoder_file=None,
                  **kwargs):
 
         super(MMDetection, self).__init__(**kwargs)
+
         self.onnx=onnx
         if self.onnx:
-            PREDICTOR=load_my_onnx(device)
+            PREDICTOR=load_my_onnx(onnx_encoder_file,onnx_decoder_file)
         else:
-            PREDICTOR=load_my_model(device,sam_config,sam_checkpoint_file)
-
-        
+            PREDICTOR=load_my_model(device,sam_config)
         self.PREDICTOR = PREDICTOR
 
         self.out_mask = out_mask
         self.out_bbox = out_bbox
         self.out_poly = out_poly
 
+        # config_file = config_file or os.environ['config_file']
+        # checkpoint_file = checkpoint_file or os.environ['checkpoint_file']
+        # self.config_file = config_file
+        # self.checkpoint_file = checkpoint_file
         self.labels_file = labels_file
         # default Label Studio image upload folder
         upload_dir = os.path.join(get_data_dir(), 'media', 'upload')
@@ -106,6 +119,8 @@ class MMDetection(LabelStudioMLBase):
         else:
             self.label_map = {}
 
+        # self.from_name, self.to_name, self.value, self.labels_in_config = get_single_tag_keys(  # noqa E501
+        #     self.parsed_label_config, 'RectangleLabels', 'Image')
 
         self.labels_in_config = dict(
                 label=self.parsed_label_config['KeyPointLabels']
@@ -160,6 +175,7 @@ class MMDetection(LabelStudioMLBase):
         # self.model = init_detector(config_file, checkpoint_file, device=device)
         self.score_thresh = score_threshold
 
+####################################################################################################
 
     def pre_process(self, image):
         image_size = 1024
@@ -186,8 +202,6 @@ class MMDetection(LabelStudioMLBase):
         output = self.encoder_session.run(None, encoder_inputs)
         image_embedding = output[0]
         return image_embedding
-
-
 
     def run_decoder(
         self, image_embedding, input_prompt,img_size):
@@ -228,9 +242,11 @@ class MMDetection(LabelStudioMLBase):
             ),
         }
         masks, _, _ = self.decoder_session.run(None, decoder_inputs)
+        # masks = masks[0, 0, :, :]  # Only get 1 mask
         masks = masks > 0.0
-
+        # masks = masks.reshape(img_size)
         return masks
+##########################################################################################
 
     def _get_image_url(self, task):
         image_url = task['data'].get(
@@ -255,7 +271,7 @@ class MMDetection(LabelStudioMLBase):
         return image_url
 
     def predict(self, tasks, **kwargs):
-
+        #共用区域
         start = time.time()
         results = []
         assert len(tasks) == 1
@@ -266,12 +282,13 @@ class MMDetection(LabelStudioMLBase):
         if kwargs.get('context') is None:
             return []
         
+        # image = cv2.imread(f"./{split}")
         image = cv2.imread(image_path)
         image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
         prompt_type = kwargs['context']['result'][0]['type']
         original_height = kwargs['context']['result'][0]['original_height']
         original_width = kwargs['context']['result'][0]['original_width']
-
+        #############################################
         if self.onnx:
             self.encoder_session,self.decoder_session=self.PREDICTOR
             encoder_inputs,_ = self.pre_process(image)
@@ -298,6 +315,7 @@ class MMDetection(LabelStudioMLBase):
 
                 output_label = kwargs['context']['result'][0]['value']['rectanglelabels'][0]
             
+            
                 input_prompt['boxes']=np.array([x, y, x+w, y+h])
 
                 input_prompt['label'] = np.array([2,3])
@@ -308,10 +326,16 @@ class MMDetection(LabelStudioMLBase):
             masks = self.run_decoder(image_embedding,input_prompt,\
                                      (original_height,original_width))
             masks = masks[0].astype(np.uint8)
+            # mask = masks.astype(np.uint8)
+            # shapes = self.post_process(masks, resized_ratio)
 
         else:
             predictor = self.PREDICTOR
+
             predictor.set_image(image)
+            
+
+
 
             if prompt_type == 'keypointlabels':
                 # getting x and y coordinates of the keypoint
@@ -344,17 +368,20 @@ class MMDetection(LabelStudioMLBase):
                     multimask_output=False,
                 )
 
+
+            
+
+            # 找到轮廓
         mask = masks[0].astype(np.uint8) # each mask has shape [H, W]
         # converting the mask from the model to RLE format which is usable in Label Studio
-
-        # 找到轮廓
         contours, hierarchy = cv2.findContours(mask, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
-
         end = time.time()
         print(end-start)
-
+########################
 
         # 计算外接矩形
+
+
         if self.out_bbox:
             new_contours = []
             for contour in contours:
