@@ -72,13 +72,17 @@ pip install opencv-python pycocotools matplotlib onnxruntime onnx
 pip install git+https://github.com/facebookresearch/segment-anything.git
 wget https://dl.fbaipublicfiles.com/segment_anything/sam_vit_b_01ec64.pth
 
+# If you're on a windows machine you can use the following in place of wget
+# curl -L -O https://dl.fbaipublicfiles.com/segment_anything/sam_vit_b_01ec64.pth
+
 # For better segmentation results, use the sam_vit_h_4b8939.pth weights
 # wget https://dl.fbaipublicfiles.com/segment_anything/sam_vit_l_0b3195.pth
 # wget https://dl.fbaipublicfiles.com/segment_anything/sam_vit_h_4b8939.pth
 ```
 
-PS: If you are using a Windows environment, please ignore the "wget" command and manually download the target file of "wget" (copy the URL to a browser or download tool). The same applies to the following instructions.
+PS: If you are using a having trouble with the wget/curl commands, please manually download the target file (copy the URL to a browser or download tool). The same applies to the following instructions.
 For example: https://dl.fbaipublicfiles.com/segment_anything/sam_vit_b_01ec64.pth
+
 
 Install Label-Studio and label-studio-ml-backend
 
