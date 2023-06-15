@@ -422,3 +422,33 @@ When finished, we can get the model test visualization. On the left is the annot
 With the semi-automated annotation function of Label-Studio, users can complete object segmentation and detection by simply clicking the mouse during the annotation process, greatly improving the efficiency of annotation.
 
 Some of the code was borrowed from Pull Request ID 253 of label-studio-ml-backend. Thank you to the author for their contribution. Also, thanks to fellow community member [ATang0729](https://github.com/ATang0729) for re-labeling the meow dataset for script testing, and [JimmyMa99](https://github.com/JimmyMa99) for the conversion script, config template, and documentation Optimization.
+
+## (beta)🚀 SAM backend inference using onnx runtime🚀 (optional)
+
+We use onnx runtime for SAM back-end inference to improve the speed of SAM inference, tested on a 3090, which takes 4.6s with pytorch and 0.24s with onnx runtime.
+
+First download the converted onnx from huggingface.
+
+```shell
+cd path/to/playground/label_anything
+wget https://huggingface.co/visheratin/segment-anything-vit-b/resolve/main/encoder.onnx
+wget https://huggingface.co/visheratin/segment-anything-vit-b/resolve/main/decoder.onnx
+```
+
+Then turn on back-end reasoning.
+
+```shell
+cd path/to/playground/label_anything
+
+label-studio-ml start sam --port 8003 --with \
+sam_config=vit_b \
+sam_checkpoint_file=. /sam_vit_b_01ec64.pth \
+out_mask=True \
+out_bbox=True \
+device=cuda:0 \
+onnx=True \
+# device=cuda:0 for GPU inference, if cpu inference is used, replace cuda:0 with cpu
+# out_poly=True returns the annotation of the external polygon
+```
+
+⚠ Currently only sam_vit_b is supported.
