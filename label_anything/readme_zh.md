@@ -422,5 +422,36 @@ python tools/test.py data/my_set/mask-rcnn_r50_fpn.py path/of/your/checkpoint --
 
 到此半自动化标注就完成了, 通过 Label-Studio 的半自动化标注功能，可以让用户在标注过程中，通过点击一下鼠标，就可以完成目标的分割和检测，大大提高了标注效率。部分代码借鉴自 label-studio-ml-backend ID 为 253 的 Pull Request，感谢作者的贡献。同时感谢社区同学 [ATang0729](https://github.com/ATang0729) 为脚本测试重新标注了喵喵数据集，以及 [JimmyMa99](https://github.com/JimmyMa99) 同学提供的转换脚本、 config 模板以及文档优化。
 
+## 🚀支持 HQ-SAM 🚀
+
+目前本工具已支持 [HQ-SAM](https://github.com/SysCV/sam-hq/tree/main) ，只需要下载 HQ-SAM 的权重：
+
+```script
+wget https://huggingface.co/lkeab/hq-sam/resolve/main/sam_hq_vit_b.pth
+wget https://huggingface.co/lkeab/hq-sam/resolve/main/sam_hq_vit_h.pth
+wget https://huggingface.co/lkeab/hq-sam/resolve/main/sam_hq_vit_l.pth
+```
+
+目前推荐使用 `vit_l` ，使用如下命令开启 ML 推理后端：
+
+```script
+cd path/to/playground/label_anything
+
+label-studio-ml start sam --port 8003 --with \
+sam_config=vit_b \
+sam_checkpoint_file=./sam_hq_vit_l.pth \
+out_mask=True \
+out_bbox=True \
+device=cuda:0 \
+# device=cuda:0 为使用 GPU 推理，如果使用 cpu 推理，将 cuda:0 替换为 cpu
+# out_poly=True 返回外接多边形的标注
+```
+
+再到前端重新加载推理模型即可。
+
+效果展示如下图：
+
+![图片](https://github.com/JimmyMa99/playground/assets/101508488/c134e579-2f1b-41ed-a82b-8211f8df8b94)
+
 
 
