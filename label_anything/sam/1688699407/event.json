@@ -1,0 +1,2397 @@
+{
+  "event": "TASKS_CREATED",
+  "job_id": "1688699407",
+  "data": {
+    "tasks": [
+      {
+        "id": 2,
+        "data": {
+          "image": "/data/upload/2/3baa54c4-00001.jpg"
+        },
+        "meta": {},
+        "created_at": "2023-07-07T03:10:07.725269Z",
+        "updated_at": "2023-07-07T03:10:07.725285Z",
+        "is_labeled": false,
+        "overlap": 1,
+        "inner_id": 2,
+        "total_annotations": 0,
+        "cancelled_annotations": 0,
+        "total_predictions": 0,
+        "comment_count": 0,
+        "unresolved_comment_count": 0,
+        "last_comment_updated_at": null,
+        "project": 2,
+        "updated_by": null,
+        "file_upload": 2,
+        "comment_authors": []
+      },
+      {
+        "id": 3,
+        "data": {
+          "image": "/data/upload/2/f936a6ba-00002.jpg"
+        },
+        "meta": {},
+        "created_at": "2023-07-07T03:10:07.725309Z",
+        "updated_at": "2023-07-07T03:10:07.725313Z",
+        "is_labeled": false,
+        "overlap": 1,
+        "inner_id": 3,
+        "total_annotations": 0,
+        "cancelled_annotations": 0,
+        "total_predictions": 0,
+        "comment_count": 0,
+        "unresolved_comment_count": 0,
+        "last_comment_updated_at": null,
+        "project": 2,
+        "updated_by": null,
+        "file_upload": 3,
+        "comment_authors": []
+      },
+      {
+        "id": 4,
+        "data": {
+          "image": "/data/upload/2/76692f07-00003.jpg"
+        },
+        "meta": {},
+        "created_at": "2023-07-07T03:10:07.725330Z",
+        "updated_at": "2023-07-07T03:10:07.725334Z",
+        "is_labeled": false,
+        "overlap": 1,
+        "inner_id": 4,
+        "total_annotations": 0,
+        "cancelled_annotations": 0,
+        "total_predictions": 0,
+        "comment_count": 0,
+        "unresolved_comment_count": 0,
+        "last_comment_updated_at": null,
+        "project": 2,
+        "updated_by": null,
+        "file_upload": 4,
+        "comment_authors": []
+      },
+      {
+        "id": 5,
+        "data": {
+          "image": "/data/upload/2/6b937b4a-00004.jpg"
+        },
+        "meta": {},
+        "created_at": "2023-07-07T03:10:07.725351Z",
+        "updated_at": "2023-07-07T03:10:07.725355Z",
+        "is_labeled": false,
+        "overlap": 1,
+        "inner_id": 5,
+        "total_annotations": 0,
+        "cancelled_annotations": 0,
+        "total_predictions": 0,
+        "comment_count": 0,
+        "unresolved_comment_count": 0,
+        "last_comment_updated_at": null,
+        "project": 2,
+        "updated_by": null,
+        "file_upload": 5,
+        "comment_authors": []
+      },
+      {
+        "id": 6,
+        "data": {
+          "image": "/data/upload/2/2c6d15dc-00005.jpg"
+        },
+        "meta": {},
+        "created_at": "2023-07-07T03:10:07.725372Z",
+        "updated_at": "2023-07-07T03:10:07.725375Z",
+        "is_labeled": false,
+        "overlap": 1,
+        "inner_id": 6,
+        "total_annotations": 0,
+        "cancelled_annotations": 0,
+        "total_predictions": 0,
+        "comment_count": 0,
+        "unresolved_comment_count": 0,
+        "last_comment_updated_at": null,
+        "project": 2,
+        "updated_by": null,
+        "file_upload": 6,
+        "comment_authors": []
+      },
+      {
+        "id": 7,
+        "data": {
+          "image": "/data/upload/2/d5116f13-00006.jpg"
+        },
+        "meta": {},
+        "created_at": "2023-07-07T03:10:07.725392Z",
+        "updated_at": "2023-07-07T03:10:07.725396Z",
+        "is_labeled": false,
+        "overlap": 1,
+        "inner_id": 7,
+        "total_annotations": 0,
+        "cancelled_annotations": 0,
+        "total_predictions": 0,
+        "comment_count": 0,
+        "unresolved_comment_count": 0,
+        "last_comment_updated_at": null,
+        "project": 2,
+        "updated_by": null,
+        "file_upload": 7,
+        "comment_authors": []
+      },
+      {
+        "id": 8,
+        "data": {
+          "image": "/data/upload/2/16874fd4-00007.jpg"
+        },
+        "meta": {},
+        "created_at": "2023-07-07T03:10:07.725413Z",
+        "updated_at": "2023-07-07T03:10:07.725416Z",
+        "is_labeled": false,
+        "overlap": 1,
+        "inner_id": 8,
+        "total_annotations": 0,
+        "cancelled_annotations": 0,
+        "total_predictions": 0,
+        "comment_count": 0,
+        "unresolved_comment_count": 0,
+        "last_comment_updated_at": null,
+        "project": 2,
+        "updated_by": null,
+        "file_upload": 8,
+        "comment_authors": []
+      },
+      {
+        "id": 9,
+        "data": {
+          "image": "/data/upload/2/e322d9c5-00008.jpg"
+        },
+        "meta": {},
+        "created_at": "2023-07-07T03:10:07.725433Z",
+        "updated_at": "2023-07-07T03:10:07.725437Z",
+        "is_labeled": false,
+        "overlap": 1,
+        "inner_id": 9,
+        "total_annotations": 0,
+        "cancelled_annotations": 0,
+        "total_predictions": 0,
+        "comment_count": 0,
+        "unresolved_comment_count": 0,
+        "last_comment_updated_at": null,
+        "project": 2,
+        "updated_by": null,
+        "file_upload": 9,
+        "comment_authors": []
+      },
+      {
+        "id": 10,
+        "data": {
+          "image": "/data/upload/2/fdbc32bd-00009.jpg"
+        },
+        "meta": {},
+        "created_at": "2023-07-07T03:10:07.725453Z",
+        "updated_at": "2023-07-07T03:10:07.725457Z",
+        "is_labeled": false,
+        "overlap": 1,
+        "inner_id": 10,
+        "total_annotations": 0,
+        "cancelled_annotations": 0,
+        "total_predictions": 0,
+        "comment_count": 0,
+        "unresolved_comment_count": 0,
+        "last_comment_updated_at": null,
+        "project": 2,
+        "updated_by": null,
+        "file_upload": 10,
+        "comment_authors": []
+      },
+      {
+        "id": 11,
+        "data": {
+          "image": "/data/upload/2/a0539232-00010.jpg"
+        },
+        "meta": {},
+        "created_at": "2023-07-07T03:10:07.725474Z",
+        "updated_at": "2023-07-07T03:10:07.725478Z",
+        "is_labeled": false,
+        "overlap": 1,
+        "inner_id": 11,
+        "total_annotations": 0,
+        "cancelled_annotations": 0,
+        "total_predictions": 0,
+        "comment_count": 0,
+        "unresolved_comment_count": 0,
+        "last_comment_updated_at": null,
+        "project": 2,
+        "updated_by": null,
+        "file_upload": 11,
+        "comment_authors": []
+      },
+      {
+        "id": 12,
+        "data": {
+          "image": "/data/upload/2/385bdf8c-00011.jpg"
+        },
+        "meta": {},
+        "created_at": "2023-07-07T03:10:07.725494Z",
+        "updated_at": "2023-07-07T03:10:07.725498Z",
+        "is_labeled": false,
+        "overlap": 1,
+        "inner_id": 12,
+        "total_annotations": 0,
+        "cancelled_annotations": 0,
+        "total_predictions": 0,
+        "comment_count": 0,
+        "unresolved_comment_count": 0,
+        "last_comment_updated_at": null,
+        "project": 2,
+        "updated_by": null,
+        "file_upload": 12,
+        "comment_authors": []
+      },
+      {
+        "id": 13,
+        "data": {
+          "image": "/data/upload/2/8c860754-00012.jpg"
+        },
+        "meta": {},
+        "created_at": "2023-07-07T03:10:07.725514Z",
+        "updated_at": "2023-07-07T03:10:07.725518Z",
+        "is_labeled": false,
+        "overlap": 1,
+        "inner_id": 13,
+        "total_annotations": 0,
+        "cancelled_annotations": 0,
+        "total_predictions": 0,
+        "comment_count": 0,
+        "unresolved_comment_count": 0,
+        "last_comment_updated_at": null,
+        "project": 2,
+        "updated_by": null,
+        "file_upload": 13,
+        "comment_authors": []
+      },
+      {
+        "id": 14,
+        "data": {
+          "image": "/data/upload/2/b882e011-00013.jpg"
+        },
+        "meta": {},
+        "created_at": "2023-07-07T03:10:07.725535Z",
+        "updated_at": "2023-07-07T03:10:07.725539Z",
+        "is_labeled": false,
+        "overlap": 1,
+        "inner_id": 14,
+        "total_annotations": 0,
+        "cancelled_annotations": 0,
+        "total_predictions": 0,
+        "comment_count": 0,
+        "unresolved_comment_count": 0,
+        "last_comment_updated_at": null,
+        "project": 2,
+        "updated_by": null,
+        "file_upload": 14,
+        "comment_authors": []
+      },
+      {
+        "id": 15,
+        "data": {
+          "image": "/data/upload/2/883b87d2-00014.jpg"
+        },
+        "meta": {},
+        "created_at": "2023-07-07T03:10:07.725555Z",
+        "updated_at": "2023-07-07T03:10:07.725559Z",
+        "is_labeled": false,
+        "overlap": 1,
+        "inner_id": 15,
+        "total_annotations": 0,
+        "cancelled_annotations": 0,
+        "total_predictions": 0,
+        "comment_count": 0,
+        "unresolved_comment_count": 0,
+        "last_comment_updated_at": null,
+        "project": 2,
+        "updated_by": null,
+        "file_upload": 15,
+        "comment_authors": []
+      },
+      {
+        "id": 16,
+        "data": {
+          "image": "/data/upload/2/c886c177-00015.jpg"
+        },
+        "meta": {},
+        "created_at": "2023-07-07T03:10:07.725575Z",
+        "updated_at": "2023-07-07T03:10:07.725579Z",
+        "is_labeled": false,
+        "overlap": 1,
+        "inner_id": 16,
+        "total_annotations": 0,
+        "cancelled_annotations": 0,
+        "total_predictions": 0,
+        "comment_count": 0,
+        "unresolved_comment_count": 0,
+        "last_comment_updated_at": null,
+        "project": 2,
+        "updated_by": null,
+        "file_upload": 16,
+        "comment_authors": []
+      },
+      {
+        "id": 17,
+        "data": {
+          "image": "/data/upload/2/dfcf4236-00016.jpg"
+        },
+        "meta": {},
+        "created_at": "2023-07-07T03:10:07.725595Z",
+        "updated_at": "2023-07-07T03:10:07.725599Z",
+        "is_labeled": false,
+        "overlap": 1,
+        "inner_id": 17,
+        "total_annotations": 0,
+        "cancelled_annotations": 0,
+        "total_predictions": 0,
+        "comment_count": 0,
+        "unresolved_comment_count": 0,
+        "last_comment_updated_at": null,
+        "project": 2,
+        "updated_by": null,
+        "file_upload": 17,
+        "comment_authors": []
+      },
+      {
+        "id": 18,
+        "data": {
+          "image": "/data/upload/2/71d55c6a-00017.jpg"
+        },
+        "meta": {},
+        "created_at": "2023-07-07T03:10:07.725615Z",
+        "updated_at": "2023-07-07T03:10:07.725619Z",
+        "is_labeled": false,
+        "overlap": 1,
+        "inner_id": 18,
+        "total_annotations": 0,
+        "cancelled_annotations": 0,
+        "total_predictions": 0,
+        "comment_count": 0,
+        "unresolved_comment_count": 0,
+        "last_comment_updated_at": null,
+        "project": 2,
+        "updated_by": null,
+        "file_upload": 18,
+        "comment_authors": []
+      },
+      {
+        "id": 19,
+        "data": {
+          "image": "/data/upload/2/a3c768aa-00018.jpg"
+        },
+        "meta": {},
+        "created_at": "2023-07-07T03:10:07.725635Z",
+        "updated_at": "2023-07-07T03:10:07.725639Z",
+        "is_labeled": false,
+        "overlap": 1,
+        "inner_id": 19,
+        "total_annotations": 0,
+        "cancelled_annotations": 0,
+        "total_predictions": 0,
+        "comment_count": 0,
+        "unresolved_comment_count": 0,
+        "last_comment_updated_at": null,
+        "project": 2,
+        "updated_by": null,
+        "file_upload": 19,
+        "comment_authors": []
+      },
+      {
+        "id": 20,
+        "data": {
+          "image": "/data/upload/2/aa3b94e5-00019.jpg"
+        },
+        "meta": {},
+        "created_at": "2023-07-07T03:10:07.725656Z",
+        "updated_at": "2023-07-07T03:10:07.725659Z",
+        "is_labeled": false,
+        "overlap": 1,
+        "inner_id": 20,
+        "total_annotations": 0,
+        "cancelled_annotations": 0,
+        "total_predictions": 0,
+        "comment_count": 0,
+        "unresolved_comment_count": 0,
+        "last_comment_updated_at": null,
+        "project": 2,
+        "updated_by": null,
+        "file_upload": 20,
+        "comment_authors": []
+      },
+      {
+        "id": 21,
+        "data": {
+          "image": "/data/upload/2/ccc2652d-00020.jpg"
+        },
+        "meta": {},
+        "created_at": "2023-07-07T03:10:07.725676Z",
+        "updated_at": "2023-07-07T03:10:07.725680Z",
+        "is_labeled": false,
+        "overlap": 1,
+        "inner_id": 21,
+        "total_annotations": 0,
+        "cancelled_annotations": 0,
+        "total_predictions": 0,
+        "comment_count": 0,
+        "unresolved_comment_count": 0,
+        "last_comment_updated_at": null,
+        "project": 2,
+        "updated_by": null,
+        "file_upload": 21,
+        "comment_authors": []
+      },
+      {
+        "id": 22,
+        "data": {
+          "image": "/data/upload/2/27cdf0cc-00021.jpg"
+        },
+        "meta": {},
+        "created_at": "2023-07-07T03:10:07.725696Z",
+        "updated_at": "2023-07-07T03:10:07.725700Z",
+        "is_labeled": false,
+        "overlap": 1,
+        "inner_id": 22,
+        "total_annotations": 0,
+        "cancelled_annotations": 0,
+        "total_predictions": 0,
+        "comment_count": 0,
+        "unresolved_comment_count": 0,
+        "last_comment_updated_at": null,
+        "project": 2,
+        "updated_by": null,
+        "file_upload": 22,
+        "comment_authors": []
+      },
+      {
+        "id": 23,
+        "data": {
+          "image": "/data/upload/2/3ce93774-00022.jpg"
+        },
+        "meta": {},
+        "created_at": "2023-07-07T03:10:07.725716Z",
+        "updated_at": "2023-07-07T03:10:07.725719Z",
+        "is_labeled": false,
+        "overlap": 1,
+        "inner_id": 23,
+        "total_annotations": 0,
+        "cancelled_annotations": 0,
+        "total_predictions": 0,
+        "comment_count": 0,
+        "unresolved_comment_count": 0,
+        "last_comment_updated_at": null,
+        "project": 2,
+        "updated_by": null,
+        "file_upload": 23,
+        "comment_authors": []
+      },
+      {
+        "id": 24,
+        "data": {
+          "image": "/data/upload/2/ae653ebe-00023.jpg"
+        },
+        "meta": {},
+        "created_at": "2023-07-07T03:10:07.725736Z",
+        "updated_at": "2023-07-07T03:10:07.725740Z",
+        "is_labeled": false,
+        "overlap": 1,
+        "inner_id": 24,
+        "total_annotations": 0,
+        "cancelled_annotations": 0,
+        "total_predictions": 0,
+        "comment_count": 0,
+        "unresolved_comment_count": 0,
+        "last_comment_updated_at": null,
+        "project": 2,
+        "updated_by": null,
+        "file_upload": 24,
+        "comment_authors": []
+      },
+      {
+        "id": 25,
+        "data": {
+          "image": "/data/upload/2/e4d93535-00024.jpg"
+        },
+        "meta": {},
+        "created_at": "2023-07-07T03:10:07.725756Z",
+        "updated_at": "2023-07-07T03:10:07.725760Z",
+        "is_labeled": false,
+        "overlap": 1,
+        "inner_id": 25,
+        "total_annotations": 0,
+        "cancelled_annotations": 0,
+        "total_predictions": 0,
+        "comment_count": 0,
+        "unresolved_comment_count": 0,
+        "last_comment_updated_at": null,
+        "project": 2,
+        "updated_by": null,
+        "file_upload": 25,
+        "comment_authors": []
+      },
+      {
+        "id": 26,
+        "data": {
+          "image": "/data/upload/2/5e5889d0-00025.jpg"
+        },
+        "meta": {},
+        "created_at": "2023-07-07T03:10:07.725776Z",
+        "updated_at": "2023-07-07T03:10:07.725780Z",
+        "is_labeled": false,
+        "overlap": 1,
+        "inner_id": 26,
+        "total_annotations": 0,
+        "cancelled_annotations": 0,
+        "total_predictions": 0,
+        "comment_count": 0,
+        "unresolved_comment_count": 0,
+        "last_comment_updated_at": null,
+        "project": 2,
+        "updated_by": null,
+        "file_upload": 26,
+        "comment_authors": []
+      },
+      {
+        "id": 27,
+        "data": {
+          "image": "/data/upload/2/ba9f9eaa-00026.jpg"
+        },
+        "meta": {},
+        "created_at": "2023-07-07T03:10:07.725796Z",
+        "updated_at": "2023-07-07T03:10:07.725800Z",
+        "is_labeled": false,
+        "overlap": 1,
+        "inner_id": 27,
+        "total_annotations": 0,
+        "cancelled_annotations": 0,
+        "total_predictions": 0,
+        "comment_count": 0,
+        "unresolved_comment_count": 0,
+        "last_comment_updated_at": null,
+        "project": 2,
+        "updated_by": null,
+        "file_upload": 27,
+        "comment_authors": []
+      },
+      {
+        "id": 28,
+        "data": {
+          "image": "/data/upload/2/caa362b3-00027.jpg"
+        },
+        "meta": {},
+        "created_at": "2023-07-07T03:10:07.725816Z",
+        "updated_at": "2023-07-07T03:10:07.725820Z",
+        "is_labeled": false,
+        "overlap": 1,
+        "inner_id": 28,
+        "total_annotations": 0,
+        "cancelled_annotations": 0,
+        "total_predictions": 0,
+        "comment_count": 0,
+        "unresolved_comment_count": 0,
+        "last_comment_updated_at": null,
+        "project": 2,
+        "updated_by": null,
+        "file_upload": 28,
+        "comment_authors": []
+      },
+      {
+        "id": 29,
+        "data": {
+          "image": "/data/upload/2/d598fbef-00028.jpg"
+        },
+        "meta": {},
+        "created_at": "2023-07-07T03:10:07.725837Z",
+        "updated_at": "2023-07-07T03:10:07.725841Z",
+        "is_labeled": false,
+        "overlap": 1,
+        "inner_id": 29,
+        "total_annotations": 0,
+        "cancelled_annotations": 0,
+        "total_predictions": 0,
+        "comment_count": 0,
+        "unresolved_comment_count": 0,
+        "last_comment_updated_at": null,
+        "project": 2,
+        "updated_by": null,
+        "file_upload": 29,
+        "comment_authors": []
+      },
+      {
+        "id": 30,
+        "data": {
+          "image": "/data/upload/2/e2989e12-00029.jpg"
+        },
+        "meta": {},
+        "created_at": "2023-07-07T03:10:07.725857Z",
+        "updated_at": "2023-07-07T03:10:07.725861Z",
+        "is_labeled": false,
+        "overlap": 1,
+        "inner_id": 30,
+        "total_annotations": 0,
+        "cancelled_annotations": 0,
+        "total_predictions": 0,
+        "comment_count": 0,
+        "unresolved_comment_count": 0,
+        "last_comment_updated_at": null,
+        "project": 2,
+        "updated_by": null,
+        "file_upload": 30,
+        "comment_authors": []
+      },
+      {
+        "id": 31,
+        "data": {
+          "image": "/data/upload/2/44902803-00030.jpg"
+        },
+        "meta": {},
+        "created_at": "2023-07-07T03:10:07.725877Z",
+        "updated_at": "2023-07-07T03:10:07.725881Z",
+        "is_labeled": false,
+        "overlap": 1,
+        "inner_id": 31,
+        "total_annotations": 0,
+        "cancelled_annotations": 0,
+        "total_predictions": 0,
+        "comment_count": 0,
+        "unresolved_comment_count": 0,
+        "last_comment_updated_at": null,
+        "project": 2,
+        "updated_by": null,
+        "file_upload": 31,
+        "comment_authors": []
+      },
+      {
+        "id": 32,
+        "data": {
+          "image": "/data/upload/2/2120c51e-00031.jpg"
+        },
+        "meta": {},
+        "created_at": "2023-07-07T03:10:07.725898Z",
+        "updated_at": "2023-07-07T03:10:07.725902Z",
+        "is_labeled": false,
+        "overlap": 1,
+        "inner_id": 32,
+        "total_annotations": 0,
+        "cancelled_annotations": 0,
+        "total_predictions": 0,
+        "comment_count": 0,
+        "unresolved_comment_count": 0,
+        "last_comment_updated_at": null,
+        "project": 2,
+        "updated_by": null,
+        "file_upload": 32,
+        "comment_authors": []
+      },
+      {
+        "id": 33,
+        "data": {
+          "image": "/data/upload/2/8e93080e-00032.jpg"
+        },
+        "meta": {},
+        "created_at": "2023-07-07T03:10:07.725919Z",
+        "updated_at": "2023-07-07T03:10:07.725923Z",
+        "is_labeled": false,
+        "overlap": 1,
+        "inner_id": 33,
+        "total_annotations": 0,
+        "cancelled_annotations": 0,
+        "total_predictions": 0,
+        "comment_count": 0,
+        "unresolved_comment_count": 0,
+        "last_comment_updated_at": null,
+        "project": 2,
+        "updated_by": null,
+        "file_upload": 33,
+        "comment_authors": []
+      },
+      {
+        "id": 34,
+        "data": {
+          "image": "/data/upload/2/75d345f1-00033.jpg"
+        },
+        "meta": {},
+        "created_at": "2023-07-07T03:10:07.725939Z",
+        "updated_at": "2023-07-07T03:10:07.725942Z",
+        "is_labeled": false,
+        "overlap": 1,
+        "inner_id": 34,
+        "total_annotations": 0,
+        "cancelled_annotations": 0,
+        "total_predictions": 0,
+        "comment_count": 0,
+        "unresolved_comment_count": 0,
+        "last_comment_updated_at": null,
+        "project": 2,
+        "updated_by": null,
+        "file_upload": 34,
+        "comment_authors": []
+      },
+      {
+        "id": 35,
+        "data": {
+          "image": "/data/upload/2/87257e21-00034.jpg"
+        },
+        "meta": {},
+        "created_at": "2023-07-07T03:10:07.725959Z",
+        "updated_at": "2023-07-07T03:10:07.725963Z",
+        "is_labeled": false,
+        "overlap": 1,
+        "inner_id": 35,
+        "total_annotations": 0,
+        "cancelled_annotations": 0,
+        "total_predictions": 0,
+        "comment_count": 0,
+        "unresolved_comment_count": 0,
+        "last_comment_updated_at": null,
+        "project": 2,
+        "updated_by": null,
+        "file_upload": 35,
+        "comment_authors": []
+      },
+      {
+        "id": 36,
+        "data": {
+          "image": "/data/upload/2/2050f623-00035.jpg"
+        },
+        "meta": {},
+        "created_at": "2023-07-07T03:10:07.725979Z",
+        "updated_at": "2023-07-07T03:10:07.725982Z",
+        "is_labeled": false,
+        "overlap": 1,
+        "inner_id": 36,
+        "total_annotations": 0,
+        "cancelled_annotations": 0,
+        "total_predictions": 0,
+        "comment_count": 0,
+        "unresolved_comment_count": 0,
+        "last_comment_updated_at": null,
+        "project": 2,
+        "updated_by": null,
+        "file_upload": 36,
+        "comment_authors": []
+      },
+      {
+        "id": 37,
+        "data": {
+          "image": "/data/upload/2/ee95c71e-00036.jpg"
+        },
+        "meta": {},
+        "created_at": "2023-07-07T03:10:07.725998Z",
+        "updated_at": "2023-07-07T03:10:07.726002Z",
+        "is_labeled": false,
+        "overlap": 1,
+        "inner_id": 37,
+        "total_annotations": 0,
+        "cancelled_annotations": 0,
+        "total_predictions": 0,
+        "comment_count": 0,
+        "unresolved_comment_count": 0,
+        "last_comment_updated_at": null,
+        "project": 2,
+        "updated_by": null,
+        "file_upload": 37,
+        "comment_authors": []
+      },
+      {
+        "id": 38,
+        "data": {
+          "image": "/data/upload/2/ce1e1532-00037.jpg"
+        },
+        "meta": {},
+        "created_at": "2023-07-07T03:10:07.726019Z",
+        "updated_at": "2023-07-07T03:10:07.726023Z",
+        "is_labeled": false,
+        "overlap": 1,
+        "inner_id": 38,
+        "total_annotations": 0,
+        "cancelled_annotations": 0,
+        "total_predictions": 0,
+        "comment_count": 0,
+        "unresolved_comment_count": 0,
+        "last_comment_updated_at": null,
+        "project": 2,
+        "updated_by": null,
+        "file_upload": 38,
+        "comment_authors": []
+      },
+      {
+        "id": 39,
+        "data": {
+          "image": "/data/upload/2/f276540b-00038.jpg"
+        },
+        "meta": {},
+        "created_at": "2023-07-07T03:10:07.726038Z",
+        "updated_at": "2023-07-07T03:10:07.726042Z",
+        "is_labeled": false,
+        "overlap": 1,
+        "inner_id": 39,
+        "total_annotations": 0,
+        "cancelled_annotations": 0,
+        "total_predictions": 0,
+        "comment_count": 0,
+        "unresolved_comment_count": 0,
+        "last_comment_updated_at": null,
+        "project": 2,
+        "updated_by": null,
+        "file_upload": 39,
+        "comment_authors": []
+      },
+      {
+        "id": 40,
+        "data": {
+          "image": "/data/upload/2/6b81e3d3-00039.jpg"
+        },
+        "meta": {},
+        "created_at": "2023-07-07T03:10:07.726058Z",
+        "updated_at": "2023-07-07T03:10:07.726062Z",
+        "is_labeled": false,
+        "overlap": 1,
+        "inner_id": 40,
+        "total_annotations": 0,
+        "cancelled_annotations": 0,
+        "total_predictions": 0,
+        "comment_count": 0,
+        "unresolved_comment_count": 0,
+        "last_comment_updated_at": null,
+        "project": 2,
+        "updated_by": null,
+        "file_upload": 40,
+        "comment_authors": []
+      },
+      {
+        "id": 41,
+        "data": {
+          "image": "/data/upload/2/d460f359-00040.jpg"
+        },
+        "meta": {},
+        "created_at": "2023-07-07T03:10:07.726079Z",
+        "updated_at": "2023-07-07T03:10:07.726082Z",
+        "is_labeled": false,
+        "overlap": 1,
+        "inner_id": 41,
+        "total_annotations": 0,
+        "cancelled_annotations": 0,
+        "total_predictions": 0,
+        "comment_count": 0,
+        "unresolved_comment_count": 0,
+        "last_comment_updated_at": null,
+        "project": 2,
+        "updated_by": null,
+        "file_upload": 41,
+        "comment_authors": []
+      },
+      {
+        "id": 42,
+        "data": {
+          "image": "/data/upload/2/ec512a70-00041.jpg"
+        },
+        "meta": {},
+        "created_at": "2023-07-07T03:10:07.726099Z",
+        "updated_at": "2023-07-07T03:10:07.726103Z",
+        "is_labeled": false,
+        "overlap": 1,
+        "inner_id": 42,
+        "total_annotations": 0,
+        "cancelled_annotations": 0,
+        "total_predictions": 0,
+        "comment_count": 0,
+        "unresolved_comment_count": 0,
+        "last_comment_updated_at": null,
+        "project": 2,
+        "updated_by": null,
+        "file_upload": 42,
+        "comment_authors": []
+      },
+      {
+        "id": 43,
+        "data": {
+          "image": "/data/upload/2/fb354698-00042.jpg"
+        },
+        "meta": {},
+        "created_at": "2023-07-07T03:10:07.726119Z",
+        "updated_at": "2023-07-07T03:10:07.726123Z",
+        "is_labeled": false,
+        "overlap": 1,
+        "inner_id": 43,
+        "total_annotations": 0,
+        "cancelled_annotations": 0,
+        "total_predictions": 0,
+        "comment_count": 0,
+        "unresolved_comment_count": 0,
+        "last_comment_updated_at": null,
+        "project": 2,
+        "updated_by": null,
+        "file_upload": 43,
+        "comment_authors": []
+      },
+      {
+        "id": 44,
+        "data": {
+          "image": "/data/upload/2/daedef82-00043.jpg"
+        },
+        "meta": {},
+        "created_at": "2023-07-07T03:10:07.726139Z",
+        "updated_at": "2023-07-07T03:10:07.726143Z",
+        "is_labeled": false,
+        "overlap": 1,
+        "inner_id": 44,
+        "total_annotations": 0,
+        "cancelled_annotations": 0,
+        "total_predictions": 0,
+        "comment_count": 0,
+        "unresolved_comment_count": 0,
+        "last_comment_updated_at": null,
+        "project": 2,
+        "updated_by": null,
+        "file_upload": 44,
+        "comment_authors": []
+      },
+      {
+        "id": 45,
+        "data": {
+          "image": "/data/upload/2/111bb3e6-00044.jpg"
+        },
+        "meta": {},
+        "created_at": "2023-07-07T03:10:07.726159Z",
+        "updated_at": "2023-07-07T03:10:07.726163Z",
+        "is_labeled": false,
+        "overlap": 1,
+        "inner_id": 45,
+        "total_annotations": 0,
+        "cancelled_annotations": 0,
+        "total_predictions": 0,
+        "comment_count": 0,
+        "unresolved_comment_count": 0,
+        "last_comment_updated_at": null,
+        "project": 2,
+        "updated_by": null,
+        "file_upload": 45,
+        "comment_authors": []
+      },
+      {
+        "id": 46,
+        "data": {
+          "image": "/data/upload/2/07f48afa-00045.jpg"
+        },
+        "meta": {},
+        "created_at": "2023-07-07T03:10:07.726179Z",
+        "updated_at": "2023-07-07T03:10:07.726183Z",
+        "is_labeled": false,
+        "overlap": 1,
+        "inner_id": 46,
+        "total_annotations": 0,
+        "cancelled_annotations": 0,
+        "total_predictions": 0,
+        "comment_count": 0,
+        "unresolved_comment_count": 0,
+        "last_comment_updated_at": null,
+        "project": 2,
+        "updated_by": null,
+        "file_upload": 46,
+        "comment_authors": []
+      },
+      {
+        "id": 47,
+        "data": {
+          "image": "/data/upload/2/79100ae9-00046.jpg"
+        },
+        "meta": {},
+        "created_at": "2023-07-07T03:10:07.726199Z",
+        "updated_at": "2023-07-07T03:10:07.726202Z",
+        "is_labeled": false,
+        "overlap": 1,
+        "inner_id": 47,
+        "total_annotations": 0,
+        "cancelled_annotations": 0,
+        "total_predictions": 0,
+        "comment_count": 0,
+        "unresolved_comment_count": 0,
+        "last_comment_updated_at": null,
+        "project": 2,
+        "updated_by": null,
+        "file_upload": 47,
+        "comment_authors": []
+      },
+      {
+        "id": 48,
+        "data": {
+          "image": "/data/upload/2/6dfb6b9b-00047.jpg"
+        },
+        "meta": {},
+        "created_at": "2023-07-07T03:10:07.726219Z",
+        "updated_at": "2023-07-07T03:10:07.726223Z",
+        "is_labeled": false,
+        "overlap": 1,
+        "inner_id": 48,
+        "total_annotations": 0,
+        "cancelled_annotations": 0,
+        "total_predictions": 0,
+        "comment_count": 0,
+        "unresolved_comment_count": 0,
+        "last_comment_updated_at": null,
+        "project": 2,
+        "updated_by": null,
+        "file_upload": 48,
+        "comment_authors": []
+      },
+      {
+        "id": 49,
+        "data": {
+          "image": "/data/upload/2/28c676d8-00048.jpg"
+        },
+        "meta": {},
+        "created_at": "2023-07-07T03:10:07.726239Z",
+        "updated_at": "2023-07-07T03:10:07.726243Z",
+        "is_labeled": false,
+        "overlap": 1,
+        "inner_id": 49,
+        "total_annotations": 0,
+        "cancelled_annotations": 0,
+        "total_predictions": 0,
+        "comment_count": 0,
+        "unresolved_comment_count": 0,
+        "last_comment_updated_at": null,
+        "project": 2,
+        "updated_by": null,
+        "file_upload": 49,
+        "comment_authors": []
+      },
+      {
+        "id": 50,
+        "data": {
+          "image": "/data/upload/2/1d505e1b-00049.jpg"
+        },
+        "meta": {},
+        "created_at": "2023-07-07T03:10:07.726259Z",
+        "updated_at": "2023-07-07T03:10:07.726263Z",
+        "is_labeled": false,
+        "overlap": 1,
+        "inner_id": 50,
+        "total_annotations": 0,
+        "cancelled_annotations": 0,
+        "total_predictions": 0,
+        "comment_count": 0,
+        "unresolved_comment_count": 0,
+        "last_comment_updated_at": null,
+        "project": 2,
+        "updated_by": null,
+        "file_upload": 50,
+        "comment_authors": []
+      },
+      {
+        "id": 51,
+        "data": {
+          "image": "/data/upload/2/dce00532-00050.jpg"
+        },
+        "meta": {},
+        "created_at": "2023-07-07T03:10:07.726279Z",
+        "updated_at": "2023-07-07T03:10:07.726283Z",
+        "is_labeled": false,
+        "overlap": 1,
+        "inner_id": 51,
+        "total_annotations": 0,
+        "cancelled_annotations": 0,
+        "total_predictions": 0,
+        "comment_count": 0,
+        "unresolved_comment_count": 0,
+        "last_comment_updated_at": null,
+        "project": 2,
+        "updated_by": null,
+        "file_upload": 51,
+        "comment_authors": []
+      },
+      {
+        "id": 52,
+        "data": {
+          "image": "/data/upload/2/45a630ff-00051.jpg"
+        },
+        "meta": {},
+        "created_at": "2023-07-07T03:10:07.726299Z",
+        "updated_at": "2023-07-07T03:10:07.726303Z",
+        "is_labeled": false,
+        "overlap": 1,
+        "inner_id": 52,
+        "total_annotations": 0,
+        "cancelled_annotations": 0,
+        "total_predictions": 0,
+        "comment_count": 0,
+        "unresolved_comment_count": 0,
+        "last_comment_updated_at": null,
+        "project": 2,
+        "updated_by": null,
+        "file_upload": 52,
+        "comment_authors": []
+      },
+      {
+        "id": 53,
+        "data": {
+          "image": "/data/upload/2/72cfbd8c-00052.jpg"
+        },
+        "meta": {},
+        "created_at": "2023-07-07T03:10:07.726320Z",
+        "updated_at": "2023-07-07T03:10:07.726323Z",
+        "is_labeled": false,
+        "overlap": 1,
+        "inner_id": 53,
+        "total_annotations": 0,
+        "cancelled_annotations": 0,
+        "total_predictions": 0,
+        "comment_count": 0,
+        "unresolved_comment_count": 0,
+        "last_comment_updated_at": null,
+        "project": 2,
+        "updated_by": null,
+        "file_upload": 53,
+        "comment_authors": []
+      },
+      {
+        "id": 54,
+        "data": {
+          "image": "/data/upload/2/f3b3885d-00053.jpg"
+        },
+        "meta": {},
+        "created_at": "2023-07-07T03:10:07.726340Z",
+        "updated_at": "2023-07-07T03:10:07.726344Z",
+        "is_labeled": false,
+        "overlap": 1,
+        "inner_id": 54,
+        "total_annotations": 0,
+        "cancelled_annotations": 0,
+        "total_predictions": 0,
+        "comment_count": 0,
+        "unresolved_comment_count": 0,
+        "last_comment_updated_at": null,
+        "project": 2,
+        "updated_by": null,
+        "file_upload": 54,
+        "comment_authors": []
+      },
+      {
+        "id": 55,
+        "data": {
+          "image": "/data/upload/2/93d39a55-00054.jpg"
+        },
+        "meta": {},
+        "created_at": "2023-07-07T03:10:07.726360Z",
+        "updated_at": "2023-07-07T03:10:07.726364Z",
+        "is_labeled": false,
+        "overlap": 1,
+        "inner_id": 55,
+        "total_annotations": 0,
+        "cancelled_annotations": 0,
+        "total_predictions": 0,
+        "comment_count": 0,
+        "unresolved_comment_count": 0,
+        "last_comment_updated_at": null,
+        "project": 2,
+        "updated_by": null,
+        "file_upload": 55,
+        "comment_authors": []
+      },
+      {
+        "id": 56,
+        "data": {
+          "image": "/data/upload/2/15fa9dee-00055.jpg"
+        },
+        "meta": {},
+        "created_at": "2023-07-07T03:10:07.726380Z",
+        "updated_at": "2023-07-07T03:10:07.726384Z",
+        "is_labeled": false,
+        "overlap": 1,
+        "inner_id": 56,
+        "total_annotations": 0,
+        "cancelled_annotations": 0,
+        "total_predictions": 0,
+        "comment_count": 0,
+        "unresolved_comment_count": 0,
+        "last_comment_updated_at": null,
+        "project": 2,
+        "updated_by": null,
+        "file_upload": 56,
+        "comment_authors": []
+      },
+      {
+        "id": 57,
+        "data": {
+          "image": "/data/upload/2/71dee02b-00056.jpg"
+        },
+        "meta": {},
+        "created_at": "2023-07-07T03:10:07.726400Z",
+        "updated_at": "2023-07-07T03:10:07.726404Z",
+        "is_labeled": false,
+        "overlap": 1,
+        "inner_id": 57,
+        "total_annotations": 0,
+        "cancelled_annotations": 0,
+        "total_predictions": 0,
+        "comment_count": 0,
+        "unresolved_comment_count": 0,
+        "last_comment_updated_at": null,
+        "project": 2,
+        "updated_by": null,
+        "file_upload": 57,
+        "comment_authors": []
+      },
+      {
+        "id": 58,
+        "data": {
+          "image": "/data/upload/2/0124a1d0-00057.jpg"
+        },
+        "meta": {},
+        "created_at": "2023-07-07T03:10:07.726420Z",
+        "updated_at": "2023-07-07T03:10:07.726425Z",
+        "is_labeled": false,
+        "overlap": 1,
+        "inner_id": 58,
+        "total_annotations": 0,
+        "cancelled_annotations": 0,
+        "total_predictions": 0,
+        "comment_count": 0,
+        "unresolved_comment_count": 0,
+        "last_comment_updated_at": null,
+        "project": 2,
+        "updated_by": null,
+        "file_upload": 58,
+        "comment_authors": []
+      },
+      {
+        "id": 59,
+        "data": {
+          "image": "/data/upload/2/9bc0175b-00058.jpg"
+        },
+        "meta": {},
+        "created_at": "2023-07-07T03:10:07.726441Z",
+        "updated_at": "2023-07-07T03:10:07.726445Z",
+        "is_labeled": false,
+        "overlap": 1,
+        "inner_id": 59,
+        "total_annotations": 0,
+        "cancelled_annotations": 0,
+        "total_predictions": 0,
+        "comment_count": 0,
+        "unresolved_comment_count": 0,
+        "last_comment_updated_at": null,
+        "project": 2,
+        "updated_by": null,
+        "file_upload": 59,
+        "comment_authors": []
+      },
+      {
+        "id": 60,
+        "data": {
+          "image": "/data/upload/2/61dac4a3-00059.jpg"
+        },
+        "meta": {},
+        "created_at": "2023-07-07T03:10:07.727761Z",
+        "updated_at": "2023-07-07T03:10:07.727771Z",
+        "is_labeled": false,
+        "overlap": 1,
+        "inner_id": 60,
+        "total_annotations": 0,
+        "cancelled_annotations": 0,
+        "total_predictions": 0,
+        "comment_count": 0,
+        "unresolved_comment_count": 0,
+        "last_comment_updated_at": null,
+        "project": 2,
+        "updated_by": null,
+        "file_upload": 60,
+        "comment_authors": []
+      },
+      {
+        "id": 61,
+        "data": {
+          "image": "/data/upload/2/07e04cad-00060.jpg"
+        },
+        "meta": {},
+        "created_at": "2023-07-07T03:10:07.727792Z",
+        "updated_at": "2023-07-07T03:10:07.727797Z",
+        "is_labeled": false,
+        "overlap": 1,
+        "inner_id": 61,
+        "total_annotations": 0,
+        "cancelled_annotations": 0,
+        "total_predictions": 0,
+        "comment_count": 0,
+        "unresolved_comment_count": 0,
+        "last_comment_updated_at": null,
+        "project": 2,
+        "updated_by": null,
+        "file_upload": 61,
+        "comment_authors": []
+      },
+      {
+        "id": 62,
+        "data": {
+          "image": "/data/upload/2/e112a181-00061.jpg"
+        },
+        "meta": {},
+        "created_at": "2023-07-07T03:10:07.727814Z",
+        "updated_at": "2023-07-07T03:10:07.727818Z",
+        "is_labeled": false,
+        "overlap": 1,
+        "inner_id": 62,
+        "total_annotations": 0,
+        "cancelled_annotations": 0,
+        "total_predictions": 0,
+        "comment_count": 0,
+        "unresolved_comment_count": 0,
+        "last_comment_updated_at": null,
+        "project": 2,
+        "updated_by": null,
+        "file_upload": 62,
+        "comment_authors": []
+      },
+      {
+        "id": 63,
+        "data": {
+          "image": "/data/upload/2/d96683f4-00062.jpg"
+        },
+        "meta": {},
+        "created_at": "2023-07-07T03:10:07.727835Z",
+        "updated_at": "2023-07-07T03:10:07.727838Z",
+        "is_labeled": false,
+        "overlap": 1,
+        "inner_id": 63,
+        "total_annotations": 0,
+        "cancelled_annotations": 0,
+        "total_predictions": 0,
+        "comment_count": 0,
+        "unresolved_comment_count": 0,
+        "last_comment_updated_at": null,
+        "project": 2,
+        "updated_by": null,
+        "file_upload": 63,
+        "comment_authors": []
+      },
+      {
+        "id": 64,
+        "data": {
+          "image": "/data/upload/2/045ed36a-00063.jpg"
+        },
+        "meta": {},
+        "created_at": "2023-07-07T03:10:07.727854Z",
+        "updated_at": "2023-07-07T03:10:07.727858Z",
+        "is_labeled": false,
+        "overlap": 1,
+        "inner_id": 64,
+        "total_annotations": 0,
+        "cancelled_annotations": 0,
+        "total_predictions": 0,
+        "comment_count": 0,
+        "unresolved_comment_count": 0,
+        "last_comment_updated_at": null,
+        "project": 2,
+        "updated_by": null,
+        "file_upload": 64,
+        "comment_authors": []
+      },
+      {
+        "id": 65,
+        "data": {
+          "image": "/data/upload/2/595f5ee9-00064.jpg"
+        },
+        "meta": {},
+        "created_at": "2023-07-07T03:10:07.727875Z",
+        "updated_at": "2023-07-07T03:10:07.727879Z",
+        "is_labeled": false,
+        "overlap": 1,
+        "inner_id": 65,
+        "total_annotations": 0,
+        "cancelled_annotations": 0,
+        "total_predictions": 0,
+        "comment_count": 0,
+        "unresolved_comment_count": 0,
+        "last_comment_updated_at": null,
+        "project": 2,
+        "updated_by": null,
+        "file_upload": 65,
+        "comment_authors": []
+      },
+      {
+        "id": 66,
+        "data": {
+          "image": "/data/upload/2/cf9666c1-00065.jpg"
+        },
+        "meta": {},
+        "created_at": "2023-07-07T03:10:07.727895Z",
+        "updated_at": "2023-07-07T03:10:07.727899Z",
+        "is_labeled": false,
+        "overlap": 1,
+        "inner_id": 66,
+        "total_annotations": 0,
+        "cancelled_annotations": 0,
+        "total_predictions": 0,
+        "comment_count": 0,
+        "unresolved_comment_count": 0,
+        "last_comment_updated_at": null,
+        "project": 2,
+        "updated_by": null,
+        "file_upload": 66,
+        "comment_authors": []
+      },
+      {
+        "id": 67,
+        "data": {
+          "image": "/data/upload/2/cb48ea96-00066.jpg"
+        },
+        "meta": {},
+        "created_at": "2023-07-07T03:10:07.727915Z",
+        "updated_at": "2023-07-07T03:10:07.727919Z",
+        "is_labeled": false,
+        "overlap": 1,
+        "inner_id": 67,
+        "total_annotations": 0,
+        "cancelled_annotations": 0,
+        "total_predictions": 0,
+        "comment_count": 0,
+        "unresolved_comment_count": 0,
+        "last_comment_updated_at": null,
+        "project": 2,
+        "updated_by": null,
+        "file_upload": 67,
+        "comment_authors": []
+      },
+      {
+        "id": 68,
+        "data": {
+          "image": "/data/upload/2/d90b0091-00067.jpg"
+        },
+        "meta": {},
+        "created_at": "2023-07-07T03:10:07.727935Z",
+        "updated_at": "2023-07-07T03:10:07.727939Z",
+        "is_labeled": false,
+        "overlap": 1,
+        "inner_id": 68,
+        "total_annotations": 0,
+        "cancelled_annotations": 0,
+        "total_predictions": 0,
+        "comment_count": 0,
+        "unresolved_comment_count": 0,
+        "last_comment_updated_at": null,
+        "project": 2,
+        "updated_by": null,
+        "file_upload": 68,
+        "comment_authors": []
+      },
+      {
+        "id": 69,
+        "data": {
+          "image": "/data/upload/2/bd79d68d-00068.jpg"
+        },
+        "meta": {},
+        "created_at": "2023-07-07T03:10:07.727955Z",
+        "updated_at": "2023-07-07T03:10:07.727958Z",
+        "is_labeled": false,
+        "overlap": 1,
+        "inner_id": 69,
+        "total_annotations": 0,
+        "cancelled_annotations": 0,
+        "total_predictions": 0,
+        "comment_count": 0,
+        "unresolved_comment_count": 0,
+        "last_comment_updated_at": null,
+        "project": 2,
+        "updated_by": null,
+        "file_upload": 69,
+        "comment_authors": []
+      },
+      {
+        "id": 70,
+        "data": {
+          "image": "/data/upload/2/5a1c768a-00069.jpg"
+        },
+        "meta": {},
+        "created_at": "2023-07-07T03:10:07.727975Z",
+        "updated_at": "2023-07-07T03:10:07.727979Z",
+        "is_labeled": false,
+        "overlap": 1,
+        "inner_id": 70,
+        "total_annotations": 0,
+        "cancelled_annotations": 0,
+        "total_predictions": 0,
+        "comment_count": 0,
+        "unresolved_comment_count": 0,
+        "last_comment_updated_at": null,
+        "project": 2,
+        "updated_by": null,
+        "file_upload": 70,
+        "comment_authors": []
+      },
+      {
+        "id": 71,
+        "data": {
+          "image": "/data/upload/2/1ecfc190-00070.jpg"
+        },
+        "meta": {},
+        "created_at": "2023-07-07T03:10:07.727995Z",
+        "updated_at": "2023-07-07T03:10:07.727999Z",
+        "is_labeled": false,
+        "overlap": 1,
+        "inner_id": 71,
+        "total_annotations": 0,
+        "cancelled_annotations": 0,
+        "total_predictions": 0,
+        "comment_count": 0,
+        "unresolved_comment_count": 0,
+        "last_comment_updated_at": null,
+        "project": 2,
+        "updated_by": null,
+        "file_upload": 71,
+        "comment_authors": []
+      },
+      {
+        "id": 72,
+        "data": {
+          "image": "/data/upload/2/4ccd56ca-00071.jpg"
+        },
+        "meta": {},
+        "created_at": "2023-07-07T03:10:07.728015Z",
+        "updated_at": "2023-07-07T03:10:07.728018Z",
+        "is_labeled": false,
+        "overlap": 1,
+        "inner_id": 72,
+        "total_annotations": 0,
+        "cancelled_annotations": 0,
+        "total_predictions": 0,
+        "comment_count": 0,
+        "unresolved_comment_count": 0,
+        "last_comment_updated_at": null,
+        "project": 2,
+        "updated_by": null,
+        "file_upload": 72,
+        "comment_authors": []
+      },
+      {
+        "id": 73,
+        "data": {
+          "image": "/data/upload/2/af2f8d7a-00072.jpg"
+        },
+        "meta": {},
+        "created_at": "2023-07-07T03:10:07.728035Z",
+        "updated_at": "2023-07-07T03:10:07.728038Z",
+        "is_labeled": false,
+        "overlap": 1,
+        "inner_id": 73,
+        "total_annotations": 0,
+        "cancelled_annotations": 0,
+        "total_predictions": 0,
+        "comment_count": 0,
+        "unresolved_comment_count": 0,
+        "last_comment_updated_at": null,
+        "project": 2,
+        "updated_by": null,
+        "file_upload": 73,
+        "comment_authors": []
+      },
+      {
+        "id": 74,
+        "data": {
+          "image": "/data/upload/2/de486a78-00073.jpg"
+        },
+        "meta": {},
+        "created_at": "2023-07-07T03:10:07.728054Z",
+        "updated_at": "2023-07-07T03:10:07.728058Z",
+        "is_labeled": false,
+        "overlap": 1,
+        "inner_id": 74,
+        "total_annotations": 0,
+        "cancelled_annotations": 0,
+        "total_predictions": 0,
+        "comment_count": 0,
+        "unresolved_comment_count": 0,
+        "last_comment_updated_at": null,
+        "project": 2,
+        "updated_by": null,
+        "file_upload": 74,
+        "comment_authors": []
+      },
+      {
+        "id": 75,
+        "data": {
+          "image": "/data/upload/2/44e99964-00074.jpg"
+        },
+        "meta": {},
+        "created_at": "2023-07-07T03:10:07.728074Z",
+        "updated_at": "2023-07-07T03:10:07.728078Z",
+        "is_labeled": false,
+        "overlap": 1,
+        "inner_id": 75,
+        "total_annotations": 0,
+        "cancelled_annotations": 0,
+        "total_predictions": 0,
+        "comment_count": 0,
+        "unresolved_comment_count": 0,
+        "last_comment_updated_at": null,
+        "project": 2,
+        "updated_by": null,
+        "file_upload": 75,
+        "comment_authors": []
+      },
+      {
+        "id": 76,
+        "data": {
+          "image": "/data/upload/2/8e6822b7-00075.jpg"
+        },
+        "meta": {},
+        "created_at": "2023-07-07T03:10:07.728094Z",
+        "updated_at": "2023-07-07T03:10:07.728098Z",
+        "is_labeled": false,
+        "overlap": 1,
+        "inner_id": 76,
+        "total_annotations": 0,
+        "cancelled_annotations": 0,
+        "total_predictions": 0,
+        "comment_count": 0,
+        "unresolved_comment_count": 0,
+        "last_comment_updated_at": null,
+        "project": 2,
+        "updated_by": null,
+        "file_upload": 76,
+        "comment_authors": []
+      },
+      {
+        "id": 77,
+        "data": {
+          "image": "/data/upload/2/6dca12d9-00076.jpg"
+        },
+        "meta": {},
+        "created_at": "2023-07-07T03:10:07.728114Z",
+        "updated_at": "2023-07-07T03:10:07.728118Z",
+        "is_labeled": false,
+        "overlap": 1,
+        "inner_id": 77,
+        "total_annotations": 0,
+        "cancelled_annotations": 0,
+        "total_predictions": 0,
+        "comment_count": 0,
+        "unresolved_comment_count": 0,
+        "last_comment_updated_at": null,
+        "project": 2,
+        "updated_by": null,
+        "file_upload": 77,
+        "comment_authors": []
+      },
+      {
+        "id": 78,
+        "data": {
+          "image": "/data/upload/2/359b7c8d-00077.jpg"
+        },
+        "meta": {},
+        "created_at": "2023-07-07T03:10:07.728134Z",
+        "updated_at": "2023-07-07T03:10:07.728138Z",
+        "is_labeled": false,
+        "overlap": 1,
+        "inner_id": 78,
+        "total_annotations": 0,
+        "cancelled_annotations": 0,
+        "total_predictions": 0,
+        "comment_count": 0,
+        "unresolved_comment_count": 0,
+        "last_comment_updated_at": null,
+        "project": 2,
+        "updated_by": null,
+        "file_upload": 78,
+        "comment_authors": []
+      },
+      {
+        "id": 79,
+        "data": {
+          "image": "/data/upload/2/0deef0c3-00078.jpg"
+        },
+        "meta": {},
+        "created_at": "2023-07-07T03:10:07.728154Z",
+        "updated_at": "2023-07-07T03:10:07.728158Z",
+        "is_labeled": false,
+        "overlap": 1,
+        "inner_id": 79,
+        "total_annotations": 0,
+        "cancelled_annotations": 0,
+        "total_predictions": 0,
+        "comment_count": 0,
+        "unresolved_comment_count": 0,
+        "last_comment_updated_at": null,
+        "project": 2,
+        "updated_by": null,
+        "file_upload": 79,
+        "comment_authors": []
+      },
+      {
+        "id": 80,
+        "data": {
+          "image": "/data/upload/2/ee8a71f2-00079.jpg"
+        },
+        "meta": {},
+        "created_at": "2023-07-07T03:10:07.728174Z",
+        "updated_at": "2023-07-07T03:10:07.728177Z",
+        "is_labeled": false,
+        "overlap": 1,
+        "inner_id": 80,
+        "total_annotations": 0,
+        "cancelled_annotations": 0,
+        "total_predictions": 0,
+        "comment_count": 0,
+        "unresolved_comment_count": 0,
+        "last_comment_updated_at": null,
+        "project": 2,
+        "updated_by": null,
+        "file_upload": 80,
+        "comment_authors": []
+      },
+      {
+        "id": 81,
+        "data": {
+          "image": "/data/upload/2/0c84a07f-00080.jpg"
+        },
+        "meta": {},
+        "created_at": "2023-07-07T03:10:07.728194Z",
+        "updated_at": "2023-07-07T03:10:07.728197Z",
+        "is_labeled": false,
+        "overlap": 1,
+        "inner_id": 81,
+        "total_annotations": 0,
+        "cancelled_annotations": 0,
+        "total_predictions": 0,
+        "comment_count": 0,
+        "unresolved_comment_count": 0,
+        "last_comment_updated_at": null,
+        "project": 2,
+        "updated_by": null,
+        "file_upload": 81,
+        "comment_authors": []
+      },
+      {
+        "id": 82,
+        "data": {
+          "image": "/data/upload/2/7c41d9a6-00081.jpg"
+        },
+        "meta": {},
+        "created_at": "2023-07-07T03:10:07.728214Z",
+        "updated_at": "2023-07-07T03:10:07.728217Z",
+        "is_labeled": false,
+        "overlap": 1,
+        "inner_id": 82,
+        "total_annotations": 0,
+        "cancelled_annotations": 0,
+        "total_predictions": 0,
+        "comment_count": 0,
+        "unresolved_comment_count": 0,
+        "last_comment_updated_at": null,
+        "project": 2,
+        "updated_by": null,
+        "file_upload": 82,
+        "comment_authors": []
+      },
+      {
+        "id": 83,
+        "data": {
+          "image": "/data/upload/2/6a0d4e52-00082.jpg"
+        },
+        "meta": {},
+        "created_at": "2023-07-07T03:10:07.728233Z",
+        "updated_at": "2023-07-07T03:10:07.728237Z",
+        "is_labeled": false,
+        "overlap": 1,
+        "inner_id": 83,
+        "total_annotations": 0,
+        "cancelled_annotations": 0,
+        "total_predictions": 0,
+        "comment_count": 0,
+        "unresolved_comment_count": 0,
+        "last_comment_updated_at": null,
+        "project": 2,
+        "updated_by": null,
+        "file_upload": 83,
+        "comment_authors": []
+      },
+      {
+        "id": 84,
+        "data": {
+          "image": "/data/upload/2/0da41ea6-00083.jpg"
+        },
+        "meta": {},
+        "created_at": "2023-07-07T03:10:07.728253Z",
+        "updated_at": "2023-07-07T03:10:07.728257Z",
+        "is_labeled": false,
+        "overlap": 1,
+        "inner_id": 84,
+        "total_annotations": 0,
+        "cancelled_annotations": 0,
+        "total_predictions": 0,
+        "comment_count": 0,
+        "unresolved_comment_count": 0,
+        "last_comment_updated_at": null,
+        "project": 2,
+        "updated_by": null,
+        "file_upload": 84,
+        "comment_authors": []
+      },
+      {
+        "id": 85,
+        "data": {
+          "image": "/data/upload/2/6fefd679-00084.jpg"
+        },
+        "meta": {},
+        "created_at": "2023-07-07T03:10:07.728273Z",
+        "updated_at": "2023-07-07T03:10:07.728277Z",
+        "is_labeled": false,
+        "overlap": 1,
+        "inner_id": 85,
+        "total_annotations": 0,
+        "cancelled_annotations": 0,
+        "total_predictions": 0,
+        "comment_count": 0,
+        "unresolved_comment_count": 0,
+        "last_comment_updated_at": null,
+        "project": 2,
+        "updated_by": null,
+        "file_upload": 85,
+        "comment_authors": []
+      },
+      {
+        "id": 86,
+        "data": {
+          "image": "/data/upload/2/74448012-00085.jpg"
+        },
+        "meta": {},
+        "created_at": "2023-07-07T03:10:07.728293Z",
+        "updated_at": "2023-07-07T03:10:07.728297Z",
+        "is_labeled": false,
+        "overlap": 1,
+        "inner_id": 86,
+        "total_annotations": 0,
+        "cancelled_annotations": 0,
+        "total_predictions": 0,
+        "comment_count": 0,
+        "unresolved_comment_count": 0,
+        "last_comment_updated_at": null,
+        "project": 2,
+        "updated_by": null,
+        "file_upload": 86,
+        "comment_authors": []
+      },
+      {
+        "id": 87,
+        "data": {
+          "image": "/data/upload/2/531bf9f6-00086.jpg"
+        },
+        "meta": {},
+        "created_at": "2023-07-07T03:10:07.728313Z",
+        "updated_at": "2023-07-07T03:10:07.728317Z",
+        "is_labeled": false,
+        "overlap": 1,
+        "inner_id": 87,
+        "total_annotations": 0,
+        "cancelled_annotations": 0,
+        "total_predictions": 0,
+        "comment_count": 0,
+        "unresolved_comment_count": 0,
+        "last_comment_updated_at": null,
+        "project": 2,
+        "updated_by": null,
+        "file_upload": 87,
+        "comment_authors": []
+      },
+      {
+        "id": 88,
+        "data": {
+          "image": "/data/upload/2/9c403438-00087.jpg"
+        },
+        "meta": {},
+        "created_at": "2023-07-07T03:10:07.728333Z",
+        "updated_at": "2023-07-07T03:10:07.728336Z",
+        "is_labeled": false,
+        "overlap": 1,
+        "inner_id": 88,
+        "total_annotations": 0,
+        "cancelled_annotations": 0,
+        "total_predictions": 0,
+        "comment_count": 0,
+        "unresolved_comment_count": 0,
+        "last_comment_updated_at": null,
+        "project": 2,
+        "updated_by": null,
+        "file_upload": 88,
+        "comment_authors": []
+      },
+      {
+        "id": 89,
+        "data": {
+          "image": "/data/upload/2/7a3aec68-00088.jpg"
+        },
+        "meta": {},
+        "created_at": "2023-07-07T03:10:07.728352Z",
+        "updated_at": "2023-07-07T03:10:07.728356Z",
+        "is_labeled": false,
+        "overlap": 1,
+        "inner_id": 89,
+        "total_annotations": 0,
+        "cancelled_annotations": 0,
+        "total_predictions": 0,
+        "comment_count": 0,
+        "unresolved_comment_count": 0,
+        "last_comment_updated_at": null,
+        "project": 2,
+        "updated_by": null,
+        "file_upload": 89,
+        "comment_authors": []
+      },
+      {
+        "id": 90,
+        "data": {
+          "image": "/data/upload/2/1bde9d13-00089.jpg"
+        },
+        "meta": {},
+        "created_at": "2023-07-07T03:10:07.728372Z",
+        "updated_at": "2023-07-07T03:10:07.728375Z",
+        "is_labeled": false,
+        "overlap": 1,
+        "inner_id": 90,
+        "total_annotations": 0,
+        "cancelled_annotations": 0,
+        "total_predictions": 0,
+        "comment_count": 0,
+        "unresolved_comment_count": 0,
+        "last_comment_updated_at": null,
+        "project": 2,
+        "updated_by": null,
+        "file_upload": 90,
+        "comment_authors": []
+      },
+      {
+        "id": 91,
+        "data": {
+          "image": "/data/upload/2/a2b70cfa-00090.jpg"
+        },
+        "meta": {},
+        "created_at": "2023-07-07T03:10:07.728391Z",
+        "updated_at": "2023-07-07T03:10:07.728395Z",
+        "is_labeled": false,
+        "overlap": 1,
+        "inner_id": 91,
+        "total_annotations": 0,
+        "cancelled_annotations": 0,
+        "total_predictions": 0,
+        "comment_count": 0,
+        "unresolved_comment_count": 0,
+        "last_comment_updated_at": null,
+        "project": 2,
+        "updated_by": null,
+        "file_upload": 91,
+        "comment_authors": []
+      },
+      {
+        "id": 92,
+        "data": {
+          "image": "/data/upload/2/5c70e816-00091.jpg"
+        },
+        "meta": {},
+        "created_at": "2023-07-07T03:10:07.728411Z",
+        "updated_at": "2023-07-07T03:10:07.728415Z",
+        "is_labeled": false,
+        "overlap": 1,
+        "inner_id": 92,
+        "total_annotations": 0,
+        "cancelled_annotations": 0,
+        "total_predictions": 0,
+        "comment_count": 0,
+        "unresolved_comment_count": 0,
+        "last_comment_updated_at": null,
+        "project": 2,
+        "updated_by": null,
+        "file_upload": 92,
+        "comment_authors": []
+      },
+      {
+        "id": 93,
+        "data": {
+          "image": "/data/upload/2/89cbff16-00092.jpg"
+        },
+        "meta": {},
+        "created_at": "2023-07-07T03:10:07.728431Z",
+        "updated_at": "2023-07-07T03:10:07.728434Z",
+        "is_labeled": false,
+        "overlap": 1,
+        "inner_id": 93,
+        "total_annotations": 0,
+        "cancelled_annotations": 0,
+        "total_predictions": 0,
+        "comment_count": 0,
+        "unresolved_comment_count": 0,
+        "last_comment_updated_at": null,
+        "project": 2,
+        "updated_by": null,
+        "file_upload": 93,
+        "comment_authors": []
+      },
+      {
+        "id": 94,
+        "data": {
+          "image": "/data/upload/2/6e28002d-00093.jpg"
+        },
+        "meta": {},
+        "created_at": "2023-07-07T03:10:07.728450Z",
+        "updated_at": "2023-07-07T03:10:07.728454Z",
+        "is_labeled": false,
+        "overlap": 1,
+        "inner_id": 94,
+        "total_annotations": 0,
+        "cancelled_annotations": 0,
+        "total_predictions": 0,
+        "comment_count": 0,
+        "unresolved_comment_count": 0,
+        "last_comment_updated_at": null,
+        "project": 2,
+        "updated_by": null,
+        "file_upload": 94,
+        "comment_authors": []
+      },
+      {
+        "id": 95,
+        "data": {
+          "image": "/data/upload/2/92cc0941-00094.jpg"
+        },
+        "meta": {},
+        "created_at": "2023-07-07T03:10:07.728470Z",
+        "updated_at": "2023-07-07T03:10:07.728474Z",
+        "is_labeled": false,
+        "overlap": 1,
+        "inner_id": 95,
+        "total_annotations": 0,
+        "cancelled_annotations": 0,
+        "total_predictions": 0,
+        "comment_count": 0,
+        "unresolved_comment_count": 0,
+        "last_comment_updated_at": null,
+        "project": 2,
+        "updated_by": null,
+        "file_upload": 95,
+        "comment_authors": []
+      },
+      {
+        "id": 96,
+        "data": {
+          "image": "/data/upload/2/f5a91628-00095.jpg"
+        },
+        "meta": {},
+        "created_at": "2023-07-07T03:10:07.728489Z",
+        "updated_at": "2023-07-07T03:10:07.728493Z",
+        "is_labeled": false,
+        "overlap": 1,
+        "inner_id": 96,
+        "total_annotations": 0,
+        "cancelled_annotations": 0,
+        "total_predictions": 0,
+        "comment_count": 0,
+        "unresolved_comment_count": 0,
+        "last_comment_updated_at": null,
+        "project": 2,
+        "updated_by": null,
+        "file_upload": 96,
+        "comment_authors": []
+      },
+      {
+        "id": 97,
+        "data": {
+          "image": "/data/upload/2/d9dca53a-00096.jpg"
+        },
+        "meta": {},
+        "created_at": "2023-07-07T03:10:07.728509Z",
+        "updated_at": "2023-07-07T03:10:07.728513Z",
+        "is_labeled": false,
+        "overlap": 1,
+        "inner_id": 97,
+        "total_annotations": 0,
+        "cancelled_annotations": 0,
+        "total_predictions": 0,
+        "comment_count": 0,
+        "unresolved_comment_count": 0,
+        "last_comment_updated_at": null,
+        "project": 2,
+        "updated_by": null,
+        "file_upload": 97,
+        "comment_authors": []
+      },
+      {
+        "id": 98,
+        "data": {
+          "image": "/data/upload/2/9ee32c41-00097.jpg"
+        },
+        "meta": {},
+        "created_at": "2023-07-07T03:10:07.728529Z",
+        "updated_at": "2023-07-07T03:10:07.728533Z",
+        "is_labeled": false,
+        "overlap": 1,
+        "inner_id": 98,
+        "total_annotations": 0,
+        "cancelled_annotations": 0,
+        "total_predictions": 0,
+        "comment_count": 0,
+        "unresolved_comment_count": 0,
+        "last_comment_updated_at": null,
+        "project": 2,
+        "updated_by": null,
+        "file_upload": 98,
+        "comment_authors": []
+      },
+      {
+        "id": 99,
+        "data": {
+          "image": "/data/upload/2/d35e18a2-00098.jpg"
+        },
+        "meta": {},
+        "created_at": "2023-07-07T03:10:07.728550Z",
+        "updated_at": "2023-07-07T03:10:07.728553Z",
+        "is_labeled": false,
+        "overlap": 1,
+        "inner_id": 99,
+        "total_annotations": 0,
+        "cancelled_annotations": 0,
+        "total_predictions": 0,
+        "comment_count": 0,
+        "unresolved_comment_count": 0,
+        "last_comment_updated_at": null,
+        "project": 2,
+        "updated_by": null,
+        "file_upload": 99,
+        "comment_authors": []
+      },
+      {
+        "id": 100,
+        "data": {
+          "image": "/data/upload/2/2fc643c1-00099.jpg"
+        },
+        "meta": {},
+        "created_at": "2023-07-07T03:10:07.728569Z",
+        "updated_at": "2023-07-07T03:10:07.728573Z",
+        "is_labeled": false,
+        "overlap": 1,
+        "inner_id": 100,
+        "total_annotations": 0,
+        "cancelled_annotations": 0,
+        "total_predictions": 0,
+        "comment_count": 0,
+        "unresolved_comment_count": 0,
+        "last_comment_updated_at": null,
+        "project": 2,
+        "updated_by": null,
+        "file_upload": 100,
+        "comment_authors": []
+      },
+      {
+        "id": 101,
+        "data": {
+          "image": "/data/upload/2/962015de-00100.jpg"
+        },
+        "meta": {},
+        "created_at": "2023-07-07T03:10:07.728590Z",
+        "updated_at": "2023-07-07T03:10:07.728594Z",
+        "is_labeled": false,
+        "overlap": 1,
+        "inner_id": 101,
+        "total_annotations": 0,
+        "cancelled_annotations": 0,
+        "total_predictions": 0,
+        "comment_count": 0,
+        "unresolved_comment_count": 0,
+        "last_comment_updated_at": null,
+        "project": 2,
+        "updated_by": null,
+        "file_upload": 101,
+        "comment_authors": []
+      }
+    ],
+    "project": {
+      "id": 2,
+      "task_number": 101,
+      "finished_task_number": 0,
+      "total_predictions_number": 0,
+      "total_annotations_number": 0,
+      "num_tasks_with_annotations": 0,
+      "useful_annotation_number": 0,
+      "ground_truth_number": 0,
+      "skipped_annotations_number": 0,
+      "title": "test_project",
+      "description": "",
+      "label_config": "<View>\n  <Image name=\"image\" value=\"$image\" zoom=\"true\"/>\n  <KeyPointLabels name=\"KeyPointLabels\" toName=\"image\">\n    <Label value=\"cat\" smart=\"true\" background=\"#e51515\" showInline=\"true\"/>\n    <Label value=\"person\" smart=\"true\" background=\"#412cdd\" showInline=\"true\"/>\n  </KeyPointLabels>\n  <RectangleLabels name=\"RectangleLabels\" toName=\"image\">\n  \t<Label value=\"cat\" background=\"#FF0000\"/>\n  \t<Label value=\"person\" background=\"#0d14d3\"/>\n  </RectangleLabels>\n  <PolygonLabels name=\"PolygonLabels\" toName=\"image\">\n  \t<Label value=\"cat\" background=\"#FF0000\"/>\n  \t<Label value=\"person\" background=\"#0d14d3\"/>\n  </PolygonLabels>\n  <BrushLabels name=\"BrushLabels\" toName=\"image\">\n  \t<Label value=\"cat\" background=\"#FF0000\"/>\n  \t<Label value=\"person\" background=\"#0d14d3\"/>\n  </BrushLabels>\n</View>",
+      "parsed_label_config": {
+        "KeyPointLabels": {
+          "type": "KeyPointLabels",
+          "to_name": [
+            "image"
+          ],
+          "inputs": [
+            {
+              "type": "Image",
+              "value": "image"
+            }
+          ],
+          "labels": [
+            "cat",
+            "person"
+          ],
+          "labels_attrs": {
+            "cat": {
+              "value": "cat",
+              "smart": "true",
+              "background": "#e51515",
+              "showInline": "true"
+            },
+            "person": {
+              "value": "person",
+              "smart": "true",
+              "background": "#412cdd",
+              "showInline": "true"
+            }
+          }
+        },
+        "RectangleLabels": {
+          "type": "RectangleLabels",
+          "to_name": [
+            "image"
+          ],
+          "inputs": [
+            {
+              "type": "Image",
+              "value": "image"
+            }
+          ],
+          "labels": [
+            "cat",
+            "person"
+          ],
+          "labels_attrs": {
+            "cat": {
+              "value": "cat",
+              "background": "#FF0000"
+            },
+            "person": {
+              "value": "person",
+              "background": "#0d14d3"
+            }
+          }
+        },
+        "PolygonLabels": {
+          "type": "PolygonLabels",
+          "to_name": [
+            "image"
+          ],
+          "inputs": [
+            {
+              "type": "Image",
+              "value": "image"
+            }
+          ],
+          "labels": [
+            "cat",
+            "person"
+          ],
+          "labels_attrs": {
+            "cat": {
+              "value": "cat",
+              "background": "#FF0000"
+            },
+            "person": {
+              "value": "person",
+              "background": "#0d14d3"
+            }
+          }
+        },
+        "BrushLabels": {
+          "type": "BrushLabels",
+          "to_name": [
+            "image"
+          ],
+          "inputs": [
+            {
+              "type": "Image",
+              "value": "image"
+            }
+          ],
+          "labels": [
+            "cat",
+            "person"
+          ],
+          "labels_attrs": {
+            "cat": {
+              "value": "cat",
+              "background": "#FF0000"
+            },
+            "person": {
+              "value": "person",
+              "background": "#0d14d3"
+            }
+          }
+        }
+      },
+      "expert_instruction": "",
+      "show_instruction": false,
+      "show_skip_button": true,
+      "enable_empty_annotation": true,
+      "reveal_preannotations_interactively": false,
+      "show_annotation_history": false,
+      "show_collab_predictions": true,
+      "evaluate_predictions_automatically": false,
+      "token": "37549768d2341b76",
+      "result_count": 0,
+      "color": "#FFFFFF",
+      "maximum_annotations": 1,
+      "min_annotations_to_start_training": 0,
+      "control_weights": {
+        "KeyPointLabels": {
+          "overall": 1.0,
+          "type": "KeyPointLabels",
+          "labels": {
+            "cat": 1.0,
+            "person": 1.0
+          }
+        },
+        "RectangleLabels": {
+          "overall": 1.0,
+          "type": "RectangleLabels",
+          "labels": {
+            "cat": 1.0,
+            "person": 1.0
+          }
+        },
+        "PolygonLabels": {
+          "overall": 1.0,
+          "type": "PolygonLabels",
+          "labels": {
+            "cat": 1.0,
+            "person": 1.0
+          }
+        },
+        "BrushLabels": {
+          "overall": 1.0,
+          "type": "BrushLabels",
+          "labels": {
+            "cat": 1.0,
+            "person": 1.0
+          }
+        }
+      },
+      "model_version": "",
+      "data_types": {
+        "image": "Image"
+      },
+      "is_draft": false,
+      "is_published": false,
+      "created_at": "2023-07-07T03:03:29.360456Z",
+      "updated_at": "2023-07-07T03:04:23.696788Z",
+      "sampling": "Sequential sampling",
+      "skip_queue": "REQUEUE_FOR_OTHERS",
+      "show_ground_truth_first": false,
+      "show_overlap_first": false,
+      "overlap_cohort_percentage": 100,
+      "task_data_login": null,
+      "task_data_password": null,
+      "pinned_at": null,
+      "organization": 1,
+      "created_by": 1
+    }
+  }
+}

@@ -16,7 +16,6 @@
 
 <br>
 
-
 - SAM (Segment Anything) 是 Meta AI 推出的分割一切的模型。
 - [Label Studio](https://github.com/heartexlabs/label-studio) 是一款优秀的标注软件，覆盖图像分类、目标检测、分割等领域数据集标注的功能。
 
@@ -65,19 +64,23 @@ pip install torch==1.10.1 torchvision==0.11.2 torchaudio==0.10.1
 
 ```
 
-安装 SAM 并下载预训练模型
+安装 SAM 并下载预训练模型（目前支持)
 
 ```shell
 cd path/to/playground/label_anything
 # 在 Windows 中，进行下一步之前需要完成以下命令行
 # conda install pycocotools -c conda-forge 
-pip install opencv-python pycocotools matplotlib onnxruntime onnx
+pip install opencv-python pycocotools matplotlib onnxruntime onnx timm
 pip install git+https://github.com/facebookresearch/segment-anything.git
-wget https://dl.fbaipublicfiles.com/segment_anything/sam_vit_b_01ec64.pth
 
+# 下载sam预训练模型
+wget https://dl.fbaipublicfiles.com/segment_anything/sam_vit_b_01ec64.pth
 # 如果想要分割的效果好请使用 sam_vit_h_4b8939.pth 权重
 # wget https://dl.fbaipublicfiles.com/segment_anything/sam_vit_l_0b3195.pth
 # wget https://dl.fbaipublicfiles.com/segment_anything/sam_vit_h_4b8939.pth
+
+# 下载mobile_sam 预训练模型
+wget https://raw.githubusercontent.com/ChaoningZhang/MobileSAM/master/weights/mobile_sam.pt
 ```
 
 PS: 如果您使用 Windows 环境，请忽略 wget 命令，手动下载 wget 的目标文件（复制 url 到浏览器或下载工具中）
@@ -97,12 +100,16 @@ pip install label-studio-ml==1.0.9
 
 ⚠label_anything 需要启用 SAM 后端推理后再启动网页服务才可配置模型（一共需要两步启动）
 
-1.启动 SAM 后端推理服务：
+1.启动后端推理服务：
+
+目前label_anything支持sam和mobile_sam两种推理模型, 用户可以根据自身需求自行选择，注意模型和上一步下载的权重需要对应。mobile_sam相较于sam具有更快的推理速度和更低的显存占用，分割效果仅有轻微下滑，建议cpu推理采用mobile_sam。
 
 ```shell
 cd path/to/playground/label_anything
 
+# 采用SAM进行后端推理
 label-studio-ml start sam --port 8003 --with \
+model_name=sam \ 
 sam_config=vit_b \
 sam_checkpoint_file=./sam_vit_b_01ec64.pth \
 out_mask=True \
@@ -111,11 +118,22 @@ device=cuda:0 \
 # device=cuda:0 为使用 GPU 推理，如果使用 cpu 推理，将 cuda:0 替换为 cpu
 # out_poly=True 返回外接多边形的标注
 
+# 采用mobile_sam进行后端推理
+label-studio-ml start sam --port 8003 --with \
+model_name=mobile_sam \
+sam_config=vit_t \
+sam_checkpoint_file=./mobile_sam.pt \
+out_mask=True \
+out_bbox=True \
+device=cpu \
+# device=cuda:0 为使用 GPU 推理，如果使用 cpu 推理，将 cuda:0 替换为 cpu
+# out_poly=True 返回外接多边形的标注
 ```
 
 PS: 在 Windows 环境中，在 Anaconda Powershell Prompt 输入以下内容等价于上方的输入:
 
 ```shell
+
 cd path/to/playground/label_anything
 
 $env:sam_config = "vit_b"
@@ -135,7 +153,6 @@ device=$env:device
 ```
 
 ![image](https://user-images.githubusercontent.com/25839884/233821553-0030945a-8d83-4416-8edd-373ae9203a63.png)
-
 
 此时，SAM 后端推理服务已经启动。
 
@@ -200,17 +217,18 @@ wget https://download.openmmlab.com/mmyolo/data/cat_dataset.zip && unzip cat_dat
 
 ![](https://cdn.vansin.top/picgo20230330133715.png)
 
-
 2.直接使用服务器上的图片数据：
 
 通过 Cloud Storages 的方式实现。
 
 ① 在启动 SAM 后端之前，需要设置环境变量：
+
 ```
 export LOCAL_FILES_DOCUMENT_ROOT=path/to/playground/label_anything
 ```
 
 ② 在启动 label studio 之前，需要设置环境变量：
+
 ```
 export LABEL_STUDIO_LOCAL_FILES_SERVING_ENABLED=true
 
@@ -232,6 +250,7 @@ export LABEL_STUDIO_LOCAL_FILES_DOCUMENT_ROOT=path/to/playground/label_anything
 ### 配置 XML
 
 ---
+
 在 `Settings/Labeling Interface` 中配置 Label-Studio 关键点和 Mask 标注。
 
 ```xml
@@ -255,6 +274,7 @@ export LABEL_STUDIO_LOCAL_FILES_DOCUMENT_ROOT=path/to/playground/label_anything
   </BrushLabels>
 </View>
 ```
+
 在上述 XML 中我们对标注进行了配置，其中 `KeyPointLabels` 为关键点标注，`BrushLabels` 为 Mask 标注，`PolygonLabels` 为外接多边形标注，`RectangleLabels` 为矩形标注。
 
 本实例使用 `cat` 和 `person` 两个类别，如果社区用户想增加更多的类别需要分别在 `KeyPointLabels`、`BrushLabels`、`PolygonLabels`、`RectangleLabels` 中添加对应的类别。
@@ -283,17 +303,16 @@ export LABEL_STUDIO_LOCAL_FILES_DOCUMENT_ROOT=path/to/playground/label_anything
 
 需要打开 `Auto-Annotation` 的开关，并建议勾选 `Auto accept annotation suggestions`,并点击右侧 Smart 工具，切换到 Point 后，选择下方需要标注的物体标签，这里选择 cat。如果是 BBox 作为提示词请将 Smart 工具切换到 Rectangle。
 
-
 ![image](https://user-images.githubusercontent.com/25839884/233833200-a44c9c5f-66a8-491a-b268-ecfb6acd5284.png)
 
 Point2Label：由下面的 gif 的动图可以看出，只需要在物体上点一个点，SAM 算法就能将整个物体分割和检测出来。
 
 ![SAM8](https://user-images.githubusercontent.com/25839884/233835410-29896554-963a-42c3-a523-3b1226de59b6.gif)
 
-
 Bbox2Label: 由下面的 gif 的动图可以看出，只需要标注一个边界框，SAM 算法就能将整个物体分割和检测出来。
 
 ![SAM10](https://user-images.githubusercontent.com/25839884/233969712-0d9d6f0a-70b0-4b3e-b054-13eda037fb20.gif)
+
 ## COCO 格式数据集导出
 
 ### Label Studio 网页端导出
@@ -306,7 +325,6 @@ Bbox2Label: 由下面的 gif 的动图可以看出，只需要标注一个边界
 用 vscode 打开解压后的文件夹，可以看到标注好的数据集，包含了图片和 json 格式的标注文件。
 
 ![](https://cdn.vansin.top/picgo20230330140321.png)
-
 
 ### Label Studio 输出转换为RLE格式掩码
 
@@ -322,14 +340,15 @@ polygon 实例格式由于不太好控制点数，太多不方便微调（不像
 cd path/to/playground/label_anything
 python tools/convert_to_rle_mask_coco.py --json_file_path path/to/LS_json --out_dir path/to/output/file
 ```
+
 --json_file_path 输入 Label studio 的输出 json
 
 --out_dir 输出路径
 
-
 生成后脚本会在终端输出一个列表，这个列表是对应类别id的，可用于复制填写 config 用于训练。
 
 输出路径下有 annotations 和 images 两个文件夹，annotations 里是 coco 格式的 json， images 是整理好的数据集。
+
 ```
 Your dataset
 ├── annotations
@@ -383,7 +402,6 @@ playground
 ├── ...
 ```
 
-
 接着我们使用 `tools/analysis_tools/browse_dataset.py` 对数据集进行可视化。
 
 ```shell
@@ -402,7 +420,6 @@ python tools/analysis_tools/browse_dataset.py data/my_set/mask-rcnn_r50_fpn.py -
 
 经过上一步生成了可用于 mmdetection 训练的 config，路径为 `data/my_set/config_name.py` 我们可以用于训练。
 
-
 ```shell
 python tools/train.py data/my_set/mask-rcnn_r50_fpn.py
 ```
@@ -414,6 +431,7 @@ python tools/train.py data/my_set/mask-rcnn_r50_fpn.py
 ```shell
 python tools/test.py data/my_set/mask-rcnn_r50_fpn.py path/of/your/checkpoint --show --show-dir my_show
 ```
+
 可视化图片将会保存在 `work_dir/{timestamp}/my_show`
 
 完成后我们可以获得模型测试可视化图。左边是标注图片，右边是模型输出。
@@ -452,6 +470,3 @@ device=cuda:0 \
 效果展示如下图：
 
 ![图片](https://github.com/JimmyMa99/playground/assets/101508488/c134e579-2f1b-41ed-a82b-8211f8df8b94)
-
-
-
