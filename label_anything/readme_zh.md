@@ -109,23 +109,23 @@ cd path/to/playground/label_anything
 
 # 采用SAM进行后端推理
 label-studio-ml start sam --port 8003 --with \
-model_name=sam \ 
+model_name=sam  \
 sam_config=vit_b \
 sam_checkpoint_file=./sam_vit_b_01ec64.pth \
 out_mask=True \
 out_bbox=True \
-device=cuda:0 \
+device=cuda:0
 # device=cuda:0 为使用 GPU 推理，如果使用 cpu 推理，将 cuda:0 替换为 cpu
 # out_poly=True 返回外接多边形的标注
 
 # 采用mobile_sam进行后端推理
 label-studio-ml start sam --port 8003 --with \
-model_name=mobile_sam \
+model_name=mobile_sam  \
 sam_config=vit_t \
 sam_checkpoint_file=./mobile_sam.pt \
 out_mask=True \
 out_bbox=True \
-device=cpu \
+device=cpu 
 # device=cuda:0 为使用 GPU 推理，如果使用 cpu 推理，将 cuda:0 替换为 cpu
 # out_poly=True 返回外接多边形的标注
 ```
