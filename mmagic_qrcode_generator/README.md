@@ -4,7 +4,7 @@ I make a QR Code Generator by Stable Diffusion and Controlnet.
 
 Must set `mmagic/models/archs/wrapper.py` line 90:    
 
-`self.model = module_cls.from_pretrained(from_pretrained,use_safetensors=True*args,**kwargs)`
+`self.model = module_cls.from_pretrained(from_pretrained,use_safetensors=True, *args,**kwargs)`
 
 # Demo
 
