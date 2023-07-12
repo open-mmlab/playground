@@ -7,6 +7,7 @@ import numpy as np
 from tqdm import tqdm
 from itertools import groupby
 from label_studio_converter.brush import decode_rle
+import urllib.parse
 
 import jinja2
 
@@ -154,6 +155,7 @@ def format_to_coco(args):
                 index_cnt+=1
             image_from=os.path.join(image_path_from,image_json_name_)
             image_to=os.path.join(image_path_to,'images',image_json_name)
+            image_from = urllib.parse.unquote(image_from)
             shutil.copy2(os.path.expanduser(image_from), image_to)
 
     classes_output=[d["name"] for d in coco_format["categories"]]
