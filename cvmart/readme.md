@@ -1,6 +1,6 @@
 # 极市打榜-安全帽识别-新手任务（白银榜）
 
-本教程及相关脚本代码由社区同学 @geoffreyfan 贡献~
+本教程和相关脚本代码由社区同学 @geoffreyfan 贡献~
 
 ## 打榜链接：https://cvmart.net/topList/10163?tab=RealTime
 
