@@ -7,6 +7,7 @@ import glob
 import json
 import shutil
 import numpy as np
+
 import xml.etree.ElementTree as ET
 
 path2 = "."
