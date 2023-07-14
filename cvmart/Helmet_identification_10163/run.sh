@@ -1,4 +1,5 @@
 rm -rf /project/train/models/train/exp/weights
+
 mkdir /project/train/models/train/exp/weights
 rm -rf /project/train/tensorboard
 
