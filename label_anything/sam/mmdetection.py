@@ -253,7 +253,7 @@ class MMDetection(LabelStudioMLBase):
                     x, y = point[0]
                     points.append([float(x)/original_width*100, float(y)/original_height * 100])
                 points_list.extend(points)
-            filterd_points=NearNeighborRemover(distance_threshold=0.4).remove_near_neighbors(points_list)
+            filterd_points=NearNeighborRemover(distance_threshold=0.4).remove_near_neighbors(points_list) # remove near neighbors (increase distance_threshold to reduce more points)
             # interval = points_list.__len__()//128
 
             # points_list = points_list[::points_list.__len__()//40]
