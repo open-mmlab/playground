@@ -81,6 +81,7 @@ wget https://dl.fbaipublicfiles.com/segment_anything/sam_vit_b_01ec64.pth
 
 # 下载mobile_sam 预训练模型
 wget https://raw.githubusercontent.com/ChaoningZhang/MobileSAM/master/weights/mobile_sam.pt
+# 如果下载失败请手动下载https://github.com/ChaoningZhang/MobileSAM/blob/master/weights/ 目录下的mobile_sam.pt,将其放置到path/to/playground/label_anything目录下
 ```
 
 PS: 如果您使用 Windows 环境，请忽略 wget 命令，手动下载 wget 的目标文件（复制 url 到浏览器或下载工具中）
