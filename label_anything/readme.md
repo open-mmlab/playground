@@ -12,7 +12,6 @@ This article introduces a semi-automatic annotation solution combining Label-Stu
     <img src="https://user-images.githubusercontent.com/25839884/233969712-0d9d6f0a-70b0-4b3e-b054-13eda037fb20.gif" width="80%">
 </div>
 
-
 <br>
 
 - SAM (Segment Anything) is a segmentation model launched by Meta AI, designed to segment everything.
@@ -78,11 +77,15 @@ wget https://dl.fbaipublicfiles.com/segment_anything/sam_vit_b_01ec64.pth
 # For better segmentation results, use the sam_vit_h_4b8939.pth weights
 # wget https://dl.fbaipublicfiles.com/segment_anything/sam_vit_l_0b3195.pth
 # wget https://dl.fbaipublicfiles.com/segment_anything/sam_vit_h_4b8939.pth
+
+# download mobile_sam pretrained model
+wget https://raw.githubusercontent.com/ChaoningZhang/MobileSAM/master/weights/mobile_sam.pt
+# or manually download mobile_sam.pt in https://github.com/ChaoningZhang/MobileSAM/blob/master/weights/, and put it into path/to/playground/label_anything
+
 ```
 
 PS: If you are using a having trouble with the wget/curl commands, please manually download the target file (copy the URL to a browser or download tool). The same applies to the following instructions.
 For example: https://dl.fbaipublicfiles.com/segment_anything/sam_vit_b_01ec64.pth
-
 
 Install Label-Studio and label-studio-ml-backend
 
@@ -95,6 +98,7 @@ pip install label-studio-ml==1.0.9
 ```
 
 ## Start the service
+
 ⚠label_anything requires the SAM backend to be enabled and then the web service to be started before the model can be loaded. (a total of two steps are required to start)
 
 1.Start the SAM backend inference service:
@@ -102,7 +106,9 @@ pip install label-studio-ml==1.0.9
 ```shell
 cd path/to/playground/label_anything
 
+# inference on sam
 label-studio-ml start sam --port 8003 --with \
+  model_name=mobile_sam \
   sam_config=vit_b \
   sam_checkpoint_file=./sam_vit_b_01ec64.pth \
   out_mask=True \
@@ -110,6 +116,18 @@ label-studio-ml start sam --port 8003 --with \
   device=cuda:0
 # device=cuda:0 is for using GPU inference. If you want to use CPU inference, replace cuda:0 with cpu.
 # out_poly=True returns the annotation of the bounding polygon.
+
+# inference on mobile_sam
+label-studio-ml start sam --port 8003 --with \
+model_name=mobile_sam  \
+sam_config=vit_t \
+sam_checkpoint_file=./mobile_sam.pt \
+out_mask=True \
+out_bbox=True \
+device=cpu 
+# device=cuda:0 is for using GPU inference. If you want to use CPU inference, replace cuda:0 with cpu.
+# out_poly=True returns the annotation of the bounding polygon.
+
 ```
 
 PS: In Windows environment, entering the following in Anaconda Powershell Prompt is equivalent to the input above:
@@ -131,12 +149,13 @@ sam_checkpoint_file=$env:sam_checkpoint_file `
 out_mask=$env:out_mask `
 out_bbox=$env:out_bbox `
 device=$env:device
+
+# mobile_sam on windows have not been tested, if you are interesteed in it, please modify the shell script like upper script.
 ```
 
 ![image](https://user-images.githubusercontent.com/25839884/233821553-0030945a-8d83-4416-8edd-373ae9203a63.png)
 
-
-At this point, the SAM backend inference service has started. 
+At this point, the SAM backend inference service has started.
 
 ⚠The above terminal window needs to be kept open.
 
@@ -162,6 +181,7 @@ set ML_TIMEOUT_SETUP=40
 ```
 
 Start Label-Studio web service:
+
 ```shell
 label-studio start
 ```
@@ -196,18 +216,18 @@ wget https://download.openmmlab.com/mmyolo/data/cat_dataset.zip && unzip cat_dat
 
 ![](https://cdn.vansin.top/picgo20230330133715.png)
 
-
 2.Use images stored on the server：
-
 
 realized through 'Cloud Storages'
 
 ① Set environment variables before launch the SAM backend:
+
 ```
 export LOCAL_FILES_DOCUMENT_ROOT=path/to/playground/label_anything
 ```
 
 ② Set environment variables before launch the label studio backend to allow label studio to use local files：
+
 ```
 export LABEL_STUDIO_LOCAL_FILES_SERVING_ENABLED=true
 
@@ -253,7 +273,8 @@ Configure Label-Studio keypoint, Mask, and other annotations in Settings/Labelin
   </BrushLabels>
 </View>
 ```
-In the above XML, we have configured the annotations, where KeyPointLabels are for keypoint annotations, BrushLabels are for Mask annotations, PolygonLabels are for bounding polygon annotations, and RectangleLabels are for rectangle annotations. 
+
+In the above XML, we have configured the annotations, where KeyPointLabels are for keypoint annotations, BrushLabels are for Mask annotations, PolygonLabels are for bounding polygon annotations, and RectangleLabels are for rectangle annotations.
 
 This example uses two categories, cat and person. If community users want to add more categories, they need to add the corresponding categories in KeyPointLabels, BrushLabels, PolygonLabels, and RectangleLabels respectively.
 
@@ -283,11 +304,9 @@ To use this feature, enable the Auto-Annotation toggle and it is recommended to 
 
 ![image](https://user-images.githubusercontent.com/25839884/233833200-a44c9c5f-66a8-491a-b268-ecfb6acd5284.png)
 
-
 Point2Label: As can be seen from the following gif animation, by simply clicking a point on the object, the SAM algorithm is able to segment and detect the entire object.
 
 ![SAM8](https://user-images.githubusercontent.com/25839884/233835410-29896554-963a-42c3-a523-3b1226de59b6.gif)
-
 
 Bbox2Label: As can be seen from the following gif animation, by simply annotating a bounding box, the SAM algorithm is able to segment and detect the entire object.
 
@@ -304,7 +323,6 @@ After submitting all the images, click on export to export the annotated dataset
 You can use VS Code to open the extracted folder and see the annotated dataset, which includes the images and the annotated JSON files.
 
 ![](https://cdn.vansin.top/picgo20230330140321.png)
-
 
 ### Label Studio Output Conversion to RLE Format Masks
 
@@ -325,10 +343,10 @@ python tools/convert_to_rle_mask_coco.py --json_file_path path/to/LS_json --out_
 
 --out_dir Output path
 
-
 After generation the script outputs a list in the terminal that corresponds to the category ids and can be used to copy and fill the config for training.
 
 Under the output path, there are two folders: annotations and images, annotations is the coco format json, and images is the sorted dataset.
+
 ```
 Your dataset
 ├── annotations
@@ -356,7 +374,6 @@ cd mmdetection; pip install -e .; cd ..
 ```
 
 Then use this script to output the config for training on demand, where the template `mask-rcnn_r50_fpn` is provided in `label_anything/config_template`.
-
 
 ```shell
 #Install Jinja2
@@ -401,7 +418,6 @@ The following is the result of the transformation using the transformed dataset 
 
 After the previous step a config is generated that can be used for mmdetection training, the path is ``data/my_set/config_name.py`` which we can use for training.
 
-
 ```shell
 python tools/train.py data/my_set/mask-rcnn_r50_fpn.py
 ```
@@ -413,6 +429,7 @@ After training, you can use ``tools/test.py`` for testing.
 ```shell
 python tools/test.py data/my_set/mask-rcnn_r50_fpn.py path/of/your/checkpoint --show --show-dir my_show
 ```
+
 The visualization image will be saved in `work_dir/{timestamp}/my_show`
 
 When finished, we can get the model test visualization. On the left is the annotation image, and on the right is the model output.
