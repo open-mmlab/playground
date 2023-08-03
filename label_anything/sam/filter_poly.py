@@ -15,11 +15,9 @@ class NearNeighborRemover:
         for i in range(1, len(points)):
             # Calculate the distance between the current point and the last added point
             distance = self.calculate_distance(points[i], filtered_points[-1])
-            print(distance)
             # If the distance is above the threshold, add the current point to the filtered list
             if distance >= self.distance_threshold:
                 filtered_points.append(points[i])
-                print(len(filtered_points))
         return filtered_points 
 
 
