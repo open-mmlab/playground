@@ -3,42 +3,60 @@ import io
 import json
 import logging
 import os
+import random
+import string
 from urllib.parse import urlparse
-import numpy as np
-from label_studio_converter import brush
-import torch
-
-import cv2
 
 import boto3
+import cv2
+import numpy as np
+import torch
 from botocore.exceptions import ClientError
+from label_studio_converter import brush
 from label_studio_ml.model import LabelStudioMLBase
 from label_studio_ml.utils import (DATA_UNDEFINED_NAME, get_image_size,
                                    get_single_tag_keys)
 from label_studio_tools.core.utils.io import get_data_dir
 from filter_poly import NearNeighborRemover
 # from mmdet.apis import inference_detector, init_detector
-from segment_anything import SamPredictor, sam_model_registry, SamAutomaticMaskGenerator
-import random
-import string
+
 logger = logging.getLogger(__name__)
 
-def load_my_model(device="cuda:0",sam_config="vit_b",sam_checkpoint_file="sam_vit_b_01ec64.pth"):
-        """
-        Loads the Segment Anything model on initializing Label studio, so if you call it outside MyModel it doesn't load every time you try to make a prediction
-        Returns the predictor object. For more, look at Facebook's SAM docs
-        """
+
+def load_my_model(
+        model_name="sam",
+        device="cuda:0",
+        sam_config="vit_b",
+        sam_checkpoint_file="sam_vit_b_01ec64.pth"):
+    """
+    Loads the Segment Anything model on initializing Label studio, so if you call it outside MyModel it doesn't load every time you try to make a prediction
+    Returns the predictor object. For more, look at Facebook's SAM docs
+    """
+    if model_name == "sam":
+        try:
+            from segment_anything import SamPredictor, sam_model_registry
+        except:
+            raise ModuleNotFoundError(
+                "segment_anything is not installed, run `pip install segment_anything` to install")
         sam = sam_model_registry[sam_config](checkpoint=sam_checkpoint_file)
         sam.to(device=device)
         predictor = SamPredictor(sam)
         return predictor
-
+    elif model_name == "mobile_sam":
+        from models.mobile_sam import SamPredictor, sam_model_registry
+        sam = sam_model_registry[sam_config](checkpoint=sam_checkpoint_file)
+        sam.to(device=device)
+        predictor = SamPredictor(sam)
+        return predictor
+    else:
+        raise NotImplementedError
 
 
 class MMDetection(LabelStudioMLBase):
     """Object detector based on https://github.com/open-mmlab/mmdetection."""
 
     def __init__(self,
+                 model_name="sam",
                  config_file=None,
                  checkpoint_file=None,
                  sam_config='vit_b',
@@ -54,7 +72,8 @@ class MMDetection(LabelStudioMLBase):
 
         super(MMDetection, self).__init__(**kwargs)
 
-        PREDICTOR=load_my_model(device,sam_config,sam_checkpoint_file)
+        PREDICTOR = load_my_model(
+            model_name, device, sam_config, sam_checkpoint_file)
         self.PREDICTOR = PREDICTOR
 
         self.out_mask = out_mask
@@ -80,13 +99,13 @@ class MMDetection(LabelStudioMLBase):
         #     self.parsed_label_config, 'RectangleLabels', 'Image')
 
         self.labels_in_config = dict(
-                label=self.parsed_label_config['KeyPointLabels']
-            )
- 
+            label=self.parsed_label_config['KeyPointLabels']
+        )
+
         if 'RectangleLabels' in self.parsed_label_config and self.out_bbox:
 
             self.parsed_label_config_RectangleLabels = {
-                'RectangleLabels':self.parsed_label_config['RectangleLabels']
+                'RectangleLabels': self.parsed_label_config['RectangleLabels']
             }
             self.from_name_RectangleLabels, self.to_name_RectangleLabels, self.value_RectangleLabels, self.labels_in_config_RectangleLabels = get_single_tag_keys(  # noqa E501
                 self.parsed_label_config_RectangleLabels, 'RectangleLabels', 'Image')
@@ -94,15 +113,15 @@ class MMDetection(LabelStudioMLBase):
         if 'BrushLabels' in self.parsed_label_config:
 
             self.parsed_label_config_BrushLabels = {
-                'BrushLabels':self.parsed_label_config['BrushLabels']
+                'BrushLabels': self.parsed_label_config['BrushLabels']
             }
             self.from_name, self.to_name, self.value, self.labels_in_config = get_single_tag_keys(  # noqa E501
                 self.parsed_label_config_BrushLabels, 'BrushLabels', 'Image')
-        
+
         if 'BrushLabels' in self.parsed_label_config:
 
             self.parsed_label_config_BrushLabels = {
-                'BrushLabels':self.parsed_label_config['BrushLabels']
+                'BrushLabels': self.parsed_label_config['BrushLabels']
             }
             self.from_name_BrushLabels, self.to_name_BrushLabels, self.value_BrushLabels, self.labels_in_config_BrushLabels = get_single_tag_keys(  # noqa E501
                 self.parsed_label_config_BrushLabels, 'BrushLabels', 'Image')
@@ -110,12 +129,10 @@ class MMDetection(LabelStudioMLBase):
         if 'PolygonLabels' in self.parsed_label_config and self.out_poly:
 
             self.parsed_label_config_PolygonLabels = {
-                'PolygonLabels':self.parsed_label_config['PolygonLabels']
+                'PolygonLabels': self.parsed_label_config['PolygonLabels']
             }
             self.from_name_PolygonLabels, self.to_name_PolygonLabels, self.value_PolygonLabels, self.labels_in_config_PolygonLabels = get_single_tag_keys(  # noqa E501
                 self.parsed_label_config_PolygonLabels, 'PolygonLabels', 'Image')
-
-
 
         schema = list(self.parsed_label_config.values())[0]
         self.labels_in_config = set(self.labels_in_config)
@@ -166,23 +183,23 @@ class MMDetection(LabelStudioMLBase):
 
         if kwargs.get('context') is None:
             return []
-        
+
         # image = cv2.imread(f"./{split}")
         image = cv2.imread(image_path)
         image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
         predictor.set_image(image)
-        
+
         prompt_type = kwargs['context']['result'][0]['type']
         original_height = kwargs['context']['result'][0]['original_height']
         original_width = kwargs['context']['result'][0]['original_width']
 
-
         if prompt_type == 'keypointlabels':
             # getting x and y coordinates of the keypoint
-            x = kwargs['context']['result'][0]['value']['x'] * original_width / 100
-            y = kwargs['context']['result'][0]['value']['y'] * original_height / 100
+            x = kwargs['context']['result'][0]['value']['x'] * \
+                original_width / 100
+            y = kwargs['context']['result'][0]['value']['y'] * \
+                original_height / 100
             output_label = kwargs['context']['result'][0]['value']['labels'][0]
-
 
             masks, scores, logits = predictor.predict(
                 point_coords=np.array([[x, y]]),
@@ -191,14 +208,16 @@ class MMDetection(LabelStudioMLBase):
                 multimask_output=False,
             )
 
-
         if prompt_type == 'rectanglelabels':
 
-
-            x = kwargs['context']['result'][0]['value']['x'] * original_width / 100
-            y = kwargs['context']['result'][0]['value']['y'] * original_height / 100
-            w = kwargs['context']['result'][0]['value']['width'] * original_width / 100
-            h = kwargs['context']['result'][0]['value']['height'] * original_height / 100
+            x = kwargs['context']['result'][0]['value']['x'] * \
+                original_width / 100
+            y = kwargs['context']['result'][0]['value']['y'] * \
+                original_height / 100
+            w = kwargs['context']['result'][0]['value']['width'] * \
+                original_width / 100
+            h = kwargs['context']['result'][0]['value']['height'] * \
+                original_height / 100
 
             output_label = kwargs['context']['result'][0]['value']['rectanglelabels'][0]
 
@@ -209,18 +228,14 @@ class MMDetection(LabelStudioMLBase):
                 multimask_output=False,
             )
 
-
-        mask = masks[0].astype(np.uint8) # each mask has shape [H, W]
+        mask = masks[0].astype(np.uint8)  # each mask has shape [H, W]
         # converting the mask from the model to RLE format which is usable in Label Studio
 
         # 找到轮廓
-        contours, hierarchy = cv2.findContours(mask, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
-
-
-
+        contours, hierarchy = cv2.findContours(
+            mask, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
 
         # 计算外接矩形
-
 
         if self.out_bbox:
             new_contours = []
@@ -240,9 +255,9 @@ class MMDetection(LabelStudioMLBase):
                     'width': float(w) / original_width * 100,
                     'height': float(h) / original_height * 100,
                 },
-                "id": ''.join(random.SystemRandom().choice(string.ascii_uppercase + string.ascii_lowercase + string.digits)), # creates a random ID for your label every time
+                # creates a random ID for your label every time
+                "id": ''.join(random.SystemRandom().choice(string.ascii_uppercase + string.ascii_lowercase + string.digits)),
             })
-
 
         if self.out_poly:
 
@@ -251,7 +266,8 @@ class MMDetection(LabelStudioMLBase):
                 points = []
                 for point in contour:
                     x, y = point[0]
-                    points.append([float(x)/original_width*100, float(y)/original_height * 100])
+                    points.append([float(x)/original_width*100,
+                                  float(y)/original_height * 100])
                 points_list.extend(points)
             filterd_points=NearNeighborRemover(distance_threshold=0.4).remove_near_neighbors(points_list) # remove near neighbors (increase distance_threshold to reduce more points)
             # interval = points_list.__len__()//128
@@ -268,10 +284,10 @@ class MMDetection(LabelStudioMLBase):
                     "polygonlabels": [output_label],
                 },
                 "type": "polygonlabels",
-                "id": ''.join(random.SystemRandom().choice(string.ascii_uppercase + string.ascii_lowercase + string.digits)), # creates a random ID for your label every time
+                # creates a random ID for your label every time
+                "id": ''.join(random.SystemRandom().choice(string.ascii_uppercase + string.ascii_lowercase + string.digits)),
                 "readonly": False,
             })
-
 
         if self.out_mask:
             mask = mask * 255
@@ -289,7 +305,8 @@ class MMDetection(LabelStudioMLBase):
                     "brushlabels": [output_label],
                 },
                 "type": "brushlabels",
-                "id": ''.join(random.SystemRandom().choice(string.ascii_uppercase + string.ascii_lowercase + string.digits)), # creates a random ID for your label every time
+                # creates a random ID for your label every time
+                "id": ''.join(random.SystemRandom().choice(string.ascii_uppercase + string.ascii_lowercase + string.digits)),
                 "readonly": False,
             })
 
