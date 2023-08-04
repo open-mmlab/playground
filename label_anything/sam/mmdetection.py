@@ -17,6 +17,7 @@ from label_studio_ml.model import LabelStudioMLBase
 from label_studio_ml.utils import (DATA_UNDEFINED_NAME, get_image_size,
                                    get_single_tag_keys)
 from label_studio_tools.core.utils.io import get_data_dir
+from filter_poly import NearNeighborRemover
 # from mmdet.apis import inference_detector, init_detector
 
 logger = logging.getLogger(__name__)
@@ -268,7 +269,7 @@ class MMDetection(LabelStudioMLBase):
                     points.append([float(x)/original_width*100,
                                   float(y)/original_height * 100])
                 points_list.extend(points)
-
+            filterd_points=NearNeighborRemover(distance_threshold=0.4).remove_near_neighbors(points_list) # remove near neighbors (increase distance_threshold to reduce more points)
             # interval = points_list.__len__()//128
 
             # points_list = points_list[::points_list.__len__()//40]
@@ -279,7 +280,7 @@ class MMDetection(LabelStudioMLBase):
                 "original_height": original_height,
                 # "image_rotation": 0,
                 "value": {
-                    "points": points_list,
+                    "points": filterd_points,
                     "polygonlabels": [output_label],
                 },
                 "type": "polygonlabels",
