@@ -255,8 +255,7 @@ class MMDetection(LabelStudioMLBase):
                     'width': float(w) / original_width * 100,
                     'height': float(h) / original_height * 100,
                 },
-                # creates a random ID for your label every time
-                "id": ''.join(random.SystemRandom().choice(string.ascii_uppercase + string.ascii_lowercase + string.digits)),
+                "id": ''.join(random.SystemRandom().choices(string.ascii_uppercase + string.ascii_lowercase + string.digits, k=6)), # creates a random ID for your label every time
             })
 
         if self.out_poly:
@@ -284,8 +283,7 @@ class MMDetection(LabelStudioMLBase):
                     "polygonlabels": [output_label],
                 },
                 "type": "polygonlabels",
-                # creates a random ID for your label every time
-                "id": ''.join(random.SystemRandom().choice(string.ascii_uppercase + string.ascii_lowercase + string.digits)),
+                "id": ''.join(random.SystemRandom().choices(string.ascii_uppercase + string.ascii_lowercase + string.digits, k=6)), # creates a random ID for your label every time
                 "readonly": False,
             })
 
@@ -305,8 +303,7 @@ class MMDetection(LabelStudioMLBase):
                     "brushlabels": [output_label],
                 },
                 "type": "brushlabels",
-                # creates a random ID for your label every time
-                "id": ''.join(random.SystemRandom().choice(string.ascii_uppercase + string.ascii_lowercase + string.digits)),
+                "id": ''.join(random.SystemRandom().choices(string.ascii_uppercase + string.ascii_lowercase + string.digits, k=6)), # creates a random ID for your label every time
                 "readonly": False,
             })
 
