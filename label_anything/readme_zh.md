@@ -64,7 +64,7 @@ pip install torch==1.10.1 torchvision==0.11.2 torchaudio==0.10.1
 
 ```
 
-安装 SAM 并下载预训练模型（目前支持)
+安装 SAM 并下载预训练模型（目前支持）
 
 ```shell
 cd path/to/playground/label_anything
@@ -79,7 +79,12 @@ wget https://dl.fbaipublicfiles.com/segment_anything/sam_vit_b_01ec64.pth
 # wget https://dl.fbaipublicfiles.com/segment_anything/sam_vit_l_0b3195.pth
 # wget https://dl.fbaipublicfiles.com/segment_anything/sam_vit_h_4b8939.pth
 
-# 下载mobile_sam 预训练模型
+# 下载 HQ-SAM 预训练模型
+wget https://huggingface.co/lkeab/hq-sam/resolve/main/sam_hq_vit_b.pth
+#wget https://huggingface.co/lkeab/hq-sam/resolve/main/sam_hq_vit_h.pth
+#wget https://huggingface.co/lkeab/hq-sam/resolve/main/sam_hq_vit_l.pth
+
+# 下载 mobile_sam 预训练模型
 wget https://raw.githubusercontent.com/ChaoningZhang/MobileSAM/master/weights/mobile_sam.pt
 # 如果下载失败请手动下载https://github.com/ChaoningZhang/MobileSAM/blob/master/weights/ 目录下的mobile_sam.pt,将其放置到path/to/playground/label_anything目录下
 ```
@@ -103,12 +108,12 @@ pip install label-studio-ml==1.0.9
 
 1.启动后端推理服务：
 
-目前label_anything支持sam和mobile_sam两种推理模型, 用户可以根据自身需求自行选择，注意模型和上一步下载的权重需要对应。mobile_sam相较于sam具有更快的推理速度和更低的显存占用，分割效果仅有轻微下滑，建议cpu推理采用mobile_sam。
+目前 label_anything 支持 SAM 、HQ-SAM 和 mobile_sam 三种推理模型, 用户可以根据自身需求自行选择，注意模型和上一步下载的权重需要对应。HQ-SAM 相较于 SAM 具有更高的分割质量。 mobile_sam 相较于 SAM 具有更快的推理速度和更低的显存占用，分割效果仅有轻微下滑，建议cpu推理采用 mobile_sam。
 
 ```shell
 cd path/to/playground/label_anything
 
-# 采用SAM进行后端推理
+# 采用 SAM 进行后端推理
 label-studio-ml start sam --port 8003 --with \
 model_name=sam  \
 sam_config=vit_b \
@@ -119,7 +124,17 @@ device=cuda:0
 # device=cuda:0 为使用 GPU 推理，如果使用 cpu 推理，将 cuda:0 替换为 cpu
 # out_poly=True 返回外接多边形的标注
 
-# 采用mobile_sam进行后端推理
+# 采用 HQ-SAM 进行后端推理
+label-studio-ml start sam --port 8003 --with \
+sam_config=vit_b \
+sam_checkpoint_file=./sam_hq_vit_l.pth \
+out_mask=True \
+out_bbox=True \
+device=cuda:0 \
+# device=cuda:0 为使用 GPU 推理，如果使用 cpu 推理，将 cuda:0 替换为 cpu
+# out_poly=True 返回外接多边形的标注
+
+# 采用 mobile_sam 进行后端推理
 label-studio-ml start sam --port 8003 --with \
 model_name=mobile_sam  \
 sam_config=vit_t \
@@ -131,7 +146,32 @@ device=cpu
 # out_poly=True 返回外接多边形的标注
 ```
 
-PS: 在 Windows 环境中，在 Anaconda Powershell Prompt 输入以下内容等价于上方的输入:
+- HQ-SAM 分割效果展示
+
+![图片](https://github.com/JimmyMa99/playground/assets/101508488/c134e579-2f1b-41ed-a82b-8211f8df8b94)
+
+- SAM & mobile_sam 对比
+
+1.显存占用对比
+
+SAM：
+![图片](https://user-images.githubusercontent.com/42299757/251629464-6874f94d-ee02-4e7c-9a2e-7844a4cafc53.png)
+
+mobile-SAM：
+![图片](https://user-images.githubusercontent.com/42299757/251629348-39bcd8ae-6fd0-49ae-a0fc-be56b6fa8807.png)
+
+2.速度对比
+
+| device | model_name | inference time |
+| ----------- | ----------- | ----------- |
+| AMD 7700x | mobile_sam | 0.45s |
+| RTX 4090 | mobile_sam | 0.14s |
+| AMD 7700x | sam-vit-b | 3.02s |
+| RTX 4090 | sam-vit-b | 0.32s |
+
+
+
+PS: 在 Windows 环境中，在 Anaconda Powershell Prompt 输入以下内容等价于上方的输入(以下给出 SAM 启动样例):
 
 ```shell
 
@@ -169,7 +209,7 @@ device=$env:device
 cd path/to/playground/label_anything
 ```
 
-⚠(如不使用 vit-h 的 SAM 后端可跳过此步）使用的推理后端是 SAM 的 **vit-h**, 由于模型加载时间长，导致连接后端超时，需要设置以下环境变量。
+⚠（如不使用 vit-h 的 SAM 后端可跳过此步）使用的推理后端是 SAM 的 **vit-h**, 由于模型加载时间长，导致连接后端超时，需要设置以下环境变量。
 
 具体可根据下载的 SAM 的权值名称判断，比如 sam_vit_h_4b8939.pth 为 vit-h，sam_vit_b_01ec64.pth 为 vit-b。
 
@@ -439,35 +479,4 @@ python tools/test.py data/my_set/mask-rcnn_r50_fpn.py path/of/your/checkpoint --
 
 ![IMG_20211205_120730](https://user-images.githubusercontent.com/101508488/236633902-987bc5d2-0566-4e58-a3b2-6239648d21d9.jpg)
 
-到此半自动化标注就完成了, 通过 Label-Studio 的半自动化标注功能，可以让用户在标注过程中，通过点击一下鼠标，就可以完成目标的分割和检测，大大提高了标注效率。部分代码借鉴自 label-studio-ml-backend ID 为 253 的 Pull Request，感谢作者的贡献。同时感谢社区同学 [ATang0729](https://github.com/ATang0729) 为脚本测试重新标注了喵喵数据集，以及 [JimmyMa99](https://github.com/JimmyMa99) 同学提供的转换脚本、 config 模板以及文档优化。
-
-## 🚀支持 HQ-SAM 🚀
-
-目前本工具已支持 [HQ-SAM](https://github.com/SysCV/sam-hq/tree/main) ，只需要下载 HQ-SAM 的权重：
-
-```script
-wget https://huggingface.co/lkeab/hq-sam/resolve/main/sam_hq_vit_b.pth
-wget https://huggingface.co/lkeab/hq-sam/resolve/main/sam_hq_vit_h.pth
-wget https://huggingface.co/lkeab/hq-sam/resolve/main/sam_hq_vit_l.pth
-```
-
-目前推荐使用 `vit_l` ，使用如下命令开启 ML 推理后端：
-
-```script
-cd path/to/playground/label_anything
-
-label-studio-ml start sam --port 8003 --with \
-sam_config=vit_b \
-sam_checkpoint_file=./sam_hq_vit_l.pth \
-out_mask=True \
-out_bbox=True \
-device=cuda:0 \
-# device=cuda:0 为使用 GPU 推理，如果使用 cpu 推理，将 cuda:0 替换为 cpu
-# out_poly=True 返回外接多边形的标注
-```
-
-再到前端重新加载推理模型即可。
-
-效果展示如下图：
-
-![图片](https://github.com/JimmyMa99/playground/assets/101508488/c134e579-2f1b-41ed-a82b-8211f8df8b94)
+到此半自动化标注就完成了, 通过 Label-Studio 的半自动化标注功能，可以让用户在标注过程中，通过点击一下鼠标，就可以完成目标的分割和检测，大大提高了标注效率。部分代码借鉴自 label-studio-ml-backend ID 为 253 的 Pull Request，感谢作者的贡献。同时感谢社区同学 [ATang0729](https://github.com/ATang0729) 为脚本测试重新标注了喵喵数据集，以及 [JimmyMa99](https://github.com/JimmyMa99) 同学提供的转换脚本、 config 模板以及文档优化，[YanxingLiu](https://github.com/YanxingLiu) 同学提供的 mobile_sam 适配。
