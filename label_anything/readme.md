@@ -78,6 +78,11 @@ wget https://dl.fbaipublicfiles.com/segment_anything/sam_vit_b_01ec64.pth
 # wget https://dl.fbaipublicfiles.com/segment_anything/sam_vit_l_0b3195.pth
 # wget https://dl.fbaipublicfiles.com/segment_anything/sam_vit_h_4b8939.pth
 
+# download HQ-SAM pretrained model
+wget https://huggingface.co/lkeab/hq-sam/resolve/main/sam_hq_vit_b.pth
+#wget https://huggingface.co/lkeab/hq-sam/resolve/main/sam_hq_vit_h.pth
+#wget https://huggingface.co/lkeab/hq-sam/resolve/main/sam_hq_vit_l.pth
+
 # download mobile_sam pretrained model
 wget https://raw.githubusercontent.com/ChaoningZhang/MobileSAM/master/weights/mobile_sam.pt
 # or manually download mobile_sam.pt in https://github.com/ChaoningZhang/MobileSAM/blob/master/weights/, and put it into path/to/playground/label_anything
@@ -88,6 +93,8 @@ PS: If you are using a having trouble with the wget/curl commands, please manual
 For example: https://dl.fbaipublicfiles.com/segment_anything/sam_vit_b_01ec64.pth
 
 Install Label-Studio and label-studio-ml-backend
+
+Currently, label_anything supports three inference models: SAM, HQ-SAM, and mobile_sam. Users can choose according to their own needs, but note that the model and the downloaded weights in the previous step need to correspond. HQ-SAM has higher segmentation quality than SAM. Mobile_sam has faster inference speed and lower memory usage than SAM, and the segmentation effect only slightly decreases. It is recommended to use mobile_sam for CPU inference.
 
 ```shell
 # sudo apt install libpq-dev python3-dev # Note: If using Label Studio 1.7.2 version, you need to install libpq-dev and python3-dev dependencies.
@@ -117,18 +124,52 @@ label-studio-ml start sam --port 8003 --with \
 # device=cuda:0 is for using GPU inference. If you want to use CPU inference, replace cuda:0 with cpu.
 # out_poly=True returns the annotation of the bounding polygon.
 
+# inference on HQ-SAM
+label-studio-ml start sam --port 8003 --with \
+  sam_config=vit_b \
+  sam_checkpoint_file=./sam_hq_vit_l.pth \
+  out_mask=True \
+  out_bbox=True \
+  device=cuda:0 
+# device=cuda:0 is for using GPU inference. If you want to use CPU inference, replace cuda:0 with cpu.
+# out_poly=True returns the annotation of the bounding polygon.
+
 # inference on mobile_sam
 label-studio-ml start sam --port 8003 --with \
-model_name=mobile_sam  \
-sam_config=vit_t \
-sam_checkpoint_file=./mobile_sam.pt \
-out_mask=True \
-out_bbox=True \
-device=cpu 
+  model_name=mobile_sam  \
+  sam_config=vit_t \
+  sam_checkpoint_file=./mobile_sam.pt \
+  out_mask=True \
+  out_bbox=True \
+  device=cpu 
 # device=cuda:0 is for using GPU inference. If you want to use CPU inference, replace cuda:0 with cpu.
 # out_poly=True returns the annotation of the bounding polygon.
 
 ```
+
+- HQ-SAM Segmentation Results Display
+
+![图片](https://github.com/JimmyMa99/playground/assets/101508488/c134e579-2f1b-41ed-a82b-8211f8df8b94)
+
+- Comparison between SAM and mobile_sam
+
+1.memory compare:
+
+SAM：
+![图片](https://user-images.githubusercontent.com/42299757/251629464-6874f94d-ee02-4e7c-9a2e-7844a4cafc53.png)
+
+mobile-SAM：
+![图片](https://user-images.githubusercontent.com/42299757/251629348-39bcd8ae-6fd0-49ae-a0fc-be56b6fa8807.png)
+
+2.speed test:
+
+| device | model_name | inference time |
+| ----------- | ----------- | ----------- |
+| AMD 7700x | mobile_sam | 0.45s |
+| RTX 4090 | mobile_sam | 0.14s |
+| AMD 7700x | sam-vit-b | 3.02s |
+| RTX 4090 | sam-vit-b | 0.32s |
+
 
 PS: In Windows environment, entering the following in Anaconda Powershell Prompt is equivalent to the input above:
 
@@ -438,7 +479,7 @@ When finished, we can get the model test visualization. On the left is the annot
 
 With the semi-automated annotation function of Label-Studio, users can complete object segmentation and detection by simply clicking the mouse during the annotation process, greatly improving the efficiency of annotation.
 
-Some of the code was borrowed from Pull Request ID 253 of label-studio-ml-backend. Thank you to the author for their contribution. Also, thanks to fellow community member [ATang0729](https://github.com/ATang0729) for re-labeling the meow dataset for script testing, and [JimmyMa99](https://github.com/JimmyMa99) for the conversion script, config template, and documentation Optimization.
+Some of the code was borrowed from Pull Request ID 253 of label-studio-ml-backend. Thank you to the author for their contribution. Also, thanks to fellow community member [ATang0729](https://github.com/ATang0729) for re-labeling the meow dataset for script testing, and [JimmyMa99](https://github.com/JimmyMa99) for the conversion script, config template, and documentation Optimization, [YanxingLiu](https://github.com/YanxingLiu) provided the mobile_sam adaptation.
 
 ## 🚀Support for HQ-SAM 🚀
 
