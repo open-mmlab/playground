@@ -480,36 +480,3 @@ When finished, we can get the model test visualization. On the left is the annot
 With the semi-automated annotation function of Label-Studio, users can complete object segmentation and detection by simply clicking the mouse during the annotation process, greatly improving the efficiency of annotation.
 
 Some of the code was borrowed from Pull Request ID 253 of label-studio-ml-backend. Thank you to the author for their contribution. Also, thanks to fellow community member [ATang0729](https://github.com/ATang0729) for re-labeling the meow dataset for script testing, and [JimmyMa99](https://github.com/JimmyMa99) for the conversion script, config template, and documentation Optimization, [YanxingLiu](https://github.com/YanxingLiu) provided the mobile_sam adaptation.
-
-## 🚀Support for HQ-SAM 🚀
-
-Currently, this tool supports [HQ-SAM](https://github.com/SysCV/sam-hq/tree/main), only need to download the HQ-SAM weight:
-
-```
-wget https://huggingface.co/lkeab/hq-sam/resolve/main/sam_hq_vit_b.pth
-wget https://huggingface.co/lkeab/hq-sam/resolve/main/sam_hq_vit_h.pth
-wget https://huggingface.co/lkeab/hq-sam/resolve/main/sam_hq_vit_l.pth
-
-```
-
-Currently, it is recommended to use `vit_l`. Use the following command to start the ML inference backend:
-
-```
-cd path/to/playground/label_anything
-
-label-studio-ml start sam --port 8003 --with \\
-sam_config=vit_b \\
-sam_checkpoint_file=./sam_hq_vit_l.pth \\
-out_mask=True \\
-out_bbox=True \\
-device=cuda:0 \\
-# device=cuda:0 is for using GPU inference. If using CPU inference, replace cuda:0 with cpu
-# out_poly=True returns the annotation of the bounding polygon
-
-```
-
-Then reload the inference model in the front end.
-
-The effect is as shown in the following figure:
-
-![图片](https://github.com/JimmyMa99/playground/assets/101508488/c134e579-2f1b-41ed-a82b-8211f8df8b94)
