@@ -1,4 +1,3 @@
-<img width="1380" alt="image" src="https://github.com/crazysteeaam/playground/assets/62195058/65400e30-1435-4f9e-9b1c-bf4d84260053"><div align=center>
 <img src="resources/playground-banner.png"/>
 </div>
 
