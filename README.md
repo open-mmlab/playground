@@ -49,7 +49,7 @@ ______________________________________________________________________
 |           [MMOCR-SAM](#-mmocr-sam)           | <img src="https://user-images.githubusercontent.com/65173622/231919274-a7ebc63f-8665-4324-89bf-f685e3b5161c.jpg" width="70%" height="20%" /> |   A solution of Text Detection/Recognition + SAM that segments every text character, with striking text removal and text inpainting demos driven by diffusion models and Gradio!    |
 |      [MMEditing-SAM](#-mmediting-sam)      | <img src="https://user-images.githubusercontent.com/12782558/232716961-54b7e634-8f89-4a38-9353-4c962f9ce0cf.gif" width="70%" height="20%" /> |                                                  Join SAM and image generation to create awesome images and edit any part of them.                                                  |
 | [Label-Studio-SAM](#-label-studio-sam) | <img src="https://user-images.githubusercontent.com/25839884/233835223-16abc0cb-09f0-407d-8be0-33e14cd86e1b.gif" width="70%" height="20%" /> | Combining Label-Studio and SAM to achieve semi-automated annotation. |
-| [Label-Studio-SAM](#-label-studio-sam) | <img src="https://user-images.githubusercontent.com/25839884/233835223-16abc0cb-09f0-407d-8be0-33e14cd86e1b.gif" width="70%" height="20%" /> | Combining Label-Studio and SAM to achieve semi-automated annotation. |
+| [InternLM-Langchain](#-internlm-langchain) | <img src="./internlm_langchain/img/openmmlab_chat.png" width="70%" height="20%" /> | OpenMMLab Knowledge Base QA based on [internlm/internlm-chat-7b-v1_1](https://huggingface.co/internlm/internlm-chat-7b-v1_1). |
 
 
 
@@ -155,4 +155,3 @@ Please see [README](./label_anything/readme.md) for more information.
  Use [LangChain-Chatchat](https://github.com/chatchat-space/Langchain-Chatchat) to build an OpenMMLab projects knowledge-based question-answering system based on the LLM internlm/[internlm/internlm-chat-7b-v1_1](https://huggingface.co/internlm/internlm-chat-7b-v1_1). It includes multiple projects under OpenMMLab.
 
 Please see [README](./internlm_langchain/README.md) for more information.
-
