@@ -52,7 +52,7 @@
 |           [MMOCR-SAM](#-mmocr-sam)           | <img src="https://user-images.githubusercontent.com/65173622/231919274-a7ebc63f-8665-4324-89bf-f685e3b5161c.jpg" width="70%" height="20%" /> | 端到端文字检测识别 + SAM，将每一个字符都进行分割。使用基于 Gradio 的 Web UI 探索有趣的 OCR 下游任务，包括文本擦除、文本编辑 |
 |       [MMEditing-SAM](#-mmediting-sam)       | <img src="https://user-images.githubusercontent.com/12782558/232716961-54b7e634-8f89-4a38-9353-4c962f9ce0cf.gif" width="70%" height="20%" /> |                       将 SAM 和图像生成结合起来从而对图像进行任意位置的编辑修改                       |
 |    [Label-Studio-SAM](#-label-studio-sam)    | <img src="https://user-images.githubusercontent.com/25839884/233835223-16abc0cb-09f0-407d-8be0-33e14cd86e1b.gif" width="70%" height="20%" /> |                       将 Label-Studio 和 SAM 结合实现半自动化标注                       |
-
+|    [InternLM-Langchain](#-internlm-langchain)    | <img src=./internlm_langchain/img/openmmlab_chat.png width="70%" height="20%" /> |                       基于 [internlm/internlm-chat-7b-v1_1](https://huggingface.co/internlm/internlm-chat-7b-v1_1) 的 OpenMMLab 知识库问答                       
 
 下面详细说明。
 
@@ -162,6 +162,15 @@
 
 
 详情见 [README](./label_anything/readme_zh.md)。
+
+## ✨ InternLM-Langchain
+
+![](./internlm_langchain/img/openmmlab_chat.png)
+
+使用 [LangChain-Chatchat](https://github.com/chatchat-space/Langchain-Chatchat) 搭建基于 LLM [internlm/internlm-chat-7b-v1_1](https://huggingface.co/internlm/internlm-chat-7b-v1_1) 的 OpenMMLab 知识库问答。包含 OpenMMLab 下的多个项目。
+
+详情见 [README](./internlm_langchain/README.md)。
+
 
 # ❤️ 欢迎加入 OpenMMLab 社区
 
