@@ -69,7 +69,7 @@ pip install torch==1.10.1 torchvision==0.11.2 torchaudio==0.10.1
 ```shell
 cd path/to/playground/label_anything
 # 在 Windows 中，进行下一步之前需要完成以下命令行
-# conda install pycocotools -c conda-forge 
+# conda install pycocotools -c conda-forge
 pip install opencv-python pycocotools matplotlib onnxruntime onnx timm
 pip install git+https://github.com/facebookresearch/segment-anything.git
 
@@ -98,9 +98,11 @@ PS: 如果您使用 Windows 环境，请忽略 wget 命令，手动下载 wget �
 # sudo apt install libpq-dev python3-dev # Note：如果使用 Label Studio 1.7.2 版本需要安装 `libpq-dev` 和 `python3-dev` 依赖。
 
 # 安装 label-studio 需要一段时间,如果找不到版本请使用官方源
-pip install label-studio==1.7.3
+pip install label-studio
 pip install label-studio-ml==1.0.9
 ```
+
+*（2023-09-22）注意：经测试发现，当安装label-studio 1.7.3版本时，由于其本身对numpy版本的严格限制，在Linux和Windows平台上会产生一个疑似因numpy与pandas版本不兼容而导致的错误，故不推荐安装label-studio 1.7.3版本。*
 
 ## 启动服务
 
@@ -141,7 +143,7 @@ sam_config=vit_t \
 sam_checkpoint_file=./mobile_sam.pt \
 out_mask=True \
 out_bbox=True \
-device=cpu 
+device=cpu
 # device=cuda:0 为使用 GPU 推理，如果使用 cpu 推理，将 cuda:0 替换为 cpu
 # out_poly=True 返回外接多边形的标注
 ```
@@ -162,14 +164,12 @@ mobile-SAM：
 
 2.速度对比
 
-| device | model_name | inference time |
-| ----------- | ----------- | ----------- |
-| AMD 7700x | mobile_sam | 0.45s |
-| RTX 4090 | mobile_sam | 0.14s |
-| AMD 7700x | sam-vit-b | 3.02s |
-| RTX 4090 | sam-vit-b | 0.32s |
-
-
+| device    | model_name | inference time |
+| --------- | ---------- | -------------- |
+| AMD 7700x | mobile_sam | 0.45s          |
+| RTX 4090  | mobile_sam | 0.14s          |
+| AMD 7700x | sam-vit-b  | 3.02s          |
+| RTX 4090  | sam-vit-b  | 0.32s          |
 
 PS: 在 Windows 环境中，在 Anaconda Powershell Prompt 输入以下内容等价于上方的输入(以下给出 SAM 启动样例):
 
@@ -290,7 +290,7 @@ export LABEL_STUDIO_LOCAL_FILES_DOCUMENT_ROOT=path/to/playground/label_anything
 
 ### 配置 XML
 
----
+______________________________________________________________________
 
 在 `Settings/Labeling Interface` 中配置 Label-Studio 关键点和 Mask 标注。
 

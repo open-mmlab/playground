@@ -100,9 +100,11 @@ Currently, label_anything supports three inference models: SAM, HQ-SAM, and mobi
 # sudo apt install libpq-dev python3-dev # Note: If using Label Studio 1.7.2 version, you need to install libpq-dev and python3-dev dependencies.
 
 # Installing label-studio may take some time. If you cannot find the version, please use the official source.
-pip install label-studio==1.7.3
+pip install label-studio
 pip install label-studio-ml==1.0.9
 ```
+
+*(2023-09-22) Note: Tested and found that when installing label-studio==1.7.3, due to its own strict limitations on the numpy version, it will produce a suspected error due to the incompatibility of the numpy and pandas versions on both Linux and Windows platforms, so it's not recommended to install label-studio==1.7.3.*
 
 ## Start the service
 
@@ -130,7 +132,7 @@ label-studio-ml start sam --port 8003 --with \
   sam_checkpoint_file=./sam_hq_vit_l.pth \
   out_mask=True \
   out_bbox=True \
-  device=cuda:0 
+  device=cuda:0
 # device=cuda:0 is for using GPU inference. If you want to use CPU inference, replace cuda:0 with cpu.
 # out_poly=True returns the annotation of the bounding polygon.
 
@@ -141,7 +143,7 @@ label-studio-ml start sam --port 8003 --with \
   sam_checkpoint_file=./mobile_sam.pt \
   out_mask=True \
   out_bbox=True \
-  device=cpu 
+  device=cpu
 # device=cuda:0 is for using GPU inference. If you want to use CPU inference, replace cuda:0 with cpu.
 # out_poly=True returns the annotation of the bounding polygon.
 
@@ -163,13 +165,12 @@ mobile-SAM：
 
 2.speed test:
 
-| device | model_name | inference time |
-| ----------- | ----------- | ----------- |
-| AMD 7700x | mobile_sam | 0.45s |
-| RTX 4090 | mobile_sam | 0.14s |
-| AMD 7700x | sam-vit-b | 3.02s |
-| RTX 4090 | sam-vit-b | 0.32s |
-
+| device    | model_name | inference time |
+| --------- | ---------- | -------------- |
+| AMD 7700x | mobile_sam | 0.45s          |
+| RTX 4090  | mobile_sam | 0.14s          |
+| AMD 7700x | sam-vit-b  | 3.02s          |
+| RTX 4090  | sam-vit-b  | 0.32s          |
 
 PS: In Windows environment, entering the following in Anaconda Powershell Prompt is equivalent to the input above:
 
@@ -289,7 +290,7 @@ Click on 'Sync Storage'. Then it can synchronize with the data on the server and
 
 ### XML configuration
 
----
+______________________________________________________________________
 
 Configure Label-Studio keypoint, Mask, and other annotations in Settings/Labeling Interface.
 
@@ -406,7 +407,7 @@ cd path/to/playground/
 # build from source
 conda activate rtmdet-sam
 # Windows users need to install pycocotools using conda
-# conda install pycocotools -c conda-forge 
+# conda install pycocotools -c conda-forge
 pip install -U openmim
 mim install mmengine
 mim install "mmcv>=2.0.0"
@@ -423,7 +424,7 @@ cd path/to/playground/label_anything
 python tools/convert_to_rle_mask_coco.py --json_file_path path/to/LS_json --out_dir path/to/output/file --out_config config_mode
 ```
 
---out_config Select your template ``mask-rcnn_r50_fpn``.
+--out_config Select your template `mask-rcnn_r50_fpn`.
 
 Here it is recommended that `--out_dir` be `. /mmdetection/data/my_set` to facilitate training with mmdetection.
 
@@ -441,7 +442,7 @@ playground
 ├── ...
 ```
 
-Then we visualize the dataset using ``tools/analysis_tools/browse_dataset.py``.
+Then we visualize the dataset using `tools/analysis_tools/browse_dataset.py`.
 
 ```shell
 cd path/to/playground/mmdetection
@@ -457,7 +458,7 @@ The following is the result of the transformation using the transformed dataset 
 
 ## Training with mmdetection on the generated dataset (optional)
 
-After the previous step a config is generated that can be used for mmdetection training, the path is ``data/my_set/config_name.py`` which we can use for training.
+After the previous step a config is generated that can be used for mmdetection training, the path is `data/my_set/config_name.py` which we can use for training.
 
 ```shell
 python tools/train.py data/my_set/mask-rcnn_r50_fpn.py
@@ -465,7 +466,7 @@ python tools/train.py data/my_set/mask-rcnn_r50_fpn.py
 
 ![image](https://user-images.githubusercontent.com/101508488/236632841-4008225c-a3cd-4f2f-a034-08ded4127029.png)
 
-After training, you can use ``tools/test.py`` for testing.
+After training, you can use `tools/test.py` for testing.
 
 ```shell
 python tools/test.py data/my_set/mask-rcnn_r50_fpn.py path/of/your/checkpoint --show --show-dir my_show
