@@ -215,7 +215,7 @@ wget -P ../models/ https://download.openmmlab.com/mmdetection/v3.0/dino/dino-5sc
 
 python detector_sam_demo.py ../images/cat_remote.jpg \
     ../mmdetection/configs/dino/dino-5scale_swin-l_8xb2-12e_coco.py \
-    dino-5scale_swin-l_8xb2-12e_coco_20230228_072924-a654145f.pth  \
+    ../models/dino-5scale_swin-l_8xb2-12e_coco_20230228_072924-a654145f.pth  \
     --sam-device cpu
 ```
 
@@ -314,14 +314,14 @@ bash ./dist_coco_style_eval.sh 8 ${COCO_DATA_ROOT} \
 
 ### 5 COCO 评估结果
 
-|                                Method                                | bbox thresh |   Test set   | Box AP | Seg AP |
-| :------------------------------------------------------------------: | :---------: | :----------: | :----: | :----: |
-| [Detic](./configs/Detic_LI21k_CLIP_SwinB_896b32_4x_ft4x_max-size.py) |     0.2     | COCO2017 Val | 0.465  | 0.388  |
-| [Detic](./configs/Detic_LI21k_CLIP_SwinB_896b32_4x_ft4x_max-size.py) |    0.001    | COCO2017 Val | 0.481  | 0.403  |
-|        [GroundingDino](./configs/GroundingDINO_SwinT_OGC.py)         |     0.3     | COCO2017 Val | 0.419  |        |
-|        [GroundingDino](./configs/GroundingDINO_SwinT_OGC.py)         |     0.0     | COCO2017 Val | 0.469  |        |
-|       [GroundingDino\*](./configs/GroundingDINO_SwinT_OGC.py)        |     0.3     | COCO2017 Val | 0.404  |        |
-|              [GLIP](./configs/glip_A_Swin_T_O365.yaml)               |     0.0     | COCO2017 Val | 0.429  |        |
+|                              Method                              | bbox thresh |   Test set   | Box AP | Seg AP |
+| :---------------------------------------------------------------: | :---------: | :----------: | :----: | :----: |
+| [Detic](./configs/Detic_LI21k_CLIP_SwinB_896b32_4x_ft4x_max-size.py) |     0.2     | COCO2017 Val | 0.465 | 0.388 |
+| [Detic](./configs/Detic_LI21k_CLIP_SwinB_896b32_4x_ft4x_max-size.py) |    0.001    | COCO2017 Val | 0.481 | 0.403 |
+|        [GroundingDino](./configs/GroundingDINO_SwinT_OGC.py)        |     0.3     | COCO2017 Val | 0.419 |        |
+|        [GroundingDino](./configs/GroundingDINO_SwinT_OGC.py)        |     0.0     | COCO2017 Val | 0.469 |        |
+|       [GroundingDino\*](./configs/GroundingDINO_SwinT_OGC.py)       |     0.3     | COCO2017 Val | 0.404 |        |
+|              [GLIP](./configs/glip_A_Swin_T_O365.yaml)              |     0.0     | COCO2017 Val | 0.429 |        |
 
 **Note**:
 \*意思是使用原始GroundingDino的方式进行评估
@@ -343,7 +343,7 @@ unzip cat_dataset.zip -d data/cat
 rm cat_dataset.zip
 ```
 
-**注意**:，需要将`cat/class_with_id.txt`里面的`1 cat`换成 `cat`
+**注意**:，需要将 `cat/class_with_id.txt`里面的 `1 cat`换成 `cat`
 
 使用 `images2coco.py` 脚本生成没有标注的 json 文件
 
