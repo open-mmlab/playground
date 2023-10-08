@@ -47,7 +47,8 @@ from mmdet_sam.utils import apply_exif_orientation, get_file_list  # noqa
 try:
     import maskrcnn_benchmark
 
-    from mmdet_sam.predictor_glip import GLIPDemo
+    # from mmdet_sam.predictor_glip import GLIPDemo
+    from predictor_glip import GLIPDemo
 except ImportError:
     maskrcnn_benchmark = None
 
