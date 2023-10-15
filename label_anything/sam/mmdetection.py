@@ -18,16 +18,17 @@ from label_studio_ml.utils import (DATA_UNDEFINED_NAME, get_image_size,
                                    get_single_tag_keys)
 from label_studio_tools.core.utils.io import get_data_dir
 from filter_poly import NearNeighborRemover
+import pdb
 # from mmdet.apis import inference_detector, init_detector
 
 logger = logging.getLogger(__name__)
 
 
 def load_my_model(
-        model_name="sam",
+        model_name="sam_hq",
         device="cuda:0",
         sam_config="vit_b",
-        sam_checkpoint_file="sam_vit_b_01ec64.pth"):
+        sam_checkpoint_file="sam_hq_vit_b.pth"):
     """
     Loads the Segment Anything model on initializing Label studio, so if you call it outside MyModel it doesn't load every time you try to make a prediction
     Returns the predictor object. For more, look at Facebook's SAM docs
@@ -38,6 +39,12 @@ def load_my_model(
         except:
             raise ModuleNotFoundError(
                 "segment_anything is not installed, run `pip install segment_anything` to install")
+        sam = sam_model_registry[sam_config](checkpoint=sam_checkpoint_file)
+        sam.to(device=device)
+        predictor = SamPredictor(sam)
+        return predictor
+    elif model_name == "sam_hq":
+        from segment_anything_hq import sam_model_registry, SamPredictor
         sam = sam_model_registry[sam_config](checkpoint=sam_checkpoint_file)
         sam.to(device=device)
         predictor = SamPredictor(sam)
@@ -56,7 +63,7 @@ class MMDetection(LabelStudioMLBase):
     """Object detector based on https://github.com/open-mmlab/mmdetection."""
 
     def __init__(self,
-                 model_name="sam",
+                 model_name="sam_hq",
                  config_file=None,
                  checkpoint_file=None,
                  sam_config='vit_b',
@@ -79,7 +86,6 @@ class MMDetection(LabelStudioMLBase):
         self.out_mask = out_mask
         self.out_bbox = out_bbox
         self.out_poly = out_poly
-
         # config_file = config_file or os.environ['config_file']
         # checkpoint_file = checkpoint_file or os.environ['checkpoint_file']
         # self.config_file = config_file
@@ -227,7 +233,6 @@ class MMDetection(LabelStudioMLBase):
                 point_labels=np.array([1]),
                 multimask_output=False,
             )
-
         mask = masks[0].astype(np.uint8)  # each mask has shape [H, W]
         # converting the mask from the model to RLE format which is usable in Label Studio
 
