@@ -69,6 +69,7 @@ cd path/to/playground/label_anything
 # conda install pycocotools -c conda-forge
 pip install opencv-python pycocotools matplotlib onnxruntime onnx
 pip install git+https://github.com/facebookresearch/segment-anything.git
+pip install segment-anything-hq
 wget https://dl.fbaipublicfiles.com/segment_anything/sam_vit_b_01ec64.pth
 
 # If you're on a windows machine you can use the following in place of wget

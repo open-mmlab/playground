@@ -72,6 +72,7 @@ cd path/to/playground/label_anything
 # conda install pycocotools -c conda-forge 
 pip install opencv-python pycocotools matplotlib onnxruntime onnx timm
 pip install git+https://github.com/facebookresearch/segment-anything.git
+pip install segment-anything-hq
 
 # 下载sam预训练模型
 wget https://dl.fbaipublicfiles.com/segment_anything/sam_vit_b_01ec64.pth
