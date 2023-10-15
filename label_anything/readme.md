@@ -128,10 +128,11 @@ label-studio-ml start sam --port 8003 --with \
 # inference on HQ-SAM
 label-studio-ml start sam --port 8003 --with \
   sam_config=vit_b \
-  sam_checkpoint_file=./sam_hq_vit_l.pth \
+  sam_checkpoint_file=./sam_hq_vit_b.pth \
   out_mask=True \
   out_bbox=True \
-  device=cuda:0 
+  device=cuda:0 \
+  model_name=sam_hq
 # device=cuda:0 is for using GPU inference. If you want to use CPU inference, replace cuda:0 with cpu.
 # out_poly=True returns the annotation of the bounding polygon.
 

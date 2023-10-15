@@ -128,10 +128,11 @@ device=cuda:0
 # 采用 HQ-SAM 进行后端推理
 label-studio-ml start sam --port 8003 --with \
 sam_config=vit_b \
-sam_checkpoint_file=./sam_hq_vit_l.pth \
+sam_checkpoint_file=./sam_hq_vit_b.pth \
 out_mask=True \
 out_bbox=True \
 device=cuda:0 \
+model_name=sam_hq
 # device=cuda:0 为使用 GPU 推理，如果使用 cpu 推理，将 cuda:0 替换为 cpu
 # out_poly=True 返回外接多边形的标注
 
