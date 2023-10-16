@@ -78,6 +78,7 @@ if __name__ == '__main__':
         '--model-dir',
         dest='model_dir',
         default=os.path.dirname(__file__),
+        # default='./sam_hq_vit_b.pth',
         help='Directory models are store',
     )
     parser.add_argument(
