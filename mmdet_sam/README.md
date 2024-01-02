@@ -214,7 +214,7 @@ wget -P ../models/ https://download.openmmlab.com/mmdetection/v3.0/dino/dino-5sc
 # input a single image
 python detector_sam_demo.py ../images/cat_remote.jpg \
     ../mmdetection/configs/dino/dino-5scale_swin-l_8xb2-12e_coco.py \
-    dino-5scale_swin-l_8xb2-12e_coco_20230228_072924-a654145f.pth  \
+    ../models/dino-5scale_swin-l_8xb2-12e_coco_20230228_072924-a654145f.pth  \
     --sam-device cpu
 ```
 
