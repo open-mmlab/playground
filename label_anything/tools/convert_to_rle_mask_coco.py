@@ -18,7 +18,7 @@ def parse_args():
     parser.add_argument('--json_file_path',default='project.json', help='label studio output json')
     parser.add_argument('--out_dir',default='../mmdetection/data/my_set', help='output dir of Coco format json')
     parser.add_argument('--classes',default=None, help='Classes list of the dataset, if None please check the output.')
-    parser.add_argument('--out_config',default=None, choices=['mask-rcnn_r50_fpn','rtmdet-ins_s',None],help='config mode')
+    parser.add_argument('--out_config',default=mask-rcnn_r50_fpn, choices=['mask-rcnn_r50_fpn','rtmdet-ins_s',None],help='config mode')
 
     args = parser.parse_args()
     return args
